@@ -162,31 +162,6 @@
                     </div>
                 </div>
 
-                <div class="input-group input-group-outline row my-3">
-                    <label for="warehouses[]" class="col-md-5 col-form-label text-md-end">{{ __('Warehouses *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <div class="d-flex">
-                            @foreach (Helper::get_warehouses() as $warehouse)
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="warehouses[]"
-                                    id="warehouse_{{ $warehouse->id }}" value="{{ $warehouse->id }}" checked>
-                                <label class="form-check-label" for="warehouse_{{ $warehouse->id }}">
-                                    {{ ucwords($warehouse->name) }}
-                                </label>
-                            </div>
-                            @endforeach
-                        </div>
-
-                        @error('warehouses')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
                 <div class="row mt-4">
                     <div class="offset-md-8 col-md-4">
                         <button type="submit" class="btn btn-info w-100">

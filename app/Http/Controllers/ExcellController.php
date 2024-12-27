@@ -12,9 +12,6 @@ use App\Models\InvoiceItem;
 use App\Models\PO;
 use App\Models\POItem;
 use App\Models\Req;
-use App\Models\TRO;
-use App\Models\TROItem;
-use App\Models\Project;
 use App\Models\Item;
 use App\Models\JournalVoucher;
 use App\Models\LandedCost;
@@ -26,7 +23,6 @@ use App\Models\ReceiptItem;
 use App\Models\Supplier;
 use App\Models\Tax;
 use App\Models\Transaction;
-use App\Models\Warehouse;
 use App\Models\User;
 use App\Models\VOC;
 use App\Models\VOCItem;
@@ -44,10 +40,7 @@ class ExcellController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('admin')->except(['tro_import_items', 'tro_export_items', 'so_import_items', 'so_export_items', 'po_import_items', 'po_export_items']);
+        $this->middleware('permission:backup.all');
     }
 
     public function ImportExcell(Request $request, $warehouse)
@@ -131,111 +124,9 @@ class ExcellController extends Controller
         return response()->file($fileName);
     }
 
-    public function ExportSupplierItems(Request $request)
-    {
-        $data = Item::where('supplier', $request->supplier)->where('warehouse_id', auth()->user()->location_id)->orderBy('itemcode')->get();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Supplier');
-        $sheet->setCellValue('C1', 'Item Code');
-        $sheet->setCellValue('D1', 'Description');
-        $sheet->setCellValue('E1', 'Quantity');
-        $sheet->setCellValue('F1', 'Leveling');
-        $sheet->setCellValue('G1', 'Created At');
-
-        $rows = 2;
-
-        foreach ($data as $d) {
-            $sheet->setCellValue('A' . $rows, $d->id);
-            $sheet->setCellValue('B' . $rows, $d->supplier);
-            $sheet->setCellValue('C' . $rows, $d->itemcode);
-            $sheet->setCellValue('D' . $rows, $d->description);
-            $sheet->setCellValue('E' . $rows, $d->quantity);
-            $sheet->setCellValue('F' . $rows, $d->leveling);
-            $sheet->setCellValue('G' . $rows, $d->created_at ?? Carbon::now());
-            $rows++;
-        }
-
-        $fileName = $request->supplier . ".xls";
-        $writer = new Xls($spreadsheet);
-        $writer->save($fileName);
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachement; filename: " . $fileName);
-        return response()->file($fileName);
-    }
-
-    public function ExportActive(Request $request)
-    {
-        $warehouse = Warehouse::findOrFail($request->warehouse)->firstOrFail();
-        $data = Item::where('warehouse_id', $warehouse->id)->where('leveling', '<>', 0)->orderBy('itemcode')->get();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Supplier');
-        $sheet->setCellValue('C1', 'Item Code');
-        $sheet->setCellValue('D1', 'Description');
-        $sheet->setCellValue('E1', 'Quantity');
-        $sheet->setCellValue('F1', 'Leveling');
-        $sheet->setCellValue('G1', 'Created At');
-
-        $rows = 2;
-
-        foreach ($data as $d) {
-            $sheet->setCellValue('A' . $rows, $d->id);
-            $sheet->setCellValue('B' . $rows, $d->supplier);
-            $sheet->setCellValue('C' . $rows, $d->itemcode);
-            $sheet->setCellValue('D' . $rows, $d->description);
-            $sheet->setCellValue('E' . $rows, $d->quantity);
-            $sheet->setCellValue('F' . $rows, $d->leveling);
-            $sheet->setCellValue('G' . $rows, $d->created_at ?? Carbon::now());
-            $rows++;
-        }
-
-        $fileName = $warehouse->name . "_active.xls";
-        $writer = new Xls($spreadsheet);
-        $writer->save($fileName);
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachement; filename: " . $fileName);
-        return response()->file($fileName);
-    }
-
     public function index()
     {
         return view('backup.index');
-    }
-
-    public function ExportWarehouses()
-    {
-        $data = Warehouse::all();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Name');
-        $sheet->setCellValue('C1', 'Code');
-        $sheet->setCellValue('D1', 'Created At');
-        $rows = 2;
-
-        foreach ($data as $d) {
-            $sheet->setCellValue('A' . $rows, $d->id);
-            $sheet->setCellValue('B' . $rows, $d->name);
-            $sheet->setCellValue('C' . $rows, $d->code);
-            $sheet->setCellValue('D' . $rows, $d->created_at ?? Carbon::now());
-            $rows++;
-        }
-
-        $fileName = "Warehouses.xls";
-        $writer = new Xls($spreadsheet);
-        $writer->save($fileName);
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachement; filename: " . $fileName);
-        return response()->file($fileName);
     }
 
     public function ExportUsers()
@@ -509,70 +400,6 @@ class ExcellController extends Controller
         }
 
         $fileName = "PO_items.xls";
-        $writer = new Xls($spreadsheet);
-        $writer->save($fileName);
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachement; filename: " . $fileName);
-        return response()->file($fileName);
-    }
-
-    public function ExportTROS()
-    {
-        $data = TRO::all();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'Name');
-        $sheet->setCellValue('C1', 'From ID');
-        $sheet->setCellValue('D1', 'To ID');
-        $sheet->setCellValue('E1', 'Description');
-        $sheet->setCellValue('F1', 'Date');
-        $rows = 2;
-
-        foreach ($data as $d) {
-            $sheet->setCellValue('A' . $rows, $d->id);
-            $sheet->setCellValue('B' . $rows, $d->name);
-            $sheet->setCellValue('C' . $rows, $d->from_id);
-            $sheet->setCellValue('D' . $rows, $d->to_id);
-            $sheet->setCellValue('E' . $rows, $d->description ?? '');
-            $sheet->setCellValue('F' . $rows, $d->date ?? Carbon::now());
-            $rows++;
-        }
-
-        $fileName = "TROS.xls";
-        $writer = new Xls($spreadsheet);
-        $writer->save($fileName);
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachement; filename: " . $fileName);
-        return response()->file($fileName);
-    }
-
-    public function ExportTROItems()
-    {
-        $data = TROItem::all();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue('A1', 'ID');
-        $sheet->setCellValue('B1', 'SO ID');
-        $sheet->setCellValue('C1', 'Item ID');
-        $sheet->setCellValue('D1', 'Quantity');
-        $sheet->setCellValue('E1', 'Created At');
-        $rows = 2;
-
-        foreach ($data as $d) {
-            $sheet->setCellValue('A' . $rows, $d->id);
-            $sheet->setCellValue('B' . $rows, $d->tro_id);
-            $sheet->setCellValue('C' . $rows, $d->item_id);
-            $sheet->setCellValue('D' . $rows, $d->quantity);
-            $sheet->setCellValue('E' . $rows, $d->created_at ?? Carbon::now());
-            $rows++;
-        }
-
-        $fileName = "TRO_items.xls";
         $writer = new Xls($spreadsheet);
         $writer->save($fileName);
         header("Content-Type: application/xls");
@@ -1336,38 +1163,6 @@ class ExcellController extends Controller
         return response()->file($fileName);
     }
 
-
-    public function ImportWarehouses(Request $request)
-    {
-        $this->validate($request, [
-            'warehouses' => 'required|file|mimes:xls,xlsx'
-        ]);
-        $the_file = $request->file('warehouses');
-
-        $spreadsheet = IOFactory::load($the_file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $row_limit = $sheet->getHighestDataRow();
-        $row_range = range(2, $row_limit);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Warehouse::truncate();
-
-        foreach ($row_range as $row) {
-            $warehouse = new Warehouse();
-            $warehouse->id = $sheet->getCell('A' . $row)->getValue();
-            $warehouse->name = $sheet->getCell('B' . $row)->getValue();
-            $warehouse->code = $sheet->getCell('C' . $row)->getValue();
-            $warehouse->created_at = Carbon::parse($sheet->getCell('D' . $row)->getValue()) ?? Carbon::now();
-            $warehouse->save();
-        }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $log = new Log();
-        $log->text = ucwords(auth()->user()->name) . " imported all warehouses, datetime :   " . now();
-        $log->save();
-        return redirect()->back()->with('success', 'Warehouses imported successfully!');
-    }
-
     public function ImportUsers(Request $request)
     {
         $this->validate($request, [
@@ -1432,42 +1227,6 @@ class ExcellController extends Controller
         $log->text = ucwords(auth()->user()->name) . " imported all logs, datetime :   " . now();
         $log->save();
         return redirect()->back()->with('success', 'Logs imported successfully!');
-    }
-
-    public function ImportProjects(Request $request)
-    {
-        $this->validate($request, [
-            'projects' => 'required|file|mimes:xls,xlsx'
-        ]);
-        $the_file = $request->file('projects');
-
-        $spreadsheet = IOFactory::load($the_file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $row_limit = $sheet->getHighestDataRow();
-        $row_range = range(2, $row_limit);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Project::truncate();
-
-        foreach ($row_range as $row) {
-            $project = new Project();
-            $project->id = $sheet->getCell('A' . $row)->getValue();
-            $project->name = $sheet->getCell('B' . $row)->getValue();
-            $project->number = $sheet->getCell('C' . $row)->getValue() ?? '';
-            $project->status = $sheet->getCell('D' . $row)->getValue();
-            $project->delivery_date = Carbon::parse($sheet->getCell('E' . $row)->getValue()) ?? null;
-            $project->main_image = "/assets/images/profiles/NoItemImage.png";
-            $project->warehouse_id = $sheet->getCell('F' . $row)->getValue() ?? '';
-            $project->client_id = $sheet->getCell('G' . $row)->getValue() ?? '';
-            $project->created_at = Carbon::parse($sheet->getCell('H' . $row)->getValue()) ?? Carbon::now();
-            $project->save();
-        }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $log = new Log();
-        $log->text = ucwords(auth()->user()->name) . " imported all projects, datetime :   " . now();
-        $log->save();
-        return redirect()->back()->with('success', 'Projects imported successfully!');
     }
 
     public function ImportItems(Request $request)
@@ -1642,71 +1401,6 @@ class ExcellController extends Controller
         $log->text = ucwords(auth()->user()->name) . " imported all po items, datetime :   " . now();
         $log->save();
         return redirect()->back()->with('success', 'PO Items imported successfully!');
-    }
-
-    public function ImportTROS(Request $request)
-    {
-        $this->validate($request, [
-            'tros' => 'required|file|mimes:xls,xlsx'
-        ]);
-        $the_file = $request->file('tros');
-
-        $spreadsheet = IOFactory::load($the_file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $row_limit = $sheet->getHighestDataRow();
-        $row_range = range(2, $row_limit);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        TRO::truncate();
-
-        foreach ($row_range as $row) {
-            $tro = new TRO();
-            $tro->id = $sheet->getCell('A' . $row)->getValue();
-            $tro->name = $sheet->getCell('B' . $row)->getValue();
-            $tro->from_id = $sheet->getCell('C' . $row)->getValue();
-            $tro->to_id = $sheet->getCell('D' . $row)->getValue();
-            $tro->description = $sheet->getCell('E' . $row)->getValue() ?? '';
-            $tro->date = Carbon::parse($sheet->getCell('F' . $row)->getValue()) ?? Carbon::now();
-            $tro->save();
-        }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $log = new Log();
-        $log->text = ucwords(auth()->user()->name) . " imported all tros, datetime :   " . now();
-        $log->save();
-        return redirect()->back()->with('success', 'TROS imported successfully!');
-    }
-
-    public function ImportTROItems(Request $request)
-    {
-        $this->validate($request, [
-            'tro_items' => 'required|file|mimes:xls,xlsx'
-        ]);
-        $the_file = $request->file('tro_items');
-
-        $spreadsheet = IOFactory::load($the_file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $row_limit = $sheet->getHighestDataRow();
-        $row_range = range(2, $row_limit);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        TROItem::truncate();
-
-        foreach ($row_range as $row) {
-            $tro_item = new TROItem();
-            $tro_item->id = $sheet->getCell('A' . $row)->getValue();
-            $tro_item->tro_id = $sheet->getCell('B' . $row)->getValue();
-            $tro_item->item_id = $sheet->getCell('C' . $row)->getValue();
-            $tro_item->quantity = $sheet->getCell('D' . $row)->getValue();
-            $tro_item->created_at = Carbon::parse($sheet->getCell('E' . $row)->getValue()) ?? Carbon::now();
-            $tro_item->save();
-        }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $log = new Log();
-        $log->text = ucwords(auth()->user()->name) . " imported all tro items, datetime :   " . now();
-        $log->save();
-        return redirect()->back()->with('success', 'TRO Items imported successfully!');
     }
 
     public function ImportSuppliers(Request $request)
@@ -2542,76 +2236,6 @@ class ExcellController extends Controller
         Log::create(['text' => $text]);
 
         return redirect()->back()->with('success', 'PO Items imported successfully!');
-    }
-
-    public function tro_export_items(TRO $tro)
-    {
-        $data = TROItem::where('tro_id', $tro->id)->get();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->setCellValue('A1', 'Item');
-        $sheet->setCellValue('B1', 'Quantity');
-        $sheet->setCellValue('C1', 'Created At');
-        $rows = 2;
-
-        foreach ($data as $d) {
-            $sheet->setCellValue('A' . $rows, $d->item->itemcode);
-            $sheet->setCellValue('B' . $rows, $d->quantity);
-            $sheet->setCellValue('C' . $rows, Carbon::now());
-            $rows++;
-        }
-
-        $fileName = $tro->name . "_items.xls";
-        $writer = new Xls($spreadsheet);
-        $writer->save($fileName);
-        header("Content-Type: application/xls");
-        header("Content-Disposition: attachement; filename: " . $fileName);
-        return response()->file($fileName);
-    }
-
-    public function tro_import_items(TRO $tro, Request $request)
-    {
-        $this->validate($request, [
-            'file' => 'required|file|mimes:xls,xlsx'
-        ]);
-        $the_file = $request->file('file');
-
-        $spreadsheet = IOFactory::load($the_file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $row_limit = $sheet->getHighestDataRow();
-        $row_range = range(2, $row_limit);
-        $counter = 0;
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-
-        foreach ($row_range as $row) {
-            $item = Item::where('itemcode', $sheet->getCell('A' . $row)->getValue())->where('warehouse_id', $tro->from_id)->get()->firstOrFail();
-
-            if ($item == null || $sheet->getCell('B' . $row)->getValue() <= 0 || $item->quantity - $sheet->getCell('B' . $row)->getValue() < 0) {
-                return redirect()->back()->with('success', 'error');
-            }
-
-            Req::create([
-                'user_id' => auth()->user()->id,
-                'item_id' => $item->id,
-                'quantity' => $sheet->getCell('B' . $row)->getValue(),
-                'tro_id' => $tro->id,
-                'type' => 0,
-                'from_id' => $tro->from_id,
-                'to_id' => $tro->to_id,
-                'created_at' => Carbon::now()->addSeconds($counter),
-            ]);
-
-            $counter++;
-        }
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        $text = ucwords(auth()->user()->name) . " imported tro items for " . $tro->name . ", datetime :   " . now();
-        Log::create(['text' => $text]);
-
-        return redirect()->back()->with('success', 'TRO Items imported successfully!');
     }
 
     public function export()

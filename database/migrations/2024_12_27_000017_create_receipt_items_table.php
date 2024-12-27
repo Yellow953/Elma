@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('receipt_id');
             $table->unsignedBigInteger('item_id');
-            $table->string('location')->nullable();
             $table->double('quantity')->unsigned();
             $table->double('unit_cost')->unsigned();
             $table->double('total_cost')->unsigned();

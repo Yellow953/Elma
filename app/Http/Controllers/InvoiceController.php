@@ -19,10 +19,11 @@ class InvoiceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant');
+        $this->middleware('permission:invoices.read')->only('index');
+        $this->middleware('permission:invoices.create')->only(['new', 'create']);
+        $this->middleware('permission:invoices.update')->only(['edit', 'update']);
+        $this->middleware('permission:invoices.delete')->only('destroy');
+        $this->middleware('permission:invoices.export')->only('export');
     }
 
     public function index()
@@ -37,7 +38,7 @@ class InvoiceController extends Controller
     public function new()
     {
         $clients = Client::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'warehouse_id', 'unit_cost', 'unit_price', 'type')->get();
+        $items = Item::select('id', 'itemcode', 'unit_cost', 'unit_price', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
 
         $data = compact('clients', 'items', 'taxes');
@@ -245,7 +246,7 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         if ($invoice->can_edit()) {
-            $items = Item::select('id', 'itemcode', 'warehouse_id', 'unit_cost', 'unit_price')->get();
+            $items = Item::select('id', 'itemcode', 'unit_cost', 'unit_price')->get();
             $taxes = Tax::select('id', 'name', 'rate')->get();
 
             $total = 0;

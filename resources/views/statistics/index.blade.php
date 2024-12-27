@@ -111,46 +111,6 @@
                     <div class="card-header p-3 pt-2 bg-gradient-dark border-radius">
                         <div
                             class="icon icon-lg icon-shape bg-gradient-info shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="fa-solid fa-folder"></i>
-                        </div>
-                        <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-white">Total TROs</p>
-                            <h4 class="m-3 text-white">
-                                @if ($total_tros)
-                                {{number_format($total_tros)}}
-                                @else
-                                No Record
-                                @endif
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-xl-0 mb-4">
-                <div class="card my-3">
-                    <div class="card-header p-3 pt-2 bg-gradient-dark border-radius">
-                        <div
-                            class="icon icon-lg icon-shape bg-gradient-info shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="fa-solid fa-warehouse"></i>
-                        </div>
-                        <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-white">Total Warehouses</p>
-                            <h4 class="m-3 text-white">
-                                @if ($total_warehouses)
-                                {{number_format($total_warehouses)}}
-                                @else
-                                No Record
-                                @endif
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-xl-0 mb-4">
-                <div class="card my-3">
-                    <div class="card-header p-3 pt-2 bg-gradient-dark border-radius">
-                        <div
-                            class="icon icon-lg icon-shape bg-gradient-info shadow-dark text-center border-radius-xl mt-n4 position-absolute">
                             <i class="fa-solid fa-cubes"></i>
                         </div>
                         <div class="text-end pt-1">
@@ -358,7 +318,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
 <script>
     $(document).ready(function() {
-            // Fetch and render Inventory Top Selling Products    
+            // Fetch and render Inventory Top Selling Products
             $.ajax({
                 url: '{{ route("inventory.topSellingProducts") }}',
                 type: 'GET',
@@ -984,7 +944,7 @@
                     console.error('Error fetching data:', error);
                 }
             });
-            
+
             // Fetch and render data for Net Profit Margin
             $.ajax({
                 url: '{{ route("accounting.netProfitMargin") }}',

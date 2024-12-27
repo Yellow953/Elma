@@ -15,10 +15,11 @@ class PaymentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant');
+        $this->middleware('permission:payments.read')->only('index');
+        $this->middleware('permission:payments.create')->only(['new', 'create']);
+        $this->middleware('permission:payments.update')->only(['edit', 'update']);
+        $this->middleware('permission:payments.delete')->only('destroy');
+        $this->middleware('permission:payments.export')->only('export');
     }
 
     public function index()

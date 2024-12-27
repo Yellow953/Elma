@@ -60,10 +60,6 @@
 </head>
 
 <body class="g-sidenav-show bg-gray-200 custom-scroller">
-    @php
-    $warehouses = Helper::get_warehouses();
-    @endphp
-
     @include('layouts._sidebar')
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         @include('layouts._header')

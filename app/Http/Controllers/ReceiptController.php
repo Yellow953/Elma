@@ -20,10 +20,11 @@ class ReceiptController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant');
+        $this->middleware('permission:receipts.read')->only('index');
+        $this->middleware('permission:receipts.create')->only(['new', 'create']);
+        $this->middleware('permission:receipts.update')->only(['edit', 'update']);
+        $this->middleware('permission:receipts.delete')->only('destroy');
+        $this->middleware('permission:receipts.export')->only('export');
     }
 
     public function index()
@@ -39,7 +40,7 @@ class ReceiptController extends Controller
     public function new()
     {
         $suppliers = Supplier::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'warehouse_id', 'type')->get();
+        $items = Item::select('id', 'itemcode', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $data = compact('suppliers', 'items', 'taxes');
 

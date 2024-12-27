@@ -78,7 +78,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{item}/report', [ItemController::class, 'item_report'])->name('items.item_report');
         Route::get('/{item}/delete', [ItemController::class, 'destroy'])->name('items.destroy');
         Route::get('/{item}/images', [ItemController::class, 'images'])->name('items.images');
-        Route::get('/{warehouse}', [ItemController::class, 'index_warehouse'])->name('items.warehouse');
         Route::get('/', [ItemController::class, 'index'])->name('items');
     });
 
@@ -90,7 +89,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Logs Routes
     Route::prefix('logs')->group(function () {
-        Route::get('/{warehouse}', [LogController::class, 'IndividualLogs'])->name('logs.individual');
         Route::get('/', [LogController::class, 'index'])->name('logs');
     });
 
@@ -104,8 +102,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export/so_items', [ExcellController::class, 'ExportSOItems'])->name('export.so_items');
         Route::get('/export/pos', [ExcellController::class, 'ExportPOS'])->name('export.pos');
         Route::get('/export/po_items', [ExcellController::class, 'ExportPOItems'])->name('export.po_items');
-        Route::get('/export/tros', [ExcellController::class, 'ExportTROS'])->name('export.tros');
-        Route::get('/export/tro_items', [ExcellController::class, 'ExportTROItems'])->name('export.tro_items');
         Route::get('/export/suppliers', [ExcellController::class, 'ExportSuppliers'])->name('export.suppliers');
         Route::get('/export/clients', [ExcellController::class, 'ExportClients'])->name('export.clients');
         Route::get('/export/accounts', [ExcellController::class, 'ExportAccounts'])->name('export.accounts');
@@ -134,8 +130,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/import/so_items', [ExcellController::class, 'ImportSOItems'])->name('import.so_items');
         Route::post('/import/pos', [ExcellController::class, 'ImportPOS'])->name('import.pos');
         Route::post('/import/po_items', [ExcellController::class, 'ImportPOItems'])->name('import.po_items');
-        Route::post('/import/tros', [ExcellController::class, 'ImportTROS'])->name('import.tros');
-        Route::post('/import/tro_items', [ExcellController::class, 'ImportTROItems'])->name('import.tro_items');
         Route::post('/import/suppliers', [ExcellController::class, 'ImportSuppliers'])->name('import.suppliers');
         Route::post('/import/clients', [ExcellController::class, 'ImportClients'])->name('import.clients');
         Route::post('/import/accounts', [ExcellController::class, 'ImportAccounts'])->name('import.accounts');
@@ -216,7 +210,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/new', [ClientController::class, 'new'])->name('clients.new');
         Route::post('/create', [ClientController::class, 'create'])->name('clients.create');
         Route::get('/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
-        Route::get('/{client}/projects', [ClientController::class, 'Projects'])->name('clients.projects');
         Route::post('/{client}/update', [ClientController::class, 'update'])->name('clients.update');
         Route::get('/{client}/delete', [ClientController::class, 'destroy'])->name('clients.destroy');
         Route::get('/{client}/statement', [ClientController::class, 'statement'])->name('clients.statement');

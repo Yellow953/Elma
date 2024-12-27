@@ -16,10 +16,11 @@ class CreditNoteController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant');
+        $this->middleware('permission:credit_notes.read')->only('index');
+        $this->middleware('permission:credit_notes.create')->only(['new', 'create']);
+        $this->middleware('permission:credit_notes.update')->only(['edit', 'update']);
+        $this->middleware('permission:credit_notes.delete')->only('destroy');
+        $this->middleware('permission:credit_notes.export')->only('export');
     }
 
     public function index()

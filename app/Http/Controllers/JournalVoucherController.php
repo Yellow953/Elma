@@ -13,10 +13,11 @@ class JournalVoucherController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant');
+        $this->middleware('permission:journal_vouchers.read')->only('index');
+        $this->middleware('permission:journal_vouchers.create')->only(['new', 'create']);
+        $this->middleware('permission:journal_vouchers.update')->only(['edit', 'update']);
+        $this->middleware('permission:journal_vouchers.delete')->only('destroy');
+        $this->middleware('permission:journal_vouchers.export')->only('export');
     }
 
     public function index()

@@ -12,10 +12,11 @@ class CurrencyController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('admin')->except('switch', 'get_exchange_rate');
+        $this->middleware('permission:currencies.read')->only('index');
+        $this->middleware('permission:currencies.create')->only(['new', 'create']);
+        $this->middleware('permission:currencies.update')->only(['edit', 'update']);
+        $this->middleware('permission:currencies.delete')->only('destroy');
+        $this->middleware('permission:currencies.export')->only('export');
     }
 
     public function index()

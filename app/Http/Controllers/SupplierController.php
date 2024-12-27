@@ -11,10 +11,11 @@ class SupplierController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('admin');
+        $this->middleware('permission:suppliers.read')->only('index');
+        $this->middleware('permission:suppliers.create')->only(['new', 'create']);
+        $this->middleware('permission:suppliers.update')->only(['edit', 'update']);
+        $this->middleware('permission:suppliers.delete')->only('destroy');
+        $this->middleware('permission:suppliers.export')->only('export');
     }
 
     public function index()

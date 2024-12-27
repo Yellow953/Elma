@@ -3,16 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
-use App\Models\InvoiceItem;
 use App\Models\SO;
 use App\Models\Item;
 use App\Models\Log;
 use App\Models\PO;
-use App\Models\ReceiptItem;
-use App\Models\Req;
-use App\Models\Request as ModelsRequest;
-use App\Models\TRO;
-use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -20,27 +14,18 @@ class ItemController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('admin')->only('destroy');
+        $this->middleware('permission:items.read')->only('index');
+        $this->middleware('permission:items.create')->only(['new', 'create']);
+        $this->middleware('permission:items.update')->only(['edit', 'update']);
+        $this->middleware('permission:items.delete')->only('destroy');
+        $this->middleware('permission:items.export')->only('export');
     }
 
     public function index()
     {
-        $items = Item::select('id', 'image', 'name', 'quantity', 'leveling', 'itemcode', 'description', 'type', 'inventory_account_id', 'cost_of_sales_account_id', 'sales_account_id', 'warehouse_id')->filter()->orderBy('itemcode', 'ASC')->paginate(25);
+        $items = Item::select('id', 'image', 'name', 'quantity', 'leveling', 'itemcode', 'description', 'type', 'inventory_account_id', 'cost_of_sales_account_id', 'sales_account_id')->filter()->orderBy('itemcode', 'ASC')->paginate(25);
 
         $data = compact('items');
-        return view('items.index', $data);
-    }
-
-    public function index_warehouse($warehouse)
-    {
-        $warehouse = Warehouse::where('name', $warehouse)->firstOrFail();
-
-        $items = Item::select('id', 'image', 'name', 'quantity', 'leveling', 'itemcode', 'description', 'type', 'inventory_account_id', 'cost_of_sales_account_id', 'sales_account_id', 'warehouse_id')->where('warehouse_id', $warehouse->id)->filter()->orderBy('itemcode', 'ASC')->paginate(25);
-
-        $data = compact('items', 'warehouse');
         return view('items.index', $data);
     }
 
@@ -60,8 +45,6 @@ class ItemController extends Controller
             'inventory_account_id' => 'required|numeric',
             'cost_of_sales_account_id' => 'required|numeric',
             'sales_account_id' => 'required|numeric',
-            'warehouses' => 'required|array',
-            'warehouses.*' => 'exists:warehouses,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -74,30 +57,23 @@ class ItemController extends Controller
             $path = '/assets/images/profiles/NoItemImage.png';
         }
 
-        $warehouses_text = "";
+        $item = Item::create([
+            'name' => $request->name,
+            'quantity' => 0,
+            'leveling' => $request->leveling,
+            'itemcode' => $request->itemcode,
+            'description' => $request->description,
+            'image' => $path,
+            'type' => $request->type,
+            'inventory_account_id' => $request->inventory_account_id,
+            'cost_of_sales_account_id' => $request->cost_of_sales_account_id,
+            'sales_account_id' => $request->sales_account_id,
+        ]);
 
-        foreach ($request->warehouses as $w) {
-            $warehouse = Warehouse::find($w);
-            $warehouses_text .= " " . ucwords($warehouse->name);
-            $item = Item::create([
-                'name' => $request->name,
-                'quantity' => 0,
-                'leveling' => $request->leveling,
-                'warehouse_id' => $warehouse->id,
-                'itemcode' => $request->itemcode,
-                'description' => $request->description,
-                'image' => $path,
-                'type' => $request->type,
-                'inventory_account_id' => $request->inventory_account_id,
-                'cost_of_sales_account_id' => $request->cost_of_sales_account_id,
-                'sales_account_id' => $request->sales_account_id,
-            ]);
-        }
-
-        $text = ucwords(auth()->user()->name) . " created new Item : " . $item->itemcode . " for warehouses:" . $warehouses_text . ", datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . " created new Item : " . $item->itemcode . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('items', auth()->user()->location->name)->with('success', 'Item created successfully!');
+        return redirect()->route('items')->with('success', 'Item created successfully!');
     }
 
     public function edit(Item $item)
@@ -150,17 +126,12 @@ class ItemController extends Controller
         $text = ucwords(auth()->user()->name) . ' updated ' . $item->itemcode . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('items', $item->warehouse->name)->with('warning', 'Item updated successfully!');
+        return redirect()->route('items')->with('warning', 'Item updated successfully!');
     }
 
     public function In(Item $item)
     {
-        if (auth()->user()->role == 'admin') {
-            $pos = PO::select('id', 'name')->orderBy('id', 'desc')->get();
-        } else {
-            $warehouse = auth()->user()->location;
-            $pos = PO::select('id', 'name')->where('name', 'LIKE', "%{$warehouse->code}%")->orderBy('id', 'desc')->get();
-        }
+        $pos = PO::select('id', 'name')->orderBy('id', 'desc')->get();
 
         $data = compact('item', 'pos');
         return view('items.in', $data);
@@ -175,7 +146,6 @@ class ItemController extends Controller
 
         $po = PO::findOrFail($request->po_id);
         $parts = explode('-', $po->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
 
         ModelsRequest::create([
             'item_id' => $item->id,
@@ -183,21 +153,15 @@ class ItemController extends Controller
             'quantity' => $request->quantity,
             'type' => 9,
             'status' => 0,
-            'warehouse_id' => $warehouse->id,
             'po_id' => $po->id,
         ]);
 
-        return redirect()->route('items', $item->warehouse->name)->with('info', 'Request sent!');
+        return redirect()->route('items')->with('info', 'Request sent!');
     }
 
     public function Out(Item $item)
     {
-        if (auth()->user()->role == 'admin') {
-            $sos = SO::select('id', 'name')->orderBy('id', 'desc')->get();
-        } else {
-            $warehouse = auth()->user()->location;
-            $sos = SO::select('id', 'name')->where('name', 'LIKE', "%{$warehouse->code}%")->orderBy('id', 'desc')->get();
-        }
+        $sos = SO::select('id', 'name')->orderBy('id', 'desc')->get();
 
         $data = compact('item', 'sos');
         return view('items.out', $data);
@@ -212,68 +176,27 @@ class ItemController extends Controller
 
         $so = SO::findOrFail($request->so_id);
         $parts = explode('-', $so->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
 
         if (($item->quantity - $request->quantity) >= 0) {
             ModelsRequest::create([
                 'item_id' => $item->id,
                 'user_id' => auth()->user()->id,
-                'project_id' => $so->project->id,
                 'quantity' => $request->quantity,
                 'type' => 2,
                 'status' => 0,
-                'warehouse_id' => $warehouse->id,
                 'so_id' => $so->id,
             ]);
         } else {
             return redirect()->back()->with('error', 'Item Empty, Cannot Send Request!');
         }
 
-        return redirect()->route('items', $item->warehouse->name)->with('info', 'Request sent!');
-    }
-
-    public function Transfer(Item $item)
-    {
-        if (auth()->user()->role == 'admin') {
-            $tros = TRO::select('id', 'name')->orderBy('id', 'desc')->get();
-        } else {
-            $tros = TRO::select('id', 'name')->where('from_id', auth()->user()->location_id)->orWhere('to_id', auth()->user()->location_id)->orderBy('id', 'desc')->get();
-        }
-
-        $data = compact('item', 'tros');
-        return view('items.transfer', $data);
-    }
-
-    public function TransferSave(Item $item, Request $request)
-    {
-        $request->validate([
-            'tro_id' => ['required', 'numeric'],
-            'quantity' => ['required', 'numeric', 'min:0'],
-        ]);
-
-        $tro = TRO::findOrFail($request->tro_id);
-
-        if (($item->quantity - $request->quantity) >= 0) {
-            Req::create([
-                'user_id' => auth()->user()->id,
-                'item_id' => $item->id,
-                'quantity' => $request->quantity,
-                'from_id' => $tro->from_id,
-                'to_id' => $tro->to_id,
-                'tro_id' => $tro->id,
-                'type' => 0,
-            ]);
-        } else {
-            return redirect()->back()->with('error', 'Item Empty, Cannot Send Request!');
-        }
-
-        return redirect()->route('items', $item->warehouse->name)->with('info', 'Request sent!');
+        return redirect()->route('items')->with('info', 'Request sent!');
     }
 
     public function activity(Item $item)
     {
         $search_term1 = " " . trim($item->itemcode) . " ";
-        $logs = Log::select('text')->where('text', 'LIKE', "%{$item->warehouse->name}%")->where('text', 'LIKE', "%{$search_term1}%")->orderBy('id', 'desc')->get();
+        $logs = Log::select('text')->where('text', 'LIKE', "%{$search_term1}%")->orderBy('id', 'desc')->get();
 
         $data = compact('logs', 'item');
         return view('items.activity', $data);
@@ -287,7 +210,7 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         $items = Item::where('itemcode', $item->itemcode)->get();
-        $text = ucwords(auth()->user()->name) . " deleted all items of itemcode : " . $item->itemcode . " from all warehouses, datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . " deleted all items of itemcode : " . $item->itemcode . ", datetime :   " . now();
 
         foreach ($items as $item) {
             if ($item->can_delete()) {

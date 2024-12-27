@@ -2,25 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Request as ModelsRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('agreed');
-    }
-
     public function show(User $user)
     {
-        $totalIns = ModelsRequest::where('user_id', $user->id)->where('type', 1)->count();
-        $totalOuts = ModelsRequest::where('user_id', $user->id)->where('type', 2)->count();
-
-        $data = compact('user', 'totalIns', 'totalOuts');
+        $data = compact('user');
         return view('users.show', $data);
     }
 

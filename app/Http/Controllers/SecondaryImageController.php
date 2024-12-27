@@ -8,13 +8,6 @@ use Illuminate\Support\Facades\File;
 
 class SecondaryImageController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-    }
-
     public function create(Request $request)
     {
         $this->validate($request, [

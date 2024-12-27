@@ -61,26 +61,6 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="location_id" class="col-md-5 col-form-label text-md-end">{{ __('Location
-                        *') }}</label>
-
-                    <div class="col-md-6">
-                        <select name="location_id" id="location_id" class="form-select select2" required>
-                            <option></option>
-                            @foreach (Helper::get_warehouses() as $warehouse)
-                            <option value="{{$warehouse->id}}">{{$warehouse->name}}</option>
-                            @endforeach
-                        </select>
-
-                        @error('location_id')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Currency
                         *') }}</label>
 

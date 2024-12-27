@@ -8,11 +8,8 @@ use App\Models\Company;
 use App\Models\Currency;
 use App\Models\SOItem;
 use App\Models\POItem;
-use App\Models\Project;
 use App\Models\SearchRoute;
 use App\Models\Tax;
-use App\Models\TROItem;
-use App\Models\Warehouse;
 use App\Models\Item;
 use NumberToWords\NumberToWords;
 
@@ -20,7 +17,7 @@ class Helper
 {
     public static function get_items()
     {
-        return Item::select('id', 'itemcode', 'warehouse_id')->get();
+        return Item::select('id', 'itemcode')->get();
     }
 
     public static function get_currencies()

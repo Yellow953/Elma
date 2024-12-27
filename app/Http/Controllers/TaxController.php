@@ -12,10 +12,11 @@ class TaxController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('admin')->except('get_rate');
+        $this->middleware('permission:taxes.read')->only('index');
+        $this->middleware('permission:taxes.create')->only(['new', 'create']);
+        $this->middleware('permission:taxes.update')->only(['edit', 'update']);
+        $this->middleware('permission:taxes.delete')->only('destroy');
+        $this->middleware('permission:taxes.export')->only('export');
     }
 
     public function index()

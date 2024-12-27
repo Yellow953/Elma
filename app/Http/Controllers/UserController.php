@@ -11,10 +11,11 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup')->except(['terms', 'terms_agree']);
-        $this->middleware('agreed')->except(['terms', 'terms_agree']);
-        $this->middleware('admin');
+        $this->middleware('permission:users.read')->only('index');
+        $this->middleware('permission:users.create')->only(['new', 'create']);
+        $this->middleware('permission:users.update')->only(['edit', 'update']);
+        $this->middleware('permission:users.delete')->only('destroy');
+        $this->middleware('permission:users.export')->only('export');
     }
 
     public function index()

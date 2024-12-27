@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Log;
+use App\Exports\TrialBalanceExport;
 use App\Models\Account;
+use App\Models\AccountType;
 use App\Models\Currency;
 use App\Models\JournalVoucher;
 use App\Models\Transaction;
+use App\Models\Log;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Exports\TrialBalanceExport;
-use App\Models\AccountType;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AccountController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant');
-        $this->middleware('admin')->only('closing');
+        $this->middleware('permission:accounts.read')->only('index');
+        $this->middleware('permission:accounts.create')->only(['new', 'create']);
+        $this->middleware('permission:accounts.update')->only(['edit', 'update']);
+        $this->middleware('permission:accounts.delete')->only('destroy');
+        $this->middleware('permission:accounts.export')->only('export');
     }
 
     public function index()

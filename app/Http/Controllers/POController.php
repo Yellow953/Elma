@@ -6,10 +6,8 @@ use App\Models\Item;
 use App\Models\Log;
 use App\Models\PO;
 use App\Models\POItem;
-use App\Models\Request as ModelsRequest;
 use App\Models\Supplier;
 use App\Models\Tax;
-use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,11 +17,11 @@ class POController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('accountant')->only('new_receipt');
-        $this->middleware('admin')->only('destroy');
+        $this->middleware('permission:pos.read')->only('index');
+        $this->middleware('permission:pos.create')->only(['new', 'create']);
+        $this->middleware('permission:pos.update')->only(['edit', 'update']);
+        $this->middleware('permission:pos.delete')->only('destroy');
+        $this->middleware('permission:pos.export')->only('export');
     }
 
     public function index()
@@ -68,15 +66,10 @@ class POController extends Controller
     public function edit(PO $po)
     {
         $parts = explode('-', $po->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
         $search = request()->query('search');
 
-        if (auth()->user()->role != 'admin' && auth()->user()->location_id != $warehouse->id) {
-            return redirect()->back()->with('error', 'You are not allowed to access this page...');
-        }
-
         if ($search) {
-            $item = Item::where('warehouse_id', $warehouse->id)->where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
+            $item = Item::where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
             if ($item != null) {
                 $poItems = POItem::select('id', 'item_id', 'quantity')->where('po_id', $po->id)->where('item_id', $item->id)->paginate(50);
             } else {
@@ -137,7 +130,6 @@ class POController extends Controller
             'quantity' => $poItem->quantity,
             'type' => 11,
             'status' => 0,
-            'warehouse_id' => $item->warehouse_id,
         ]);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
@@ -159,7 +151,6 @@ class POController extends Controller
                 'quantity' => $poItem->quantity,
                 'type' => 11,
                 'status' => 0,
-                'warehouse_id' => $item->warehouse_id,
             ]);
         }
 
@@ -170,16 +161,10 @@ class POController extends Controller
     public function AddItems(PO $po)
     {
         $parts = explode('-', $po->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
-
-        if (auth()->user()->role != 'admin' && auth()->user()->location_id != $warehouse->id) {
-            return redirect()->back()->with('error', 'You are not allowed to access this page...');
-        }
 
         $po_items = POItem::select('item_id', 'quantity')->where('po_id', $po->id)->orderBy('created_at', 'desc')->get();
-        $requests = ModelsRequest::select('user_id', 'quantity', 'item_id')->where('status', 0)->where('type', 9)->where('po_id', $po->id)->orderBy('created_at', 'DESC')->get();
 
-        $data = compact('po', 'po_items', 'requests');
+        $data = compact('po', 'po_items');
         return view('pos.add_items', $data);
     }
 
@@ -191,7 +176,6 @@ class POController extends Controller
         ]);
 
         $parts = explode('-', $po->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
         $counter = 0;
 
         foreach ($request->items as $id => $quantity) {
@@ -202,7 +186,6 @@ class POController extends Controller
                 'item_id' => $item->id,
                 'po_id' => $po->id,
                 'quantity' => $quantity['quantity'],
-                'warehouse_id' => $warehouse->id,
                 'type' => 9,
                 'status' => 0,
                 'created_at' => Carbon::now()->addSeconds($counter),
@@ -218,11 +201,10 @@ class POController extends Controller
     {
         $po = PO::findOrFail($request->po_id);
         $parts = explode('-', $po->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
 
         $query = $request->search;
 
-        $result = Item::select('id', 'itemcode', 'quantity')->where('warehouse_id', $warehouse->id)->where('itemcode', $query)->get()->firstOrFail();
+        $result = Item::select('id', 'itemcode', 'quantity')->where('itemcode', $query)->get()->firstOrFail();
 
         if ($result == null) {
             abort(400, 'Bad Request');
@@ -235,14 +217,13 @@ class POController extends Controller
     {
         $po = PO::findOrFail($request->po_id);
         $parts = explode('-', $po->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
 
         $query = $request->live_search;
 
         if ($query != null) {
-            $items = Item::select('id', 'itemcode', 'quantity')->where('warehouse_id', $warehouse->id)->where('itemcode', 'LIKE', "%{$query}%")->get();
+            $items = Item::select('id', 'itemcode', 'quantity')->where('itemcode', 'LIKE', "%{$query}%")->get();
         } else {
-            $items = Item::select('id', 'itemcode', 'quantity')->where('warehouse_id', $warehouse->id)->get();
+            $items = Item::select('id', 'itemcode', 'quantity')->get();
         }
 
         if ($items == null) {
@@ -277,7 +258,7 @@ class POController extends Controller
     public function new_receipt(PO $po)
     {
         $suppliers = Supplier::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'warehouse_id', 'type')->get();
+        $items = Item::select('id', 'itemcode', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $data = compact('suppliers', 'items', 'taxes', 'po');
 

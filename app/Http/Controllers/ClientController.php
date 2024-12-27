@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Log;
 use App\Models\Client;
-use App\Models\Project;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('setup');
-        $this->middleware('agreed');
-        $this->middleware('admin');
+        $this->middleware('permission:clients.read')->only('index');
+        $this->middleware('permission:clients.create')->only(['new', 'create']);
+        $this->middleware('permission:clients.update')->only(['edit', 'update']);
+        $this->middleware('permission:clients.delete')->only('destroy');
+        $this->middleware('permission:clients.export')->only('export');
     }
 
     public function index()
@@ -24,7 +24,6 @@ class ClientController extends Controller
 
         return view('clients.index', compact('clients'));
     }
-
 
     public function new()
     {
@@ -106,13 +105,6 @@ class ClientController extends Controller
         Log::create(['text' => $text]);
 
         return redirect()->route('clients')->with('warning', 'Client updated successfully!');
-    }
-
-    public function projects($id)
-    {
-        $projects = Project::select('id', 'main_image', 'name', 'status', 'delivery_date')->where('client_id', $id)->paginate(50);
-
-        return view('projects.index', compact('projects'));
     }
 
     public function destroy(Client $client)

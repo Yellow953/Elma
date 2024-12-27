@@ -7,10 +7,7 @@ use App\Models\SO;
 use App\Models\SOItem;
 use App\Models\Item;
 use App\Models\Log;
-use App\Models\Project;
-use App\Models\Request as ModelsRequest;
 use App\Models\Tax;
-use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -20,11 +17,11 @@ class SOController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except('display');
-        $this->middleware('setup')->except('display');
-        $this->middleware('agreed')->except('display');
-        $this->middleware('accountant')->only('new_invoice');
-        $this->middleware('admin')->only('destroy');
+        $this->middleware('permission:sos.read')->only('index');
+        $this->middleware('permission:sos.create')->only(['new', 'create']);
+        $this->middleware('permission:sos.update')->only(['edit', 'update']);
+        $this->middleware('permission:sos.delete')->only('destroy');
+        $this->middleware('permission:sos.export')->only('export');
     }
 
     public function index()
