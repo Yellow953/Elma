@@ -1,0 +1,181 @@
+1,Balance Sheet,,1
+2,P/L,,1
+3,Sales,2,2
+4,Sales external,3,3
+5,Sales to related parties,3,3
+6,Rebates and discounts granted to customers,3,3
+7,Cost of Sales,2,2
+8,Cost of Sales external,7,3
+9,Cost of sales to related parties,7,3
+10,Other operating income,2,2
+11,Write back provisions,10,3
+12,Rental income,10,3
+13,Management revenue,10,3
+14,Marketing management revenue,10,3
+15,Rebates and Discounts Received,10,3
+16,Income from reallocation of inter-company expenses,10,3
+17,Share of profits on joint venture,10,3
+18,Gain from disposal of fixed assets,10,3
+19,Income from Subleasing right-of-use assets,10,3
+20,Finance income,2,2
+21,Revenue from participation investments,20,3
+22,Revenue from other investments,20,3
+23,Realized gain/loss from FVTOCI Securities,20,3
+24,Dividend Income from marketable securities,20,3
+25,Interest income,20,3
+26,Profit on exchange,2,2
+27,Exceptional Income,2,2
+28,Personnel expenses,2,2
+29,Personnel salaries and benefits,28,3
+30,Social security charges,28,3
+31,Recharge by department - Personnel expenses,28,3
+32,Funded Head Contribution,28,3
+33,Allocation of Personnel Expenses to COS,28,3
+34,Inter-company Personnel expenses,28,3
+35,Operating and administrative expenses,2,2
+36,Accounting Charges,35,3
+37,Attorney Fees,35,3
+38,Audit Fees,35,3
+39,Provision for Expected Credit Losses,35,3
+40,Account Receivable Direct Write off,35,3
+41,Certification,35,3
+42,Consulting Fees and Commissions,35,3
+43,Call Center Cost,35,3
+44,Donations,35,3
+46,Electricity and Water,35,3
+47,Entertainment and invitation,35,3
+48,Exceptional Loss,35,3
+49,Marketing expenses,35,3
+50,Factoring,35,3
+51,Freight Clearing and Customs,35,3
+52,Gifts and Promotional Items,35,3
+53,Hardware and Software Maintenance,35,3
+54,Head office expenses,35,3
+55,Insurance premiums,35,3
+56,Inter-company expenses G&A,35,3
+57,Impairment loss of stock and work-in-progress,35,3
+58,Inventory write-off,35,3
+59,Localization,35,3
+60,Loss from disposal of fixed assets,35,3
+61,Management Fees,35,3
+62,Office expenses and maintenance,35,3
+63,Penalty Charges,35,3
+64,Postage Courier and telecommunications,35,3
+65,Printing supplies and stationary,35,3
+66,Recharge by department - Operating and administrative expenses,35,3
+67,Recruitment expenses,35,3
+68,Rent,35,3
+69,Sales commission to other,35,3
+70,Shares of loss joint venture,35,3
+71,Sponsor Fees,35,3
+72,Subscription and Magazines,35,3
+73,Sundries,35,3
+74,Taxes fees and other similar charges,35,3
+75,Tender fees,35,3
+76,Tools Spare parts and Repair,35,3
+77,Training and seminars,35,3
+78,Transport and Car repairs,35,3
+79,Travel Expenses,35,3
+80,Warranty and maintenance for BG,35,3
+81,Impairment for Advance Billing (Unbilled AR),35,3
+82,Provisions for Contingencies,35,3
+83,Depreciation amortization and impairment loss,2,2
+84,Depreciation and amortization,83,3
+85,Impairment loss,83,3
+86,Financial charges,2,2
+87,Interest expenses,86,3
+88,Trade finance charges (charges on BGs and L/Cs),86,3
+89,Commission and fees charges,86,3
+90,Other Finance Cost,86,3
+91,Loss on exchange,2,2
+92,Expenses,2,2
+93,Taxes on profit,2,2
+94,Current year tax,93,3
+95,Prior year tax Adjustment,93,3
+96,Non-Current Assets,1,2
+97,Property plant and equipment,96,3
+98,Other plant and equipments,96,3
+99,Transportation vehicles,96,3
+100,Technical installations and industrial machinery,96,3
+101,Furniture and Fixtures,96,3
+102,Leasehold Improvements,96,3
+103,Real Estate,96,3
+104,Tangible Assets under construction,96,3
+105,General Property plant and equipment,96,3
+106,Right-of-Use Assets,96,3
+107,Advances on purchase of tangible assets,96,3
+108,Leased Equipment,96,3
+109,Investment Property,96,3
+110,Goodwill,96,3
+111,Other Intangible Assets,96,3
+112,Other Non-Current Assets,96,3
+113,Financial Assets,96,3
+114,Participation investments,96,3
+115,Net receivable on disposal of a subsidiary,96,3
+116,Other non-current investments,96,3
+117,Long and medium terms loans receivable,96,3
+118,Restricted cash (pledged deposit)- Non Current,96,3
+119,Deferred tax assets,96,3
+120,Current Assets,1,2
+121,Trading Assets,120,3
+122,Stock and work in progress (WIP),120,3
+123,Impairment of stock and WIP,120,3
+124,Trade Receivables,120,3
+125,Trade receivables outstanding,120,3
+126,Impairment of trade receivables,120,3
+127,Trade receivables due from related parties,120,3
+128,Bills and L/C receivables,120,3
+129,Advance Billing (Unbilled AR),120,3
+130,Trade payables - advances and claims,120,3
+131,Advances paid to trade payables,120,3
+132,Claims due from Trade Payables,120,3
+133,Impairment loss of Trade Payables advances and claims,120,3
+134,Staff receivables,120,3
+135,Social Security establishments- Assets,120,3
+136,State and public establishments,120,3
+137,Related parties,120,3
+138,Other current assets,120,3
+139,Right-Of-Use asset - Current,120,3
+140,Regularization Accounts,120,3
+141,Exchange difference variance - Assets,120,3
+142,Other current investments,120,3
+143,Cash and cash equivalent,120,3
+144,Restricted cash (pledged deposit)- Current,120,3
+145,Assets classified as held for sale,120,3
+146,Total Assets,1,2
+147,Shareholders Equity,1,2
+148,Group Shareholders Equity,147,3
+149,Capital,147,3
+150,Reserves,147,3
+151,Reported Results,147,3
+152,Current Year Result,147,3
+153,Shareholders Accounts,147,3
+154,Option Adjustment (sold shares with back value),147,3
+155,Dividend for the year,147,3
+156,Translation difference,147,3
+157,Consolidation difference,147,3
+158,Equity amount relating to non-current assets classified as held for sale,147,3
+159,Non-Current Liabilities,1,2
+160,Long and medium terms loans payable,159,3
+161,Deferred Income > 1 year,159,3
+162,Provisions for contingencies and charges,159,3
+163,Deferred tax liabilities,159,3
+164,Lease liabilities - Non Current,159,3
+165,Current Liabilities,1,2
+166,Trade payables,165,3
+167,Trade payables due to related parties,165,3
+168,Trade receivables - advances and claims,165,3
+169,Advances received from trade receivables,165,3
+170,Claims due to trade receivables,165,3
+171,Staff payables,165,3
+172,Social Security establishments- Liabilities,165,3
+173,State and public establishments,165,3
+174,Related parties,165,3
+175,Lease liabilities - Current,165,3
+176,Other Current Payables,165,3
+177,Regularization Accounts- Liabilities,165,3
+178,Exchange Difference Variance - Liabilities,165,3
+179,Deferred Income < 1 year,165,3
+180,Accrued Expenses,165,3
+181,Banks and financial establishment liabilities,165,3
+182,Sundry Creditors,165,3

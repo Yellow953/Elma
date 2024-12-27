@@ -1,0 +1,392 @@
+1,0000-1010-000000,CAPITAL,Balance Sheet
+2,0000-1011-000000,Subscribed Un-Called Capital,Balance Sheet
+3,0000-1012-000000,Subscribed Called and Unpaid Capital,Balance Sheet
+4,0000-1013-000000,Subscribed Called and Paid-Up Capital,Balance Sheet
+5,0000-1020-000000,CAPITAL PREMIUMS,Balance Sheet
+6,0000-1021-000000,Issuance Premiums,Balance Sheet
+7,0000-1022-000000,Merger Premiums,Balance Sheet
+8,0000-1023-000000,Contributions Premiums,Balance Sheet
+9,0000-1024-000000,Conversion Premium of Bonds to Shares ,Balance Sheet
+10,0000-1030-000000,REVALUATION VARIANCES,Balance Sheet
+11,0000-1031-000000,Non-Amortizable Assets Reval. Variances,Balance Sheet
+12,0000-1035-000000,Amortizable Assets Reval. Variances,Balance Sheet
+13,0000-1090-000000,OWNER'S CURRENT ACCOUNT,Balance Sheet
+14,0000-1110-000000,LEGAL RESERVE,Balance Sheet
+15,0000-1120-000000,STATUTORY AND CONTRACTUAL RESERVES,Balance Sheet
+16,0000-1190-000000,OTHER RESERVES,Balance Sheet
+17,0000-1210-000000,BROUGHT FORWARD RESULTS - PROFITS ,Balance Sheet
+18,0000-1250-000000,BROUGHT FORWARD RESULTS - LOSSES ,Balance Sheet
+19,0000-1300-000000,Current Period Net Result - Profit / (Loss),Balance Sheet
+20,0000-1380-000000,CURRENT YEAR RESULT - PROFITS,Balance Sheet
+21,0000-1390-000000,CURRENT YEAR RESULT - LOSSES,Balance Sheet
+22,0000-1410-000000,INVESTMENT SUBSIDIES RECEIVED,Balance Sheet
+23,0000-1450-000000,INVEST. SUBSIDIES TRANSFERED TO RESULTS,Balance Sheet
+24,0000-1510-000000,Provisions for Risks,Balance Sheet
+25,0000-1511-000000,Provisions for Litigations & Alike,Balance Sheet
+26,0000-1512-000000,Provisions against Guarantees Given,Balance Sheet
+27,0000-1513-000000,Provisions for Losses on Exchange,Balance Sheet
+28,0000-1514-000000,Provis. for Losses on Term Contracts,Balance Sheet
+29,0000-1515-000000,Provisions for Fines & Penalties,Balance Sheet
+30,0000-1516-000000,Provisions for Financial Risks,Balance Sheet
+31,0000-1517-000000,Provisions for Extraordinary Prices Fall,Balance Sheet
+32,0000-1518-000000,Provisions for Non-Oper. Risks & Charges,Balance Sheet
+33,0000-1550-000000,Provisions for Charges,Balance Sheet
+34,0000-1551-000000,Provisions for Deferred Charges,Balance Sheet
+35,0000-1553-000000,Provision for Taxes (Other than Income Tax),Balance Sheet
+36,0000-1610-000000,LONG TERM LOANS AGAINST BONDS,Balance Sheet
+37,0000-1620-000000,LONG TERM LOANS FROM BANKS,Balance Sheet
+38,0000-1680-000000,SUNDRY LONG & MED. TERM LOANS,Balance Sheet
+39,0000-1810-000000,INTERCOMPANIES & INTERBRANCHES ACCOUNTS,Balance Sheet
+40,0000-1860-000000,Interbranches Exchanges - Charges,Balance Sheet
+41,0000-1870-000000,Interbranches Exchanges - Revenues,Balance Sheet
+42,0000-2110-000000,BUSINESS CONCERN,Balance Sheet
+43,0000-2120-000000,FORMATION EXPENSES,Balance Sheet
+44,0000-2130-000000,RESEARCH & DEVELOPMENT EXPENSES,Balance Sheet
+45,0000-2140-000000,"PATENTS, LICENSES, TRADE MARKS & ALIKE",Balance Sheet
+46,0000-2190-000000,OTHER INTANGIBLE FIXED ASSETS,Balance Sheet
+47,0000-2210-000000,LANDS,Balance Sheet
+48,0000-2211-000000,Virgin Lands - Basic Cost,Balance Sheet
+49,0000-2212-000000,Built-on Properties - Basic Cost,Balance Sheet
+50,0000-2213-000000,Extractive Lands - Basic Cost,Balance Sheet
+51,0000-2214-000000,Landscaping Cost,Balance Sheet
+52,0000-2230-000000,BUILDINGS & CONSTRUCTIONS,Balance Sheet
+53,0000-2231-000000,Buildings - Basic Cost,Balance Sheet
+54,0000-2232-000000,Building Installations & Improvem'ts,Balance Sheet
+55,0000-2233-000000,Infra-structure Constructions,Balance Sheet
+56,0000-2234-000000,Constructions on Other Owners' Lands,Balance Sheet
+57,0000-2240-000000,"TECH. INSTALL., MACHINERY & EQUIPMENT",Balance Sheet
+58,0000-2241-000000,Specialized Technical Installations,Balance Sheet
+59,0000-2242-000000,Specific Technical Installations,Balance Sheet
+60,0000-2243-000000,Industrial Machinery & Equipment,Balance Sheet
+61,0000-2244-000000,Industrial Tools,Balance Sheet
+62,0000-2245-000000,Hotels & Retaurants Appliances,Balance Sheet
+63,0000-2250-000000,VEHICLES AND HANDLING EQUIPMENT,Balance Sheet
+64,0000-2251-000000,Passenger Vehicles,Balance Sheet
+65,0000-2252-000000,Transport Vehicles & Handling Equipment,Balance Sheet
+66,0000-2253-000000,Maritime Tranport Means,Balance Sheet
+67,0000-2254-000000,Air Transport Means,Balance Sheet
+68,0000-2260-000000,OTHER TANGIBLE FIXED ASSETS,Balance Sheet
+69,0000-2261-000000,Internal Install. Decor & Improvements,Balance Sheet
+70,0000-2262-000000,Office & Computer Equipment,Balance Sheet
+71,0000-2263-000000,"Furnitures, Fixtures & Accessories",Balance Sheet
+72,0000-2264-000000,Agricultural Installations,Balance Sheet
+73,0000-2265-000000,Re-usable Containers,Balance Sheet
+74,0000-2270-000000,TANGIBLE FIXED ASSETS IN PROGRESS,Balance Sheet
+75,0000-2271-000000,Lands under Acquisition,Balance Sheet
+76,0000-2273-000000,Buildings under Construction,Balance Sheet
+77,0000-2274-000000,Industrial Equipment under Installation,Balance Sheet
+78,0000-2276-000000,Other Tangible Fixed Assets in Progress,Balance Sheet
+79,0000-2280-000000,Advances/Purchase Of Fixed Assets,Balance Sheet
+80,0000-2510-000000,Equity Participations,Balance Sheet
+81,0000-2520-000000,Receivables Related To Participations,Balance Sheet
+82,0000-2530-000000,OTHER SECURITIES & FINANCIAL ASSETS,Balance Sheet
+83,0000-2531-000000,Ownership Deeds (Shares & Parts),Balance Sheet
+84,0000-2535-000000,Credit Deeds (Bonds & Coupons),Balance Sheet
+85,0000-2550-000000,LONG AND MEDIUM TERM GRANTED LOANS,Balance Sheet
+86,0000-2551-000000,Loans to Partners/Affiliates - Non-Current Part,Balance Sheet
+87,0000-2552-000000,Loans to Employees - Non-Current Part,Balance Sheet
+88,0000-2558-000000,Other Long & Medium Term Loans,Balance Sheet
+89,0000-2590-000000,Other Long & Med.Term Receivables,Balance Sheet
+90,0000-2700-000000,FIXED ASSETS NON-AMORT. REVAL. VARIANCES,Balance Sheet
+91,0000-2701-000000,Intang. Fixed Assets Non-Amort. Reval. Variances,Balance Sheet
+92,0000-2702-000000,Tangib. Fixed Assets Non-Amort. Reval. Variances,Balance Sheet
+93,0000-2705-000000,Financ. Fixed Assets Non-Amort. Reval. Variances,Balance Sheet
+94,0000-2800-000000,Amortization of Business Concern,Balance Sheet
+95,0000-2810-000000,Intangible Assets Amortizations,Balance Sheet
+96,0000-2811-000000,Amortiz.of Formation Expenses,Balance Sheet
+97,0000-2812-000000,Amortiz.of Research & Develop. Expenses,Balance Sheet
+98,0000-2813-000000,"Amortiz.of Patents, Licenses, Trade Marks, etc..",Balance Sheet
+99,0000-2819-000000,Amortiz.of Other Intang. Fixed Assets,Balance Sheet
+100,0000-2820-000000,Tangible Assets Depreciations,Balance Sheet
+101,0000-2821-000000,Deprec.of Extractive Lands & Landscaping,Balance Sheet
+102,0000-2823-000000,Deprec. of Buildings & Equipments,Balance Sheet
+103,0000-2824-000000,Deprec. Machinery & Equipment,Balance Sheet
+104,0000-2825-000000,Deprec.of Passenger & Transport Vehicles,Balance Sheet
+105,0000-2826-000000,Deprec.of Other Tangible Fixed Assets,Balance Sheet
+106,0000-2910-000000,Devaluation Prov. of Intangible Fixed Assets,Balance Sheet
+107,0000-2911-000000,"Deval. Prov. for Patents, Trade Marks & Alike",Balance Sheet
+108,0000-2919-000000,Deval. Prov. for Other Intang. Fixed Assets,Balance Sheet
+109,0000-2920-000000,Devaluation Prov. of Tangible Fixed Assets,Balance Sheet
+110,0000-2921-000000,Virgin Land Devaluation Provision,Balance Sheet
+111,0000-2923-000000,Buildings Devaluation Provision,Balance Sheet
+112,0000-2926-000000,Deval. Prov. for Other Tangib. F. Assets,Balance Sheet
+113,0000-2950-000000,Devaluation Prov. of Financial Fixed Assets,Balance Sheet
+114,0000-2951-000000,Deval. Prov. for Equity Participations,Balance Sheet
+115,0000-2952-000000,Deval. Prov. for  Participations' Receiv.,Balance Sheet
+116,0000-2953-000000,Deval. Prov. for Other Securities & Fin. Assets,Balance Sheet
+117,0000-2955-000000,Deval. Prov. for Long & Medium Term Loan,Balance Sheet
+118,0000-2959-000000,Deval. Prov. for Other Blocked Fin. Assets,Balance Sheet
+119,0000-3110-000000,STOCK OF RAW MATERIALS & CONSUMABLES,Balance Sheet
+120,0000-3150-000000,Inventory - Other Cons. Materials & Supplies,Balance Sheet
+121,0000-3310-000000,"STOCK OF GOODS, WORKS & SERV. IN PROGRESS",Balance Sheet
+122,0000-3320-000000,Inventory - Work in Progress,Balance Sheet
+123,0000-3350-000000,Inventory - Studies in Progress,Balance Sheet
+124,0000-3360-000000,Inventory - Services to Provide,Balance Sheet
+125,0000-3510-000000,STOCK OF MANUFACTURED PRODUCTS,Balance Sheet
+126,0000-3550-000000,Inventory - Finished Products,Balance Sheet
+127,0000-3580-000000,Inventory - Production Waste,Balance Sheet
+128,0000-3700-000000,STOCK OF GOODS FOR SALE,Balance Sheet
+129,0000-3910-000000,DEVAL.PROV. FOR RAW & OTHER MAT. STOCK ,Balance Sheet
+130,0000-3930-000000,DEVAL.PROV. FOR PRODUCTS IN PROCESS,Balance Sheet
+131,0000-3950-000000,DEVAL.PROV. FOR PRODUCTS STOCK,Balance Sheet
+132,0000-3970-000000,DEVAL.PROV. FOR GOODS FOR SALE STOCK,Balance Sheet
+133,0000-4010-000000,Suppliers - Creditor Accounts,Balance Sheet
+134,0000-4011-000000,Suppliers - Invoices Payable,Balance Sheet
+135,0000-4015-000000,Suppliers - Notes Payable ,Balance Sheet
+136,0000-4018-000000,Suppliers - Invoices Not Received,Balance Sheet
+137,0000-4019-000000,Discounts Obtained from Suppliers,Balance Sheet
+138,0000-4030-000000,Fixed Assets Suppliers,Balance Sheet
+139,0000-4031-000000,Fixed Assets Suppliers - Invoices Payable,Balance Sheet
+140,0000-4035-000000,Fixed Assets Suppliers - Notes Payable,Balance Sheet
+141,0000-4038-000000,F.Assets Suppliers - Invoices Not Received,Balance Sheet
+142,0000-4039-000000,Discounts Obtained from F.A. Suppliers,Balance Sheet
+143,0000-4090-000000,Advances to Suppliers,Balance Sheet
+144,0000-4091-000000,Advance Payments on Purchases,Balance Sheet
+145,0000-4092-000000,Materials Suppliers Accidentally Debtors,Balance Sheet
+146,0000-4093-000000,Fixed Assets Suppliers Accidentally Debtors,Balance Sheet
+147,0000-4110-000000,Customers - Debtors Accounts,Balance Sheet
+148,0000-4111-000000,Customers Receivables - Invoices,Balance Sheet
+149,0000-4115-000000,Doubtful Customers,Balance Sheet
+150,0000-4119-000000,Discounts Granted to Customers,Balance Sheet
+151,0000-4130-000000,CUSTOMERS RECEIVABLES - BILLS,Balance Sheet
+152,0000-4150-000000,DUES FROM CUSTOMERS ON WORKS IN PROCESS,Balance Sheet
+153,0000-4180-000000,DUES FROM CUSTOMERS ON INVOICES IN PROCESS,Balance Sheet
+154,0000-4190-000000,Advances Received on Sales Orders,Balance Sheet
+155,0000-4191-000000,Advances Received on Sales Orders,Balance Sheet
+156,0000-4192-000000,Customers Accidentally Creditors,Balance Sheet
+157,0000-4210-000000,PERSONNEL ACCOUNTS PAYABLE,Balance Sheet
+158,0000-4211-000000,Salaries and Wages due to Personnel,Balance Sheet
+159,0000-4219-000000,Other dues to Personnel,Balance Sheet
+160,0000-4280-000000,PERSONNEL ACCOUNTS RECEIVABLE,Balance Sheet
+161,0000-4281-000000,Loans to Personnel,Balance Sheet
+162,0000-4282-000000,Garnishments on Personnel Dues,Balance Sheet
+163,0000-4289-000000,Other Receivales from Personnel,Balance Sheet
+164,0000-4310-000000,Social Security Fund - Creditor Accounts,Balance Sheet
+165,0000-4311-000000,Social Security - Payable Dues,Balance Sheet
+166,0000-4315-000000,Social Security - Notes Payable,Balance Sheet
+167,0000-4318-000000,Social Security - Charges to be Accounted for,Balance Sheet
+168,0000-4380-000000,SOCIAL SECURITY RECEIVABLES,Balance Sheet
+169,0000-4410-000000,Taxes Due on Operations,Balance Sheet
+170,0000-4411-000000,Taxes & Duties (Except Income Tax),Balance Sheet
+171,0000-4415-000000,Taxes & Duties - Notes Payable,Balance Sheet
+172,0000-4418-000000,Taxes & Duties - Charges to be Accounted for,Balance Sheet
+173,0000-4420-000000,Value Added Tax Accounts,Balance Sheet
+174,0000-4425-000000,Value Added Tax - Debtor / Creditor Balance,Balance Sheet
+175,0000-4427-000000,Value Added Tax - Collected on Revenues,Balance Sheet
+176,0000-4429-000000,Value Added Tax - Due for Refund,Balance Sheet
+177,0000-4430-000000,Non-Operational Tax,Balance Sheet
+178,0000-4431-000000,Income Tax on Net Operating Profits,Balance Sheet
+179,0000-4432-000000,Tax on F.Assets Disposal or Revaluation Profits,Balance Sheet
+180,0000-4435-000000,Taxes on Holding or Off-Shore Companies,Balance Sheet
+181,0000-4450-000000,Government & Public Services - Credit Acc.,Balance Sheet
+182,0000-4490-000000,Government & Public Services - Debit Acc.,Balance Sheet
+183,0000-4511-000000,Related Companies Debtor Accounts,Balance Sheet
+184,0000-4512-000000,Related Companies Creditor Accounts,Balance Sheet
+185,0000-4530-000000,DIVIDENDS PAYABLE,Balance Sheet
+186,0000-4550-000000,SHAREHOLDERS/PARTNERS PAYABLES ON CAPITAL,Balance Sheet
+187,0000-4551-000000,Shareholders/Partners - Contributions to the Capital,Balance Sheet
+188,0000-4552-000000,Shareholders/Partners - Re-imbursment of the Capital,Balance Sheet
+189,0000-4557-000000,Shareholders/Partners - Other Payables on Capital,Balance Sheet
+190,0000-4590-000000,SHAREHOLDERS/PARTNERS RECEIVABLES ON CAPITAL,Balance Sheet
+191,0000-4591-000000,Shareholders - Subscribed/Un-Called Capital,Balance Sheet
+192,0000-4592-000000,Shareholders - Subsc./Called/Unpaid Capital,Balance Sheet
+193,0000-4597-000000,Shareholders/Partners - Other Receivables on Capital,Balance Sheet
+194,0000-4610-000000,Other Operating Creditors,Balance Sheet
+195,0000-4611-000000,Payables on Consignments,Balance Sheet
+196,0000-4619-000000,Other Operating Creditor Accounts,Balance Sheet
+197,0000-4630-000000,Payables on Financial Fixed Assets,Balance Sheet
+198,0000-4650-000000,Sundry Non-Operating Accounts Payable,Balance Sheet
+199,0000-4680-000000,Sundry Operating Debtors,Balance Sheet
+200,0000-4681-000000,Receivables on Consignments,Balance Sheet
+201,0000-4689-000000,Other Operating Debtor Accounts,Balance Sheet
+202,0000-4690-000000,Sundry Non-Operating Debtors,Balance Sheet
+203,0000-4691-000000,Receivables on Disposals of F. Assets & Finan.Deeds,Balance Sheet
+204,0000-4699-000000,Other Non-Operating Debtor Accounts,Balance Sheet
+205,0000-4710-000000,Charges Differred over Futur Periods,Balance Sheet
+206,0000-4711-000000,Pre-Operating Expenses,Balance Sheet
+207,0000-4712-000000,Major Repairs to be Amortized,Balance Sheet
+208,0000-4713-000000,Bonds Settlement Premium,Balance Sheet
+209,0000-4719-000000,Other Deferred Charges,Balance Sheet
+210,0000-4720-000000,Prepaid Charges,Balance Sheet
+211,0000-4730-000000,Accrued Income,Balance Sheet
+212,0000-4740-000000,Accrued Unpaid Charges,Balance Sheet
+213,0000-4750-000000,Exchange Difference - Liability,Balance Sheet
+214,0000-4760-000000,Exchange Difference - Asset,Balance Sheet
+215,0000-4810-000000,Pending & Regularization Accounts,Balance Sheet
+216,0000-4820-000000,Periodic Distribution of Revenues,Balance Sheet
+217,0000-4910-000000,Provisions for Customers Bad Debts,Balance Sheet
+218,0000-4950-000000,Prov. for Shareholders/Partners Bad Debts,Balance Sheet
+219,0000-4960-000000,Sundry Debtors Devaluation Provisions,Balance Sheet
+220,0000-4968-000000,Prov. for Other Operating Bad Debts,Balance Sheet
+221,0000-4969-000000,Prov. for Other Non-Operating Bad Debts,Balance Sheet
+222,0000-4980-000000,Bad Debts due to Bankrupcy,Balance Sheet
+223,0000-4981-000000,Prov. for Losses on Bankrupt Clients Accounts,Balance Sheet
+224,0000-4985-000000,Prov. for Losses on Bankrupt Partners Accounts,Balance Sheet
+225,0000-5010-000000,Transferable Participation Deeds,Balance Sheet
+226,0000-5020-000000,Bonds with Shares Acquisition Rights,Balance Sheet
+227,0000-5050-000000,Bond and Coupons Issued by the Company,Balance Sheet
+228,0000-5060-000000,Bonds with Creditors Rights,Balance Sheet
+229,0000-5110-000000,Cheques & Coupons under Collection,Balance Sheet
+230,0000-5120-000000,Banks,Balance Sheet
+231,0000-5121-000000,Banks - Current Debtor Accounts,Balance Sheet
+232,0000-5122-000000,Banks - Facilities Accidentally Debtor,Balance Sheet
+233,0000-5123-000000,Banks - Term Deposits Accounts,Balance Sheet
+234,0000-5190-000000,Credit Establisments,Balance Sheet
+235,0000-5191-000000,Banks & Financial Establishments Facilities,Balance Sheet
+236,0000-5192-000000,Banks Current Accounts Accidentally Creditor,Balance Sheet
+237,0000-5300-000000,CASH ON HAND,Balance Sheet
+238,0000-5800-000000,INTERNAL TRANSFERS,Balance Sheet
+239,0000-5900-000000,Prov. for Devaluation of Participation Deeds,Balance Sheet
+240,0000-6010-000000,Purchase of Goods,P/L
+241,0000-6011-000000,Purchase of Goods,P/L
+242,0000-6012-000000,Purchase of  Packing Materials for Goods,P/L
+243,0000-6018-000000,Charges & Expenses on Goods Purchasing,P/L
+244,0000-6019-000000,Discounts Obtained on Purchased Goods,P/L
+245,0000-6050-000000,GOODS INVENTORY VARIANCE,P/L
+246,0000-6051-000000,Stock of Goods - Beg. of Period,P/L
+247,0000-6052-000000,Stock of Goods - End of Period,P/L
+248,0000-6110-000000,Purchases of Raw Materials & Consumables,P/L
+249,0000-6111-000000,Purchase of Raw Materials,P/L
+250,0000-6112-000000,Purchase of Manufacturing Consumables,P/L
+251,0000-6113-000000,Purchase of  Packing Materials for Products,P/L
+252,0000-6118-000000,Chgs & Exp. on R.M & Consum. Purchasing,P/L
+253,0000-6119-000000,Disc. Obtained on Purchased R.M & Consum.,P/L
+254,0000-6150-000000,RAW MAT. & CONSUM. INVENTORY VARIANCE,P/L
+255,0000-6151-000000,Stock of Raw & Other Mat. - Beg. of Period,P/L
+256,0000-6152-000000,Stock of Raw & Other Mat. - End of Period,P/L
+257,0000-6210-000000,Purchases from Sub-Contractors,P/L
+258,0000-6211-000000,Purchase of Works from Sub-Contractors,P/L
+259,0000-6212-000000,Purchase of Services from Sub-Contractors,P/L
+260,0000-6250-000000,"Leasing, Patent Fees & Royalties",P/L
+261,0000-6260-000000,External Servises,P/L
+262,0000-6262-000000,Equip. Maintenance & Repair,P/L
+263,0000-6267-000000,RESEARCH & STUDIES FEES,P/L
+264,0000-6268-000000,Insurance Premium,P/L
+265,0000-6269-000000,Medical Care/advertisng/Financila chargges...,P/L
+266,0000-6310-000000,Salaries and Wages,P/L
+267,0000-6311-000000,Staff Salaries,P/L
+268,0000-6312-000000,Manpower Wages,P/L
+269,0000-6314-000000,Commissions Paid to Personnel,P/L
+270,0000-6316-000000,Partners/Managers Remunerations,P/L
+271,0000-6317-000000,Directors Remunerations,P/L
+272,0000-6350-000000,Social Charges (Social Security & Alike..),P/L
+273,0000-6351-000000,Social Security FundContributions,P/L
+274,0000-6355-000000,End of Service Indemnities Provisions,P/L
+275,0000-6410-000000,Income Tax On Salaries & Wages,P/L
+276,0000-6420-000000,Municipal Taxes & Duties,P/L
+277,0000-6430-000000,Excise Tax,P/L
+278,0000-6440-000000,Registration & Notary Fees,P/L
+279,0000-6450-000000,"Taxes, Dues & Alike, Including the Tax of Article 51 of law 497/2003",P/L
+280,0000-6451-000000,Tax of Article 51 of law 497/2003,P/L
+281,0000-6452-000000,Tax on Profits from F. Assets Disposal or Revaluation,P/L
+282,0000-6455-000000,Holding Taxes - on Capital and Services,P/L
+283,0000-6458-000000,Fiscal Fines,P/L
+284,0000-6459-000000,Other Taxes & Duties,P/L
+285,0000-6510-000000,Amortization & Depreciations Allocations,P/L
+286,0000-6610-000000,Other Administratives Ordinary Charges,P/L
+287,0000-6611-000000,Directors Attendance Fees - Out of Profits,P/L
+288,0000-6612-000000,Losses on Bad Debts,P/L
+289,0000-6650-000000,Company Part in Losses on Joint Ventures,P/L
+290,0000-6730-000000,Interests and Similar Charges,P/L
+291,0000-6731-000000,Interest Due on Payables and Loans,P/L
+292,0000-6736-000000,Interest Due to Banks & Financial Estab.,P/L
+293,0000-6739-000000,Bank Commissions & Other Charges,P/L
+294,0000-6750-000000,Difference of Exchange - Negative,P/L
+295,0000-6751-000000,Exchange Losses on Current Operations,P/L
+296,0000-6752-000000,Exchange Losses on Capital Expenditures,P/L
+297,0000-6760-000000,Net Charges on Disposal of Securities,P/L
+298,0000-6790-000000,Provisions For Deval. Of Financial Assets,P/L
+299,0000-6791-000000,Amortiz.Alloc. of Reimbursement Premiums,P/L
+300,0000-6792-000000,Prov.Alloc.for Financial Assets Devaluation,P/L
+301,0000-6794-000000,Prov.Alloc.for Devaluation of Participations,P/L
+302,0000-6795-000000,Prov.Alloc.for Financial Risks & Charges,P/L
+303,0000-6810-000000,Net Book Value of Disposed Fixed Assets,P/L
+304,0000-6811-000000,Book Value of Intang. Assets Disposed of,P/L
+305,0000-6812-000000,Book Value of Tangible Assets Disposed of,P/L
+306,0000-6815-000000,Book Value of Financial Assets Disposed of,P/L
+307,0000-6850-000000,Other Non-Operating Charges,P/L
+308,0000-6855-000000,Charges on CapitalOperations,P/L
+309,0000-6880-000000,Charges On Extra-Ordinary Events,P/L
+310,0000-6890-000000,Non Oper'tg Depreciations & Provisions,P/L
+311,0000-6891-000000,Alloc. for Extra-ordinary Deprec.of F.Assets,P/L
+312,0000-6892-000000,Prov.Alloc. for Exceptional Depreciations,P/L
+313,0000-6895-000000,Prov.Alloc. for Non-Operat'g Risks & Charges,P/L
+314,0000-6900-000000,Taxes on Profits,P/L
+315,0000-6901-000000,Income Tax on Net Operating Profits,P/L
+316,0000-7010-000000,Sales of Goods,P/L
+317,0000-7090-000000,Discounts/Allowances/Returned Goods,P/L
+318,0000-7110-000000,Sales of Products,P/L
+319,0000-7111-000000,Sales of Finished Products,P/L
+320,0000-7112-000000,Sales of Semi-Finished Products,P/L
+321,0000-7113-000000,Sales of Production Scrap,P/L
+322,0000-7120-000000,Sales of Works,P/L
+323,0000-7130-000000,Sales of Services,P/L
+324,0000-7170-000000,Revenues of Subsidiary Activities,P/L
+325,0000-7171-000000,Revenues of Sub. Activities - Products,P/L
+326,0000-7172-000000,Revenues of Sub. Activities - Works,P/L
+327,0000-7173-000000,Revenues of Sub. Activities - Services,P/L
+328,0000-7190-000000,Discounts Granted,P/L
+329,0000-7191-000000,Discounts Granted on Sales of Products,P/L
+330,0000-7192-000000,Discounts Granted on Sales of Works,P/L
+331,0000-7193-000000,Discounts Granted on Sales of Services,P/L
+332,0000-7210-000000,Stock Variation of Products & Works in Progress,P/L
+333,0000-7211-000000,Stock Variation of Products in Process,P/L
+334,0000-7212-000000,Stock Variation of Works in Progress,P/L
+335,0000-7220-000000,Stock Variation of Studies & Services in Progress,P/L
+336,0000-7225-000000,Stock Variation of Studies in Progress,P/L
+337,0000-7226-000000,Stock Variation of Services in Progress,P/L
+338,0000-7250-000000,"Stock Variation of Finished, Semi Finised & Scrap",P/L
+339,0000-7251-000000,Stock Variation of Semi-Finished Products,P/L
+340,0000-7255-000000,Stock Variation of Finished Products,P/L
+341,0000-7258-000000,Stock Variation of Production Scrap,P/L
+342,0000-7310-000000,Production of Intangible Fixed Assets,P/L
+343,0000-7320-000000,Production of Tangible Fixed Assets,P/L
+344,0000-7410-000000,Operating Subsidies for Goods,P/L
+345,0000-7420-000000,Operating Subsidies for Production,P/L
+346,0000-7520-000000,Reversal of Fixed Assets Devaluation Provisions,P/L
+347,0000-7521-000000,Reversal of Deval.Prov. of Intang.Fixed Assets,P/L
+348,0000-7522-000000,Reversal of Deval.Prov. of Tang.Fixed Assets,P/L
+349,0000-7530-000000,REVERSAL OF DEVAL.PROV. OF CURRENT ASSETS,P/L
+350,0000-7533-000000,Reversal of Deval.Prov. of Stocks,P/L
+351,0000-7550-000000,Reversal of Risks & Charges Provisions,P/L
+352,0000-7551-000000,Reversal of Deval.Prov. for Risks (Conflicts & alike),P/L
+353,0000-7610-000000,Other Operating Ordinary Revenues,P/L
+354,0000-7611-000000,Patents Royalties Income,P/L
+355,0000-7612-000000,Rental of Buildings not used by  the Business,P/L
+356,0000-7613-000000,Board Meetings Attendance Fees Received,P/L
+357,0000-7615-000000,Other Sundry Operating Income,P/L
+358,0000-7619-000000,Operating Charges Transferred to Other Accounts,P/L
+359,0000-7650-000000,Parts in Profits of Joint Activities,P/L
+360,0000-7651-000000,Net Transfers of Allocated Charges,P/L
+361,0000-7655-000000,Net Attributions of Income,P/L
+362,0000-7710-000000,Revenues of Equity Participations,P/L
+363,0000-7720-000000,Revenues of Securities and Receivables,P/L
+364,0000-7730-000000,Interests and Similar Revenues Earned ,P/L
+365,0000-7750-000000,Difference of Exchange - Positive,P/L
+366,0000-7751-000000,Exchange Profits on Current Operations,P/L
+367,0000-7755-000000,Exchange Profits on Capital Transactions,P/L
+368,0000-7780-000000,Other Financial Revenues,P/L
+369,0000-7781-000000,Net Income on Disposal of Participation Deeds,P/L
+370,0000-7789-000000,Financial Charges Transferred to Other Accounts,P/L
+371,0000-7790-000000,Reversal of Financial Provisions,P/L
+372,0000-7793-000000,Reversal of Deval.Prov. Of Finan. F. Assets,P/L
+373,0000-7794-000000,Reversal of Deval.Prov. Of Participations Deeds,P/L
+374,0000-7795-000000,Reversal of Prov. for Financial Risks,P/L
+375,0000-7810-000000,Revenues of Fixed Assets Disposals,P/L
+376,0000-7811-000000,Income from Disposal of Intang. F. Assets,P/L
+377,0000-7812-000000,Income from Disposal of Tang. F. Assets,P/L
+378,0000-7815-000000,Income from Disposal of Financ. F. Assets,P/L
+379,0000-7819-000000,Fixed Assets Disposal Charges,P/L
+380,0000-7820-000000,Investment Subsidies Transferred to Results,P/L
+381,0000-7880-000000,Other Non-Operating Revenues,P/L
+382,0000-7881-000000,Extra-ordinary Operating Revenues,P/L
+383,0000-7888-000000,Other Income on Extar-ordinary Transactions,P/L
+384,0000-7889-000000,Sundry Extra-ordinary Charges Transferred,P/L
+385,0000-7890-000000,Reversal of Non-Operating Provisions,P/L
+386,0000-7891-000000,Reversal of Prov. for Non-Oper. Depreciations,P/L
+387,0000-7895-000000,Reversal of Prov. for Non-Oper. Risks & ChargesPrices Fall,P/L
+388,0000-0000-000001,Tax Free,Balance Sheet
+389,0000-0000-000002,Tax 11%,Balance Sheet
+390,0000-0000-000003,Supplier 1,Balance Sheet
+391,0000-0000-000004,Client 1,Balance Sheet
+392,0000-0000-000005,DHL,Balance Sheet
