@@ -11,7 +11,6 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\PO;
 use App\Models\POItem;
-use App\Models\Req;
 use App\Models\Item;
 use App\Models\JournalVoucher;
 use App\Models\LandedCost;
@@ -40,7 +39,7 @@ class ExcellController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:backup.all');
+        $this->middleware('permission:backups.all');
     }
 
     public function ImportExcell(Request $request, $warehouse)

@@ -26,12 +26,7 @@ class SOController extends Controller
 
     public function index()
     {
-        if (auth()->user()->role == 'admin') {
-            $sos = SO::select('id', 'name', 'project_id', 'technician', 'job_number', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
-        } else {
-            $search = auth()->user()->location->code . '-SO';
-            $sos = SO::select('id', 'name', 'project_id', 'technician', 'job_number', 'date')->where('name', 'LIKE', "%{$search}%")->filter()->orderBy('id', 'desc')->paginate(25);
-        }
+        $sos = SO::select('id', 'name', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
 
         $data = compact('sos');
         return view('sos.index', $data);
@@ -39,22 +34,17 @@ class SOController extends Controller
 
     public function new()
     {
-        $projects = Project::select('id', 'name')->orderBy('id', 'desc')->get();
-
         return view('sos.new', compact('projects'));
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'project_id' => 'required|numeric',
+            'date' => 'required|date',
         ]);
 
         $so = SO::create([
             'name' => SO::generate_name(),
-            'project_id' => $request->project_id,
-            'technician' => $request->technician,
-            'job_number' => $request->job_number,
             'description' => $request->description,
             'date' => $request->date ?? Carbon::now(),
         ]);
@@ -110,14 +100,10 @@ class SOController extends Controller
     public function update(SO $so, Request $request)
     {
         $request->validate([
-            'project_id' => 'required|numeric|min:0',
             'date' => 'required|date',
         ]);
 
         $so->update([
-            'project_id' => $request->project_id,
-            'technician' => $request->technician,
-            'job_number' => $request->job_number,
             'description' => $request->description,
             'date' => $request->date,
         ]);
@@ -280,16 +266,12 @@ class SOController extends Controller
 
     public function destroy(SO $so)
     {
-        if ($so->can_delete()) {
-            $text = ucwords(auth()->user()->name) . " deleted so : " . $so->name . ", datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . " deleted so : " . $so->name . ", datetime :   " . now();
 
-            Log::create(['text' => $text]);
-            $so->delete();
+        Log::create(['text' => $text]);
+        $so->delete();
 
-            return redirect()->back()->with('error', 'SO deleted successfully!');
-        } else {
-            return redirect()->back()->with('error', 'Unothorized Access...');
-        }
+        return redirect()->back()->with('error', 'SO deleted successfully!');
     }
 
     public function new_invoice(SO $so)

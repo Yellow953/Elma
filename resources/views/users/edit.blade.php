@@ -5,115 +5,107 @@
 @section('sub-title', 'edit')
 
 @section('content')
-<div class="container-fluid px-2 px-md-4">
-  <div class="page-header min-height-300 border-radius-xl mt-4"
-    style="background-image: url({{asset('/assets/images/warehouse.png')}});"></div>
-  <div class="card card-body mx-3 mx-md-4 mt-n6">
+<div class="container">
     <div class="row">
-      <div class="col-md-6">
-        <div class="card card-plain h-100 align-items-center">
-          <div class="card-header">
-            <h5 class="mb-0"><u><i>Edit Profile</i></u></h5>
-          </div>
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header bg-info border-b">
+                    <h4 class="font-weight-bolder">Edit User</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
+                        @csrf
 
-          <div class="card-body">
-            <form action="{{ route('profile.update', auth()->user()->id) }}" method="post"
-              enctype="multipart/form-data">
-              @csrf
-              <div class="row input-group input-group-outline my-3">
-                <div class="col-6">
-                  <label for="name">Name *</label>
-                </div>
-                <div class="col-6">
-                  <input type="text" class="form-control" name="name" value="{{$user->name}}" required>
-                </div>
-              </div>
+                        <div class="input-group input-group-outline row my-3">
+                            <label for="name" class="col-md-5 col-form-label text-md-end">{{ __('Name *') }}</label>
 
-              <div class="row input-group input-group-outline my-3">
-                <div class="col-6">
-                  <label for="phone">Phone Number *</label>
-                </div>
-                <div class="col-6">
-                  <input type="number" class="form-control" name="phone" value="{{$user->phone}}" required min="0">
-                </div>
-              </div>
+                            <div class="col-md-6">
+                                <input id="name" type="text" class=" form-control @error('name') is-invalid @enderror"
+                                    name="name" value="{{ $user->name }}" required autocomplete="name" autofocus>
 
-              <div class="row input-group input-group-outline my-3">
-                <div class="col-6">
-                  <label for="image">Image</label>
-                </div>
-                <div class="col-6">
-                  <input type="file" class="w-100" name="image" value="{{$user->image}}">
-                </div>
-              </div>
+                                @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
 
-              <div class="row input-group input-group-outline my-3">
-                <div class="col-6">
-                  <label for="currency_id">Currency *</label>
-                </div>
-                <div class="col-6">
-                  <select name="currency_id" id="currency_id" class="form-select select2" required>
-                    @foreach (Helper::get_currencies() as $currency)
-                    <option value="{{ $currency->id }}" {{ $user->currency_id == $currency->id ? 'selected' : '' }}>{{
-                      $currency->code }}</option>
-                    @endforeach
-                  </select>
-                </div>
-              </div>
+                        <div class="input-group input-group-outline row my-3">
+                            <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email *') }}</label>
 
-              <div class="row mt-4">
-                <div class="offset-md-8 col-md-4">
-                  <button type="submit" class="btn btn-info w-100">
-                    {{ __('Update') }}
-                  </button>
+                            <div class="col-md-6">
+                                <input id="email" type="email"
+                                    class=" form-control @error('email') is-invalid @enderror" name="email"
+                                    value="{{ $user->email }}" required autocomplete="email">
+
+                                @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="input-group input-group-outline row my-3">
+                            <label for="currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Currency
+                                *') }}</label>
+
+                            <div class="col-md-6">
+                                <select name="currency_id" id="currency_id" class="form-select select2" required>
+                                    <option></option>
+                                    @foreach (Helper::get_currencies() as $currency)
+                                    <option value="{{$currency->id}}" {{ $user->currency_id==$currency->id ? 'selected'
+                                        : '' }}>{{$currency->code}}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('currency_id')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group mt-5">
+                                <h5>Permissions</h5>
+
+                                @php
+                                $groupedPermissions = $permissions->groupBy(function($permission) {
+                                return explode('.', $permission->name)[0];
+                                });
+                                @endphp
+
+                                <div class="row">
+                                    @foreach($groupedPermissions as $category => $categoryPermissions)
+                                    <div class="col-md-6 my-1">
+                                        <h6 class="my-1">{{ ucfirst($category) }}</h6>
+                                        <div class="d-flex gap-2">
+                                            @foreach($categoryPermissions as $permission)
+                                            <label class="mx-1">
+                                                <input type="checkbox" name="permissions[]"
+                                                    value="{{ $permission->name }}" {{ in_array($permission->name,
+                                                $userPermissions) ? 'checked' : '' }}>
+                                                {{ ucfirst(explode('.', $permission->name)[1]) }}
+                                            </label>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-around mt-3">
+                            <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                            <button type="submit" class="btn btn-info">Submit</button>
+                        </div>
+                    </form>
                 </div>
-              </div>
-            </form>
-          </div>
+            </div>
         </div>
-      </div>
-
-      <div class="col-md-6">
-        <div class="card card-plain h-100 align-items-center">
-          <div class="card-header">
-            <h5 class="mb-0"><u><i>Change Password:</i></u></h5>
-          </div>
-
-          <div class="card-body">
-            <form action="{{ route('profile.SavePassword', auth()->user()->id) }}" method="post"
-              enctype="multipart/form-data">
-              @csrf
-              <div class="row input-group input-group-outline my-3">
-                <div class="col-6">
-                  <label for="newpassword">New Password *</label>
-                </div>
-                <div class="col-6">
-                  <input type="password" class="form-control" name="newpassword" required>
-                </div>
-              </div>
-
-              <div class="row input-group input-group-outline my-3">
-                <div class="col-6">
-                  <label for="confirmpassword">Confirm Password *</label>
-                </div>
-                <div class="col-6">
-                  <input type="password" class="form-control" name="confirmpassword" required>
-                </div>
-              </div>
-
-              <div class="row mt-4">
-                <div class="offset-md-8 col-md-4">
-                  <button type="submit" class="btn btn-info w-100">
-                    {{ __('Update') }}
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div>
 </div>
 @endsection

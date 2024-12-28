@@ -181,12 +181,9 @@ $taxes = Helper::get_taxes();
                     </table>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="offset-md-8 col-md-4">
-                        <button type="submit" class="btn btn-info w-100" id="submitBtn">
-                            {{ __('Update') }}
-                        </button>
-                    </div>
+                <div class="d-flex align-items-center justify-content-around mt-3">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-info">Submit</button>
                 </div>
             </form>
         </div>
@@ -205,7 +202,7 @@ $taxes = Helper::get_taxes();
         var originalRow = document.querySelector('.cdnote-item-row');
 
         newRow.innerHTML = originalRow.innerHTML;
-        
+
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
         newRow.cells[1].innerHTML = "<select name='account_id[]' required class='form-select select2'><option value=''></option>@foreach ($accounts as $account)<option value='{{ $account->id }}'>{{$account->account_number}} | {{ $account->account_description }}</option>@endforeach</select>";
 
@@ -248,7 +245,7 @@ $taxes = Helper::get_taxes();
 
     function updateRateField() {
         var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
+
         const rateInput = document.querySelector('#rate');
         rateInput.value = rate;
     }
@@ -259,7 +256,7 @@ $taxes = Helper::get_taxes();
             tax_rate = rate / 100;
             updateGrandTotal();
         });
-        
+
         document.querySelectorAll('#cdnoteItemsTable tbody tr:first-child input, #cdnoteItemsTable tbody tr:first-child select').forEach(function (element) {
             element.addEventListener('input', function () {
                 updateCDNoteItemsTotal();

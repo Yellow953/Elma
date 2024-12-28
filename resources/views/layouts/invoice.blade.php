@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>Stockify</title>
+    <title>Elma</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -17,8 +17,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
-
-    <link rel="shortcut icon" href="{{ asset('assets/images/logos/logo.png') }}" type="image/x-icon">
 
     {{-- Bootstrap --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"

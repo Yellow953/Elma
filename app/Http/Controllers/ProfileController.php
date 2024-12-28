@@ -8,19 +8,23 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    public function show(User $user)
+    public function show()
     {
+        $user = auth()->user();
+
         $data = compact('user');
-        return view('users.show', $data);
+        return view('profile.show', $data);
     }
 
-    public function edit(User $user)
+    public function edit()
     {
+        $user = auth()->user();
+
         $data = compact('user');
-        return view('users.edit', $data);
+        return view('profile.edit', $data);
     }
 
-    public function update(User $user, Request $request)
+    public function update(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -28,33 +32,26 @@ class ProfileController extends Controller
             'currency_id' => 'required|numeric',
         ]);
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('uploads/profiles/', $filename);
-            $path = '/uploads/profiles/' . $filename;
-        } else {
-            $path = $user->image;
-        }
+        $user = auth()->user();
 
         $user->update([
             'name' => $request->name,
             'phone' => $request->phone,
-            'image' => $path,
             'currency_id' => $request->currency_id,
         ]);
 
-        return redirect()->route('profile', auth()->user()->id)->with('success', 'Profile Updated Successfully');
+        return redirect()->route('profile')->with('success', 'Profile Updated Successfully');
     }
 
-    public function SavePassword(user $user, Request $request)
+    public function SavePassword(Request $request)
     {
+        $user = auth()->user();
+
         if ($request->newpassword == $request->confirmpassword) {
             $user->password = Hash::make($request->newpassword);
             $user->save();
         }
 
-        return redirect()->route('profile', auth()->user()->id)->with('success', 'Password Updated Successfully');
+        return redirect()->route('profile')->with('success', 'Password Updated Successfully');
     }
 }

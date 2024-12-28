@@ -15,17 +15,14 @@ $user = auth()->user()
 
             <div class="user-profile pull-right m-0 d-flex px-1 px-md-3">
                 <div class="d-flex align-items-center dropdown-toggle text-white" data-toggle="dropdown">
-                    <img class="avatar user-thumb" src="{{asset($user->image)}}" alt="avatar">
-                    <h5 class="d-none d-md-block user-name text-white m-0 my-auto">{{
+                    <img class="avatar user-thumb" src="{{ asset('assets/images/default_profile.png') }}" alt="avatar">
+                    <h5 class="d-none d-md-block user-name text-white mx-2 my-auto">{{
                         ucwords($user->name) }}</h5>
                 </div>
 
                 <div class="dropdown-menu dropdown-menu-right mt-4">
-                    <a href="{{ route('profile', $user->id) }}" class="dropdown-item text-dark">{{
-                        ucwords($user->name) }}
-                        ({{ucwords($user->role)}})</a>
-                    <a class="dropdown-item text-dark" href="{{ route('signature') }}">eSignature</a>
-                    <a class="dropdown-item text-dark" href="{{ route('users.terms') }}">Terms And Conditions</a>
+                    <a href="{{ route('profile') }}" class="dropdown-item text-dark">{{ ucwords($user->name)
+                        }}</a>
                     <a class="dropdown-item text-dark" href="{{ route('logout') }}"
                         onclick="event.preventDefault();document.getElementById('logout-form').submit();"> {{
                         __('Logout') }}
@@ -43,29 +40,29 @@ $user = auth()->user()
 
 <script>
     // start typeahead
-$(document).ready(function(){
-    var routes = <?php echo json_encode(Helper::get_route_names()); ?>;
-    
-    var routes = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.whitespace,
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        local: routes
-    });
-    
-    $('#routes-search').typeahead({
-        hint: true,
-        highlight: true,
-        minLength: 1
-    },
-    {
-        name: 'routes',
-        source: routes
-    });
+    $(document).ready(function(){
+        var routes = <?php echo json_encode(Helper::get_route_names()); ?>;
 
-    $('#routes-search').on('typeahead:selected', function(event, suggestion, dataset) {
-        $('#redirectForm input[name="route"]').val(suggestion);
-        $('#redirectForm').submit();
+        var routes = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: routes
+        });
+
+        $('#routes-search').typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+        },
+        {
+            name: 'routes',
+            source: routes
+        });
+
+        $('#routes-search').on('typeahead:selected', function(event, suggestion, dataset) {
+            $('#redirectForm input[name="route"]').val(suggestion);
+            $('#redirectForm').submit();
+        });
     });
-});
-// end typeahead
+    // end typeahead
 </script>

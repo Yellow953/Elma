@@ -198,12 +198,9 @@ $currencies = Helper::get_currencies();
                     </div>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="offset-md-8 col-md-4">
-                        <button type="submit" class="btn btn-info w-100" id="submit">
-                            {{ __('Update') }}
-                        </button>
-                    </div>
+                <div class="d-flex align-items-center justify-content-around mt-3">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-info">Submit</button>
                 </div>
             </form>
         </div>
@@ -296,7 +293,7 @@ $currencies = Helper::get_currencies();
 
     function updateRateField() {
         var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
+
         const rateInput = document.querySelector('#rate');
         rateInput.value = rate;
     }

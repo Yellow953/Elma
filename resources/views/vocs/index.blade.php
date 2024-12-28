@@ -11,12 +11,18 @@
                 Actions
             </button>
             <div class="dropdown-menu dropdown-menu-right mt-2" aria-labelledby="actionsDropdown">
+                @can('vocs.create')
                 <a class="dropdown-item text-dark" href="{{ route('voc.new') }}">New VOC</a>
+                @endcan
+
+                @can('vocs.return')
                 <a class="dropdown-item text-dark" href="{{ route('voc.return') }}">Return VOC</a>
-                @if (auth()->user()->role == 'admin')
-                <a class="dropdown-item text-dark" href="{{ route('export.vocs') }}">Export VOCs</a>
-                <a class="dropdown-item text-dark" href="{{ route('export.voc_items') }}">Export VOC Items</a>
-                @endif
+                @endcan
+
+                @can('vocs.export')
+                <a class="dropdown-item text-dark" href="{{ route('voc.export') }}">Export VOCs</a>
+                <a class="dropdown-item text-dark" href="{{ route('voc_items.export') }}">Export VOC Items</a>
+                @endcan
             </div>
         </div>
         <div class="col-6 col-md-2">
@@ -29,6 +35,8 @@
                     style="width: 300px">
                     <h4 class="mb-2">Filter Receipt</h4>
                     <form action="{{ route('voc') }}" method="get" enctype="multipart/form-data">
+                        @csrf
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline my-2">
@@ -143,17 +151,21 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
+                                            @can('vocs.read')
                                             <a href="{{ route('voc.show', $voc->id) }}" class="btn btn-info btn-custom"
                                                 title="Show">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            @if ($voc->can_edit())
+                                            @endcan
+
+                                            @can('vocs.update')
                                             <a href="{{ route('voc.edit', $voc->id) }}"
                                                 class="btn btn-warning btn-custom" title="Edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
-                                            @endif
-                                            @if (auth()->user()->role == 'admin' && $voc->can_delete())
+                                            @endcan
+
+                                            @can('vocs.delete')
                                             <form method="GET" action="{{ route('voc.destroy', $voc->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -161,7 +173,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
-                                            @endif
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -173,17 +185,7 @@
                                 </tr>
                                 @endforelse
                                 <tr>
-                                    <td colspan="6">
-                                        {{ $vocs->appends(['voc_number' =>
-                                        request()->query('voc_number'), 'supplier_invoice' =>
-                                        request()->query('supplier_invoice'), 'supplier_id' =>
-                                        request()->query('supplier_id'),'currency_id' =>
-                                        request()->query('currency_id'),
-                                        'foreign_currency_id'
-                                        => request()->query('foreign_currency_id'), 'date' =>
-                                        request()->query('date'), 'description' =>
-                                        request()->query('description')])->links() }}
-                                    </td>
+                                    <td colspan="6">{{ $vocs->appends(request()->all())->links() }}</td>
                                 </tr>
                             </tbody>
                         </table>

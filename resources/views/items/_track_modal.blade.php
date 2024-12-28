@@ -19,8 +19,7 @@
                                         <option value=""></option>
                                         @foreach (Helper::get_items() as $item)
                                         <option value="{{ $item->id }}" {{ request()->query('item_id') == $item->id ?
-                                            'selected' : '' }}>{{ ucwords($item->itemcode) }} ({{
-                                            $item->warehouse->name }})</option>
+                                            'selected' : '' }}>{{ ucwords($item->itemcode) }}</option>
                                         @endforeach
                                     </select>
                                 </div>

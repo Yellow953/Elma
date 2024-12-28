@@ -12,8 +12,8 @@ class POSeeder extends Seeder
     public function run(): void
     {
         $pos = [
-            ['name' => 'M-PO-2024-1', 'description' => 'test main', 'date' => Carbon::today(), 'supplier_id' => 1],
-            ['name' => 'S-PO-2024-1', 'description' => 'test secondary', 'date' => Carbon::today(), 'supplier_id' => 1]
+            ['name' => 'PO-2024-1', 'description' => 'test main', 'date' => Carbon::today(), 'supplier_id' => 1],
+            ['name' => 'PO-2024-1', 'description' => 'test secondary', 'date' => Carbon::today(), 'supplier_id' => 1]
         ];
 
         $items = [

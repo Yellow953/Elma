@@ -89,12 +89,9 @@
                     </div>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="offset-md-8 col-md-4">
-                        <button type="submit" class="btn btn-info w-100">
-                            {{ __('Create') }}
-                        </button>
-                    </div>
+                <div class="d-flex align-items-center justify-content-around mt-3">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-info">Submit</button>
                 </div>
             </form>
         </div>
@@ -134,15 +131,15 @@
     populateSelect(typeSelect, types);
 
     $('#type').on('select2:select', function() {
-        const selectedTypeId = parseInt(this.value); 
+        const selectedTypeId = parseInt(this.value);
         const sub1Options = accountTypes.filter(type => parseInt(type.parent_id) === selectedTypeId);
         populateSelect(sub1Select, sub1Options);
-        
-        populateSelect(sub2Select, []);  
+
+        populateSelect(sub2Select, []);
     });
 
     $('#sub1').on('select2:select', function() {
-        const selectedSub1Id = parseInt(this.value); 
+        const selectedSub1Id = parseInt(this.value);
         const sub2Options = accountTypes.filter(type => parseInt(type.parent_id) === selectedSub1Id);
         populateSelect(sub2Select, sub2Options);
     });

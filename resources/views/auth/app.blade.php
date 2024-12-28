@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" href="{{asset('/assets/images/logos/logo.png')}}">
 
     <title>
-        Stockify
+        Elma
     </title>
 
     <link rel="shortcut icon" href="{{asset('assets/images/logos/logo.png')}}" type="image/x-icon">

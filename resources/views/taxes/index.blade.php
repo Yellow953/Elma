@@ -2,66 +2,65 @@
 
 @section('title', 'taxes')
 
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-6 col-md-10 d-flex justify-content-end">
-            <button class="btn btn-info py-2 px-3 text-dark ignore-confirm" type="button" id="actionsDropdown"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Actions
-            </button>
-            <div class="dropdown-menu dropdown-menu-right mt-2" aria-labelledby="actionsDropdown">
-                <a class="dropdown-item text-dark" href="{{ route('taxes.new') }}">New Tax</a>
-                @if (auth()->user()->role == 'admin')
-                <a class="dropdown-item text-dark" href="{{ route('export.taxes') }}">Export Taxes</a>
-                @endif
-            </div>
-        </div>
-        <div class="col-6 col-md-2">
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary py-2 px-3 mx-2 text-dark ignore-confirm" type="button"
-                    id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Filter
-                </button>
-                <div class="dropdown-menu dropdown-menu-right mt-2 p-4" aria-labelledby="filterDropdown">
-                    <h4 class="mb-2">Filter Taxes</h4>
-                    <form action="{{ route('taxes') }}" method="get" enctype="multipart/form-data">
-                        <div class="input-group input-group-outline my-2">
-                            <div>
-                                <label for="name">Name</label>
-                                <div>
-                                    <input type="text" class="form-control border" name="name" placeholder="Name"
-                                        value="{{request()->query('name')}}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-group input-group-outline my-2">
-                            <div class="w-100">
-                                <label for="account_id">Account</label>
-                                <div>
-                                    <select name="account_id" class="form-select select2">
-                                        <option value=""></option>
-                                        @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}" {{request()->query('account_id') ==
-                                            $account->id ? 'selected' : ''}}> {{ $account->account_number }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-around mt-3">
-                            <button type="reset"
-                                class="btn btn-secondary py-2 px-3 mx-2 text-dark ignore-confirm reset-button">reset</button>
-                            <button type="submit" class="btn btn-info py-2 px-3 mx-2 text-dark">apply</button>
-                        </div>
-                    </form>
+@section('actions')
+@can('taxes.create')
+<a class="btn btn-sm btn-info mx-2" href="{{ route('taxes.new') }}">New Tax</a>
+@endcan
+@can('taxes.export')
+<a class="btn btn-sm btn-info mx-2" href="{{ route('taxes.export') }}">Export Taxes</a>
+@endcan
+@endsection
+
+@section('filter')
+<button class="btn btn-secondary py-2 px-3 mx-2 text-dark ignore-confirm" type="button" id="filterDropdown"
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Filter
+</button>
+<div class="dropdown-menu dropdown-menu-right mt-2 p-4" aria-labelledby="filterDropdown">
+    <h4 class="mb-2">Filter Taxes</h4>
+    <form action="{{ route('taxes') }}" method="get" enctype="multipart/form-data">
+        @csrf
+
+        <div class="input-group input-group-outline my-2">
+            <div>
+                <label for="name">Name</label>
+                <div>
+                    <input type="text" class="form-control border" name="name" placeholder="Name"
+                        value="{{request()->query('name')}}">
                 </div>
             </div>
         </div>
-    </div>
+        <div class="input-group input-group-outline my-2">
+            <div class="w-100">
+                <label for="account_id">Account</label>
+                <div>
+                    <select name="account_id" class="form-select select2">
+                        <option value=""></option>
+                        @foreach ($accounts as $account)
+                        <option value="{{ $account->id }}" {{request()->query('account_id') ==
+                            $account->id ? 'selected' : ''}}> {{ $account->account_number }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-around mt-3">
+            <button type="reset"
+                class="btn btn-secondary py-2 px-3 mx-2 text-dark ignore-confirm reset-button">reset</button>
+            <button type="submit" class="btn btn-info py-2 px-3 mx-2 text-dark">apply</button>
+        </div>
+    </form>
 </div>
+@endsection
 
+@section('content')
 <div class="container-fluid py-2">
+    <div class="d-flex align-items-center justify-content-end">
+        @yield('actions')
+
+        @yield('filter')
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card my-4">
@@ -98,11 +97,14 @@
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center">
+                                            @can('taxes.update')
                                             <a href="{{ route('taxes.edit', $tax->id) }}"
                                                 class="btn btn-warning btn-custom" title="Edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
-                                            @if (auth()->user()->role == 'admin' && $tax->can_delete())
+                                            @endcan
+
+                                            @can('taxes.delete')
                                             <form method="GET" action="{{ route('taxes.destroy', $tax->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -110,7 +112,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
-                                            @endif
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>
@@ -122,9 +124,7 @@
                                 </tr>
                                 @endforelse
                                 <tr>
-                                    <td colspan="4">{{$taxes->appends(['name' => request()->query('name'), 'rate'
-                                        =>
-                                        request()->query('rate')])->links()}}</td>
+                                    <td colspan="4">{{ $taxes->appends(request()->all())->links() }}</td>
                                 </tr>
                             </tbody>
                         </table>

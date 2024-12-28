@@ -41,32 +41,32 @@ Route::prefix('password')->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Users Routes
     Route::prefix('users')->group(function () {
+        Route::get('/export', [UserController::class, 'export'])->name('users.export');
         Route::get('/new', [UserController::class, 'new'])->name('users.new');
         Route::post('/create', [UserController::class, 'create'])->name('users.create');
-        Route::get('/terms', [UserController::class, 'terms'])->name('users.terms');
-        Route::post('/terms_agree', [UserController::class, 'terms_agree'])->name('users.terms_agree');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::post('/{user}/update', [UserController::class, 'update'])->name('users.update');
         Route::get('/{user}/delete', [UserController::class, 'destroy'])->name('users.destroy');
         Route::get('/', [UserController::class, 'index'])->name('users');
     });
 
     // Profile Routes
     Route::prefix('profile')->group(function () {
-        Route::get('/{user}/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::post('/{user}/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::post('/{user}/savepassword', [ProfileController::class, 'SavePassword'])->name('profile.SavePassword');
-        Route::get('/{user}', [ProfileController::class, 'show'])->name('profile');
+        Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/savepassword', [ProfileController::class, 'SavePassword'])->name('profile.SavePassword');
+        Route::get('/', [ProfileController::class, 'show'])->name('profile');
     });
 
     // Item Routes
     Route::prefix('items')->group(function () {
+        Route::get('/export', [ItemController::class, 'export'])->name('items.export');
         Route::get('/new', [ItemController::class, 'new'])->name('items.new');
         Route::post('/create', [ItemController::class, 'create'])->name('items.create');
         Route::get('/in/{item}', [ItemController::class, 'In'])->name('items.In');
         Route::post('/in/{item}/save', [ItemController::class, 'InSave'])->name('items.InSave');
         Route::get('/out/{item}', [ItemController::class, 'Out'])->name('items.Out');
         Route::post('/out/{item}/save', [ItemController::class, 'OutSave'])->name('items.OutSave');
-        Route::get('/transfer/{item}', [ItemController::class, 'Transfer'])->name('items.Transfer');
-        Route::post('/transfer/{item}/save', [ItemController::class, 'TransferSave'])->name('items.TransferSave');
         Route::get('/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
         Route::post('/{item}/update', [ItemController::class, 'update'])->name('items.update');
         Route::get('/{item}/activity', [ItemController::class, 'activity'])->name('items.activity');
@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Logs Routes
     Route::prefix('logs')->group(function () {
+        Route::get('/export', [LogController::class, 'export'])->name('logs.export');
         Route::get('/', [LogController::class, 'index'])->name('logs');
     });
 
@@ -156,7 +157,7 @@ Route::middleware(['auth'])->group(function () {
 
     // SOS Routes
     Route::prefix('so')->group(function () {
-        Route::get('/', [SOController::class, 'index'])->name('so');
+        Route::get('/export', [SOController::class, 'export'])->name('so.export');
         Route::get('/new', [SOController::class, 'new'])->name('so.new');
         Route::post('/create', [SOController::class, 'create'])->name('so.create');
         Route::get('/{so}/edit', [SOController::class, 'edit'])->name('so.edit');
@@ -167,22 +168,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{so}/print', [SOController::class, 'print'])->name('so.print');
         Route::get('/{so}/display', [SOController::class, 'display'])->name('so.display');
         Route::get('/{so}/additems', [SOController::class, 'AddItems'])->name('so.AddItems');
-        Route::get('/{so}/quantities', [SOController::class, 'quantities'])->name('so.quantities');
         Route::get('/live_search', [SOController::class, 'live_search'])->name('so.live_search');
         Route::get('/search', [SOController::class, 'search'])->name('so.search');
         Route::get('/{so}/delete', [SOController::class, 'destroy'])->name('so.destroy');
         Route::get('/{so}/export_items', [ExcellController::class, 'so_export_items'])->name('so.so_export_items');
         Route::post('/{so}/import_items', [ExcellController::class, 'so_import_items'])->name('so.so_import_items');
         Route::get('/{so}/new_invoice', [SOController::class, 'new_invoice'])->name('so.new_invoice');
+        Route::get('/', [SOController::class, 'index'])->name('so');
     });
     Route::prefix('so_items')->group(function () {
         Route::get('/{so_item}/return', [SOController::class, 'Return'])->name('so.return');
         Route::get('/{so}/returnall', [SOController::class, 'return_all'])->name('so.return_all');
+        Route::get('/export', [SOController::class, 'export_so_items'])->name('so_items.export');
     });
 
     // POS Routes
     Route::prefix('po')->group(function () {
-        Route::get('/', [POController::class, 'index'])->name('po');
+        Route::get('/export', [POController::class, 'export'])->name('po.export');
         Route::get('/new', [POController::class, 'new'])->name('po.new');
         Route::post('/create', [POController::class, 'create'])->name('po.create');
         Route::get('/{po}/edit', [POController::class, 'edit'])->name('po.edit');
@@ -192,21 +194,23 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{po}/saveitems', [POController::class, 'SaveItems'])->name('po.SaveItems');
         Route::get('/{po}/print', [POController::class, 'print'])->name('po.print');
         Route::get('/{po}/additems', [POController::class, 'AddItems'])->name('po.AddItems');
-        Route::get('/{po}/quantities', [POController::class, 'quantities'])->name('po.quantities');
         Route::get('/live_search', [POController::class, 'live_search'])->name('po.live_search');
         Route::get('/search', [POController::class, 'search'])->name('po.search');
         Route::get('/{po}/delete', [POController::class, 'destroy'])->name('po.destroy');
         Route::get('/{po}/export_items', [ExcellController::class, 'po_export_items'])->name('po.po_export_items');
         Route::post('/{po}/import_items', [ExcellController::class, 'po_import_items'])->name('po.po_import_items');
         Route::get('/{po}/new_receipt', [POController::class, 'new_receipt'])->name('po.new_receipt');
+        Route::get('/', [POController::class, 'index'])->name('po');
     });
     Route::prefix('po_items')->group(function () {
         Route::get('/{po_item}/return', [POController::class, 'Return'])->name('po.return');
         Route::get('/{po}/returnall', [POController::class, 'return_all'])->name('po.return_all');
+        Route::get('/export', [POController::class, 'export_po_items'])->name('po_items.export');
     });
 
     // Clients Routes
     Route::prefix('clients')->group(function () {
+        Route::get('/export', [ClientController::class, 'export'])->name('clients.export');
         Route::get('/new', [ClientController::class, 'new'])->name('clients.new');
         Route::post('/create', [ClientController::class, 'create'])->name('clients.create');
         Route::get('/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
@@ -218,6 +222,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Suppliers Routes
     Route::prefix('suppliers')->group(function () {
+        Route::get('/export', [SupplierController::class, 'export'])->name('suppliers.export');
         Route::get('/new', [SupplierController::class, 'new'])->name('suppliers.new');
         Route::post('/create', [SupplierController::class, 'create'])->name('suppliers.create');
         Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('suppliers.edit');
@@ -229,6 +234,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Currency Routes
     Route::prefix('currencies')->group(function () {
+        Route::get('/export', [CurrencyController::class, 'export'])->name('currencies.export');
         Route::post('/switch', [CurrencyController::class, 'switch'])->name('currencies.switch');
         Route::get('/{currency}/edit', [CurrencyController::class, 'edit'])->name('currencies.edit');
         Route::post('/{currency}/update', [CurrencyController::class, 'update'])->name('currencies.update');
@@ -237,6 +243,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Taxes Routes
     Route::prefix('taxes')->group(function () {
+        Route::get('/export', [TaxController::class, 'export'])->name('taxes.export');
         Route::get('/new', [TaxController::class, 'new'])->name('taxes.new');
         Route::post('/create', [TaxController::class, 'create'])->name('taxes.create');
         Route::get('/{tax}/edit', [TaxController::class, 'edit'])->name('taxes.edit');
@@ -247,6 +254,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Accounts Routes
     Route::prefix('accounts')->group(function () {
+        Route::get('/export', [AccountController::class, 'export'])->name('accounts.export');
         Route::get('/new', [AccountController::class, 'new'])->name('accounts.new');
         Route::post('/create', [AccountController::class, 'create'])->name('accounts.create');
         Route::get('/statement_of_accounts', [AccountController::class, 'get_statement_of_accounts'])->name('accounts.get_statement_of_accounts');
@@ -264,6 +272,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Journal Vouchers Routes
     Route::prefix('journal_vouchers')->group(function () {
+        Route::get('/export', [JournalVoucherController::class, 'export'])->name('journal_vouchers.export');
         Route::get('/new', [JournalVoucherController::class, 'new'])->name('journal_vouchers.new');
         Route::post('/create', [JournalVoucherController::class, 'create'])->name('journal_vouchers.create');
         Route::post('/batch_post', [JournalVoucherController::class, 'batch_post'])->name('journal_vouchers.batch_post');
@@ -280,6 +289,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Receipts Routes
     Route::prefix('receipts')->group(function () {
+        Route::get('/export', [ReceiptController::class, 'export'])->name('receipts.export');
         Route::get('/new', [ReceiptController::class, 'new'])->name('receipts.new');
         Route::post('/create', [ReceiptController::class, 'create'])->name('receipts.create');
         Route::get('/return', [ReceiptController::class, 'Return'])->name('receipts.return');
@@ -295,6 +305,7 @@ Route::middleware(['auth'])->group(function () {
 
     // VOC Routes
     Route::prefix('voc')->group(function () {
+        Route::get('/export', [VOCController::class, 'export'])->name('voc.export');
         Route::get('/new', [VOCController::class, 'new'])->name('voc.new');
         Route::post('/create', [VOCController::class, 'create'])->name('voc.create');
         Route::get('/return', [VOCController::class, 'Return'])->name('voc.return');
@@ -306,9 +317,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{voc}/items', [VOCController::class, 'items'])->name('voc.items');
         Route::get('/', [VOCController::class, 'index'])->name('voc');
     });
+    Route::get('/voc_items/export', [VOCController::class, 'export_voc_items'])->name('voc_items.export');
 
     // Payment Routes
     Route::prefix('payments')->group(function () {
+        Route::get('/export', [PaymentController::class, 'export'])->name('payments.export');
         Route::get('/new', [PaymentController::class, 'new'])->name('payments.new');
         Route::post('/create', [PaymentController::class, 'create'])->name('payments.create');
         Route::get('/return', [PaymentController::class, 'Return'])->name('payments.return');
@@ -323,6 +336,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Payment Routes
     Route::prefix('cash_receipts')->group(function () {
+        Route::get('/export', [CashReceiptController::class, 'export'])->name('cash_receipts.export');
         Route::get('/new', [CashReceiptController::class, 'new'])->name('cash_receipts.new');
         Route::post('/create', [CashReceiptController::class, 'create'])->name('cash_receipts.create');
         Route::get('/return', [CashReceiptController::class, 'Return'])->name('cash_receipts.return');
@@ -337,6 +351,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Invoices Routes
     Route::prefix('invoices')->group(function () {
+        Route::get('/export', [InvoiceController::class, 'export'])->name('invoices.export');
         Route::get('/new', [InvoiceController::class, 'new'])->name('invoices.new');
         Route::post('/create', [InvoiceController::class, 'create'])->name('invoices.create');
         Route::get('/return', [InvoiceController::class, 'Return'])->name('invoices.return');
@@ -351,6 +366,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Credit Note Routes
     Route::prefix('credit_notes')->group(function () {
+        Route::get('/export', [CreditNoteController::class, 'export'])->name('credit_notes.export');
         Route::get('/new', [CreditNoteController::class, 'new'])->name('credit_notes.new');
         Route::post('/create', [CreditNoteController::class, 'create'])->name('credit_notes.create');
         Route::get('/{cdnote}/edit', [CreditNoteController::class, 'edit'])->name('credit_notes.edit');
@@ -363,6 +379,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Debit Note Routes
     Route::prefix('debit_notes')->group(function () {
+        Route::get('/export', [DebitNoteController::class, 'export'])->name('debit_notes.export');
         Route::get('/new', [DebitNoteController::class, 'new'])->name('debit_notes.new');
         Route::post('/create', [DebitNoteController::class, 'create'])->name('debit_notes.create');
         Route::get('/{cdnote}/edit', [DebitNoteController::class, 'edit'])->name('debit_notes.edit');

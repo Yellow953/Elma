@@ -12,8 +12,8 @@ class SOSeeder extends Seeder
     public function run(): void
     {
         $sos = [
-            ['name' => 'M-SO-2024-1', 'description' => 'test', 'date' => Carbon::today()],
-            ['name' => 'S-SO-2024-1', 'description' => 'test', 'date' => Carbon::today()]
+            ['name' => 'SO-2024-1', 'description' => 'test', 'date' => Carbon::today()],
+            ['name' => 'SO-2024-1', 'description' => 'test', 'date' => Carbon::today()]
         ];
 
         $items = [

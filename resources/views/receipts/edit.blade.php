@@ -287,12 +287,9 @@ $currencies = Helper::get_currencies();
                     </table>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="offset-md-8 col-md-4">
-                        <button type="submit" class="btn btn-info w-100" id="submitBtn">
-                            {{ __('Update') }}
-                        </button>
-                    </div>
+                <div class="d-flex align-items-center justify-content-around mt-3">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-info">Submit</button>
                 </div>
             </form>
         </div>
@@ -306,7 +303,7 @@ $currencies = Helper::get_currencies();
     let receipt_items_total_after_tax = parseFloat({{ $total_after_tax }});
     let receipt_items_total_foreign = parseFloat({{ $total_foreign }});
     let landed_cost_total = parseFloat({{ $total_landed_cost }});
-        
+
     function addReceiptItemRow() {
         var table = document.getElementById("receiptItemsTable").getElementsByTagName('tbody')[0];
         var newRow = table.insertRow(table.rows.length);
@@ -316,7 +313,7 @@ $currencies = Helper::get_currencies();
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
         newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}'>{{ $item->itemcode }}({{$item->warehouse->name}})</option>@endforeach</select>";
-        
+
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {
                 updateReceiptItemsTotal();
@@ -336,7 +333,7 @@ $currencies = Helper::get_currencies();
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
         newRow.cells[3].innerHTML = "<select name='landed_cost_supplier_id[]' class='form-control select2' required><option value=''></option>@foreach ($suppliers as $supplier)<option value='{{ $supplier->id }}'>{{ $supplier->name }}</option>@endforeach</select>";
-        
+
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', updateLandedCostTotal);
         });
@@ -354,7 +351,7 @@ $currencies = Helper::get_currencies();
     function updateTotalCostForRow(row) {
         var quantity = parseFloat(row.querySelector('input[name^="quantity"]').value) || 0;
         var unitCost = parseFloat(row.querySelector('input[name^="unit_cost"]').value) || 0;
-        
+
         var totalCost = quantity * unitCost;
         row.querySelector('input[name^="total_cost"]').value = totalCost.toFixed(2);
     }
@@ -374,7 +371,7 @@ $currencies = Helper::get_currencies();
 
             total += totalCost;
             total_tax += totalCost * tax_rate;
-            total_after_tax += totalCostAfterVat;            
+            total_after_tax += totalCostAfterVat;
             total_foreign += totalCostAfterVat * rate;
         });
 
@@ -402,7 +399,7 @@ $currencies = Helper::get_currencies();
     document.addEventListener('DOMContentLoaded', function () {
         $('#foreign_currency_id').on('select2:select', function (event) {
             var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
+
             const rateInput = document.querySelector('#rate');
             rateInput.value = rate;
 

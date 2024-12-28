@@ -18,8 +18,7 @@
                                     <select name="item_id[]" class="form-control select2" required multiple>
                                         <option value=""></option>
                                         @foreach (Helper::get_items() as $item)
-                                        <option value="{{ $item->id }}">{{ ucwords($item->itemcode) }} ({{
-                                            $item->warehouse->name }})</option>
+                                        <option value="{{ $item->id }}">{{ ucwords($item->itemcode) }}</option>
                                         @endforeach
                                     </select>
                                 </div>

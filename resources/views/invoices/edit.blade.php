@@ -214,12 +214,9 @@ $currencies = Helper::get_currencies();
                     </table>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="offset-md-8 col-md-4">
-                        <button type="submit" class="btn btn-info w-100" id="submitBtn">
-                            {{ __('Update') }}
-                        </button>
-                    </div>
+                <div class="d-flex align-items-center justify-content-around mt-3">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-info">Submit</button>
                 </div>
             </form>
         </div>
@@ -287,16 +284,16 @@ $currencies = Helper::get_currencies();
         var quantity = parseFloat(row.querySelector('input[name^="quantity"]').value) || 0;
         var unitCost = parseFloat(row.querySelector('input[name^="unit_cost"]').value) || 0;
         var unitPrice = parseFloat(row.querySelector('input[name^="unit_price"]').value) || 0;
-        
+
         var totalCost = quantity * unitCost;
         var totalPrice = quantity * unitPrice;
-        
+
         row.querySelector('input[name^="total_cost"]').value = totalCost.toFixed(2);
         row.querySelector('input[name^="total_price"]').value = totalPrice.toFixed(2);
-        
+
         updateInvoiceTotal();
     }
-    
+
     function updateInvoiceTotal() {
         var total = invoice_items_total;
         var total_tax = invoice_items_total_tax;
@@ -306,7 +303,7 @@ $currencies = Helper::get_currencies();
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
             var total_price = parseFloat(row.querySelector('input[name^="total_price"]').value) || 0;
             var rate = parseFloat(document.querySelector('#rate').value) || 0;
-            
+
             total += total_price;
             total_tax += total_price * tax_rate;
             total_after_tax += total_price + (total_price * tax_rate);
@@ -328,7 +325,7 @@ $currencies = Helper::get_currencies();
 
     function updateItemFields(row) {
         var itemId = row.querySelector('select[name^="item_id"]').value;
-        
+
         var selectedItem = items.find(item => item.id == itemId);
 
         if (selectedItem) {
@@ -355,10 +352,10 @@ $currencies = Helper::get_currencies();
 
     document.addEventListener('DOMContentLoaded', function () {
         attachSelect2Event();
-        
+
         $('#foreign_currency_id').on('select2:select', function (event) {
             var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
+
             const rateInput = document.querySelector('#rate');
             rateInput.value = rate;
 
@@ -368,10 +365,10 @@ $currencies = Helper::get_currencies();
         $('#tax_id').on('select2:select', function (event) {
             var rate = document.querySelector('select[name^="tax_id"] option:checked').getAttribute('data-rate');
             tax_rate = rate / 100;
-            
+
             updateInvoiceTotal();
         });
-        
+
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
             row.querySelectorAll('input').forEach(function(input) {
                 input.addEventListener('input', function() {

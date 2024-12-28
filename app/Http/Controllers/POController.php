@@ -26,33 +26,25 @@ class POController extends Controller
 
     public function index()
     {
-        if (auth()->user()->role == 'admin') {
-            $pos = PO::select('id', 'name', 'supplier_id', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
-        } else {
-            $search = auth()->user()->location->code . '-PO';
-            $pos = PO::select('id', 'name', 'supplier_id', 'date')->where('name', 'LIKE', "%{$search}%")->filter()->orderBy('id', 'desc')->paginate(25);
-        }
-        $suppliers = Supplier::select('id', 'name')->get();
+        $pos = PO::select('id', 'name', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
 
-        $data = compact('pos', 'suppliers');
+        $data = compact('pos');
         return view('pos.index', $data);
     }
 
     public function new()
     {
-        $suppliers = Supplier::select('id', 'name')->get();
         return view('pos.new', compact('suppliers'));
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'supplier_id' => 'required|numeric',
+            'date' => 'required|date',
         ]);
 
         $po = PO::create([
             'name' => PO::generate_name(),
-            'supplier_id' => $request->supplier_id,
             'description' => $request->description,
             'date' => $request->date ?? Carbon::now(),
         ]);

@@ -40,12 +40,14 @@
                                         <p>{{ number_format($currency->rate, 2) }}</p>
                                     </td>
                                     <td>
+                                        @can('currencies.update')
                                         <div class="d-flex flex-row justify-content-center">
                                             <a href="{{ route('currencies.edit', $currency->id) }}"
                                                 class="btn btn-warning btn-custom" title="Edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                         </div>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @empty

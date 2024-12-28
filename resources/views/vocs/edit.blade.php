@@ -202,12 +202,9 @@ $currencies = Helper::get_currencies();
                     </table>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="offset-md-8 col-md-4">
-                        <button type="submit" class="btn btn-info w-100" id="submitBtn">
-                            {{ __('Update') }}
-                        </button>
-                    </div>
+                <div class="d-flex align-items-center justify-content-around mt-3">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn btn-info">Submit</button>
                 </div>
             </form>
         </div>
@@ -217,7 +214,7 @@ $currencies = Helper::get_currencies();
 <script>
     let tax_rate = {{ $voc->tax->rate / 100 }};
     let voc_total = parseFloat({{ $total }});
-     
+
     function addVOCItemRow() {
         var table = document.getElementById("vocItemsTable").getElementsByTagName('tbody')[0];
         var newRow = table.insertRow(table.rows.length);
@@ -246,11 +243,11 @@ $currencies = Helper::get_currencies();
             tax_rate = document.querySelector('select[name^="tax_id"] option:checked').getAttribute('data-rate') / 100;
 
             row.querySelector('input[name^="vat"]').value = amount * tax_rate;
-            
+
             var total = amount + (amount * tax_rate);
 
             row.querySelector('input[name^="total"]').value = total.toFixed(2);
-            
+
             totalAmount += total;
         });
 
@@ -271,7 +268,7 @@ $currencies = Helper::get_currencies();
 
     function updateRateField() {
         var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
+
         const rateInput = document.querySelector('#rate');
         rateInput.value = rate;
     }
