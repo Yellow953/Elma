@@ -79,10 +79,10 @@
                             <i class="fa-solid fa-folder-minus"></i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-white">Total SOs</p>
+                            <p class="text-sm mb-0 text-white">Total Sales Orders</p>
                             <h4 class="m-3 text-white">
-                                @if ($total_sos)
-                                {{number_format($total_sos)}}
+                                @if ($total_sales_orders)
+                                {{number_format($total_sales_orders)}}
                                 @else
                                 No Record
                                 @endif
@@ -99,10 +99,10 @@
                             <i class="fa-solid fa-folder-plus"></i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-white">Total POs</p>
+                            <p class="text-sm mb-0 text-white">Total Purchase Orders</p>
                             <h4 class="m-3 text-white">
-                                @if ($total_pos)
-                                {{number_format($total_pos)}}
+                                @if ($total_purchase_orders)
+                                {{number_format($total_purchase_orders)}}
                                 @else
                                 No Record
                                 @endif

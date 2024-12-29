@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'po')
+@section('title', 'purchase_orders')
 
 @section('sub-title', 'add_items')
 
 @section('content')
 
-<script src="{{asset('assets/js/po.js')}}"></script>
+<script src="{{asset('assets/js/purchase_orders.js')}}"></script>
 
 <div class="container-fluid my-5">
     <div class="row">
@@ -44,11 +44,10 @@
             </div>
             <div class="card p-3 m-1">
                 <div class="card-header p-2">
-                    <h4 class="font-weight-bolder">{{ $po->name }}</h4>
+                    <h4 class="font-weight-bolder">{{ $purchase_order->po_number }}</h4>
                 </div>
                 <div class="card-body p-2">
-                    <form action="{{ route('po.SaveItems', $po->id) }}" method="post">
-
+                    <form action="{{ route('purchase_orders.SaveItems', $purchase_order->id) }}" method="post">
                         {{ csrf_field() }}
                         {{ method_field('post') }}
 
@@ -63,10 +62,10 @@
                             <tbody class="po-list">
                             </tbody>
 
-                            @foreach ($po_items as $po_item)
+                            @foreach ($purchase_order_items as $purchase_order_item)
                             <tr>
-                                <td>{{$po_item->item->itemcode}}</td>
-                                <td class="text-center">{{number_format($po_item->quantity, 2)}}</td>
+                                <td>{{$purchase_order_item->item->itemcode}}</td>
+                                <td class="text-center">{{number_format($purchase_order_item->quantity, 2)}}</td>
                             </tr>
                             @endforeach
                         </table><!-- end of table -->
@@ -128,21 +127,21 @@
                 //         }
                 //     });
                 // });
-            
+
                 $("#search").on("input", function () {
                 var searchTerm = $("#search").val();
-                
+
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('po.search') }}",
-                    data: { search: searchTerm,  po_id: {{ $po->id }} },
+                    url: "{{ route('purchase_orders.search') }}",
+                    data: { search: searchTerm,  purchase_order_id: {{ $purchase_order->id }} },
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(data) {
                         item = $(`#item-${data.id}`);
-            
+
                         var html = `<tr>
                                     <td>${item.data("name")}</td>
                                     <td><input type="number" step="any" min="0" name="items[${item.data(
@@ -153,7 +152,7 @@
                                     )}"><i class="fa-solid fa-trash"></i></button></td>
                                 </tr>`;
                         $(".po-list").append(html);
-            
+
                         // clear form
                         $("#search").val('');
                     },
@@ -178,12 +177,12 @@
                 function liveSearch() {
                     var liveSearchValue = $('#live_search').val();
                     $.ajax({
-                    url: '{{ route("po.live_search") }}',
+                    url: '{{ route("purchase_orders.live_search") }}',
                     method: 'GET',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
                         live_search: liveSearchValue,
-                        po_id: {{$po->id}},
+                        purchase_order_id: {{$purchase_order->id}},
                     },
                     success: function(data) {
                         generateTableRows(data);
@@ -200,7 +199,7 @@
                         <th class="w-300">Itemcode</th>
                         <th class="text-center">Quantity</th>
                         <th>Add</th>
-                    </tr>   
+                    </tr>
                     <tr>
                         <td colspan="3">No data.</td>
                     </tr>`;
@@ -221,7 +220,7 @@
 
                     for (let i = 0; i < data.length; i++) {
                     if (existingItemIds.includes(data[i].id)) {
-                        continue; 
+                        continue;
                     }
 
                     htmlView += `
@@ -249,7 +248,7 @@
                     e.preventDefault();
                     var name = $(this).data("name");
                     var id = $(this).data("id");
-                    
+
                     $(this).removeClass("btn-success bg-success").addClass("btn-default disabled");
 
                     var html = `

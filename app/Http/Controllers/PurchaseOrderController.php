@@ -154,9 +154,9 @@ class PurchaseOrderController extends Controller
     {
         $parts = explode('-', $purchase_order->name);
 
-        $po_items = PurchaseOrderItem::select('item_id', 'quantity')->where('po_id', $purchase_order->id)->orderBy('created_at', 'desc')->get();
+        $purchase_order_items = PurchaseOrderItem::select('item_id', 'quantity')->where('purchase_order_id', $purchase_order->id)->orderBy('created_at', 'desc')->get();
 
-        $data = compact('purchase_order', 'po_items');
+        $data = compact('purchase_order', 'purchase_order_items');
         return view('purchase_orders.add_items', $data);
     }
 
@@ -223,14 +223,6 @@ class PurchaseOrderController extends Controller
         } else {
             return response()->json($items);
         }
-    }
-
-    public function quantities(PurchaseOrder $purchase_order)
-    {
-        $po_items = PurchaseOrderItem::select('item_id', 'quantity')->where('po_id', $purchase_order->id)->get();
-
-        $data = compact('purchase_order', 'po_items');
-        return view('purchase_orders.quantities', $data);
     }
 
     public function destroy(PurchaseOrder $purchase_order)

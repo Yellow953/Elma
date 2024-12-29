@@ -1,6 +1,6 @@
 @extends('layouts.invoice')
 
-@section('title', 'so')
+@section('title', 'sales_orders')
 
 @section('title', 'show')
 
@@ -31,15 +31,12 @@
                 <div class="receipt-header receipt-header-mid">
                     <div class="col-xs-8 col-sm-8 col-md-8 text-left">
                         <div class="receipt-right">
-                            <h5>Project:
-                                {{ucwords($so->project->name)}}
-                            </h5>
-                            <h5><b>Date: {{ $so->date }}</b></h5>
+                            <h5><b>Date: {{ $sales_order->date }}</b></h5>
                         </div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-4">
                         <div class="receipt-left">
-                            <h3>{{$so->name }}</h3>
+                            <h3>{{$sales_order->name }}</h3>
                         </div>
                     </div>
                 </div>
@@ -56,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($so->so_items as $item)
+                        @foreach ($sales_order->items as $item)
                         <tr>
                             <td>
                                 {{$item->item->itemcode}}

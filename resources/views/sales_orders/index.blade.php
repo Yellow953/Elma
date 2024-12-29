@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'so')
+@section('title', 'sales_orders')
 
 @section('actions')
 @can('sales_orders.create')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('so.new') }}">New SO</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('sales_orders.new') }}">New Sales Order</a>
 @endcan
 @can('sales_orders.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('so.export') }}">Export SOs</a>
-<a class="btn btn-sm btn-info mx-1" href="{{ route('so_items.export') }}">Export SO Items</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('sales_orders.export') }}">Export Sales Orders</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('sales_order_items.export') }}">Export Sales Order Items</a>
 @endcan
 @endsection
 
@@ -18,8 +18,8 @@
     Filter
 </button>
 <div class="dropdown-menu dropdown-menu-right mt-2 p-4" aria-labelledby="filterDropdown" style="width: 300px">
-    <h4 class="mb-2">Filter SOs</h4>
-    <form action="{{ route('so') }}" method="get" enctype="multipart/form-data">
+    <h4 class="mb-2">Filter Sales Orders</h4>
+    <form action="{{ route('sales_orders') }}" method="get" enctype="multipart/form-data">
         @csrf
 
         <div class="row">
@@ -67,7 +67,7 @@
 @section('content')
 <div class="container-fluid py-2">
     <div class="d-flex align-items-center justify-content-between">
-        <form action="{{ route('so') }}" method="get" enctype="multipart/form-data"
+        <form action="{{ route('sales_orders') }}" method="get" enctype="multipart/form-data"
             class="d-flex flex-row justify-content-start my-3">
             @csrf
 
@@ -90,7 +90,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3">
                     <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3">
-                        <h5 class="text-capitalize ps-3">SO table</h5>
+                        <h5 class="text-capitalize ps-3">Sales Orders Table</h5>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -98,56 +98,57 @@
                         <table class="table align-items-center mb-0 text-sm text-dark">
                             <thead>
                                 <tr>
-                                    <th class="col-5">SO</th>
+                                    <th class="col-5">SO Number</th>
                                     <th class="col-5">Date</th>
                                     <th class="col-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($sos as $so)
+                                @forelse ($sales_orders as $sales_order)
                                 <tr class="rounded">
                                     <td>
-                                        <h6 class="my-auto">{{$so->name}}</h6>
+                                        <h6 class="my-auto">{{$sales_order->so_number}}</h6>
                                     </td>
                                     <td>
-                                        <p>{{$so->date}}</p>
+                                        <p>{{$sales_order->date}}</p>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
                                             @can('sales_orders.create')
-                                            <a href="{{ route('so.AddItems', $so->id) }}"
+                                            <a href="{{ route('sales_orders.AddItems', $sales_order->id) }}"
                                                 class="btn btn-info btn-custom" title="Add Items">
                                                 <i class="fa-solid fa-plus"></i>
                                             </a>
                                             @endcan
 
                                             @can('sales_orders.read')
-                                            <a href="{{ route('so.show', $so->id) }}" class="btn btn-info btn-custom"
-                                                title="Show">
+                                            <a href="{{ route('sales_orders.show', $sales_order->id) }}"
+                                                class="btn btn-info btn-custom" title="Show">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('so.activity', $so->id) }}"
+                                            <a href="{{ route('sales_orders.activity', $sales_order->id) }}"
                                                 class="btn btn-secondary btn-custom" title="Activity">
                                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                             </a>
                                             @endcan
 
                                             @can('sales_orders.update')
-                                            <a href="{{ route('so.edit', $so->id) }}" title="Edit"
+                                            <a href="{{ route('sales_orders.edit', $sales_order->id) }}" title="Edit"
                                                 class="btn btn-warning btn-custom">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             @endcan
 
                                             @can('invoices.create')
-                                            <a href="{{ route('so.new_invoice', $so->id) }}"
+                                            <a href="{{ route('sales_orders.new_invoice', $sales_order->id) }}"
                                                 class="btn btn-success btn-custom" title="New Invoice">
                                                 <i class="fa-solid fa-receipt"></i>
                                             </a>
                                             @endcan
 
                                             @can('sales_orders.delete')
-                                            <form method="GET" action="{{ route('so.destroy', $so->id) }}">
+                                            <form method="GET"
+                                                action="{{ route('sales_orders.destroy', $sales_order->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
                                                     data-toggle="tooltip" title='Delete'>
@@ -161,12 +162,12 @@
                                 @empty
                                 <tr>
                                     <td colspan="3">
-                                        No SOs Found
+                                        No Sales Orders Found
                                     </td>
                                 </tr>
                                 @endforelse
                                 <tr>
-                                    <td colspan="3">{{ $sos->appends(request()->all())->links() }}</td>
+                                    <td colspan="3">{{ $sales_orders->appends(request()->all())->links() }}</td>
                                 </tr>
                             </tbody>
                         </table>

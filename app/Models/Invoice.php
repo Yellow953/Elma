@@ -37,30 +37,14 @@ class Invoice extends Model
         return $this->belongsTo(JournalVoucher::class);
     }
 
-    public function so()
+    public function sales_order()
     {
-        return $this->belongsTo(SO::class);
+        return $this->belongsTo(SalesOrder::class);
     }
 
     public function invoice_items()
     {
         return $this->hasMany(InvoiceItem::class);
-    }
-
-    public function barcodes()
-    {
-        return $this->hasMany(BarcodeItem::class);
-    }
-
-    // Permissions
-    public function can_delete()
-    {
-        return $this->invoice_items->count() == 0;
-    }
-
-    public function can_edit()
-    {
-        return $this->journal_voucher->status == 'unposted';
     }
 
     // Filter
@@ -94,9 +78,9 @@ class Invoice extends Model
             $journal_voucher_id = request('journal_voucher_id');
             $q->where('journal_voucher_id', $journal_voucher_id);
         }
-        if (request('so_id')) {
-            $so_id = request('so_id');
-            $q->where('so_id', $so_id);
+        if (request('sales_order_id')) {
+            $sales_order_id = request('sales_order_id');
+            $q->where('sales_order_id', $sales_order_id);
         }
 
         return $q;

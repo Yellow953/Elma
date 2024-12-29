@@ -56,7 +56,7 @@ $currencies = Helper::get_currencies();
                         enctype="multipart/form-data">
                         @csrf
 
-                        <input type="hidden" name="so_id" value="{{ $so->id ?? '' }}">
+                        <input type="hidden" name="sales_order_id" value="{{ $sales_order->id ?? '' }}">
 
                         <div class="row setup-content" id="step-1">
                             <div class="col-md-6">
@@ -207,7 +207,7 @@ $currencies = Helper::get_currencies();
                                                     <option value="{{ $item->id }}" data-type="{{ $item->type }}"
                                                         data-unit-cost='{{ $item->unit_cost }}'
                                                         data-unit-price='{{ $item->unit_price }}'>
-                                                        {{ $item->itemcode }} ({{$item->warehouse->name}})</option>
+                                                        {{ $item->itemcode }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -313,7 +313,7 @@ $currencies = Helper::get_currencies();
 
 <script src="{{ asset('assets/js/stepper.js') }}"></script>
 <script>
-    let tax_rate = {{ $so->project->client->tax->rate }};
+    let tax_rate = {{ $sales_order->client->tax->rate }};
     var items = @json($items);
 
     function updateFields(selectElement) {
@@ -336,7 +336,7 @@ $currencies = Helper::get_currencies();
             });
         });
     }
-    
+
     function addInvoiceItemRow() {
         var table = document.getElementById("invoiceItemsTable").getElementsByTagName('tbody')[0];
         var newRow = table.insertRow(table.rows.length);
@@ -345,7 +345,7 @@ $currencies = Helper::get_currencies();
         newRow.innerHTML = originalRow.innerHTML;
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}({{$item->warehouse->name}})</option>@endforeach</select>";
+        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {
@@ -369,7 +369,7 @@ $currencies = Helper::get_currencies();
         var quantity = parseFloat(row.querySelector('input[name^="quantity"]').value) || 0;
         var unitCost = parseFloat(row.querySelector('input[name^="unit_cost"]').value) || 0;
         var unitPrice = parseFloat(row.querySelector('input[name^="unit_price"]').value) || 0;
-        
+
         var totalCost = quantity * unitCost;
         var totalPrice = quantity * unitPrice;
 
@@ -378,7 +378,7 @@ $currencies = Helper::get_currencies();
 
         updateInvoiceTotal();
     }
-    
+
     function updateInvoiceTotal() {
         var total = 0;
         var total_tax = 0;
@@ -389,7 +389,7 @@ $currencies = Helper::get_currencies();
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
             var total_price = parseFloat(row.querySelector('input[name^="total_price"]').value) || 0;
             var rate = parseFloat(document.querySelector('#rate').value) || 0;
-            
+
             total += total_price;
             total_tax += total_price * tax_rate;
             total_after_tax += total_price + (total_price * tax_rate);
@@ -406,7 +406,7 @@ $currencies = Helper::get_currencies();
         var itemId = data.item_id;
         var selectElement = $(row).find('select[name^="item_id"]');
         selectElement.val(itemId).trigger('change');
-        
+
         row.querySelector('input[name^="quantity"]').value = data.quantity;
         row.querySelector('input[name^="unit_cost"]').value = data.unit_cost;
         row.querySelector('input[name^="unit_price"]').value = data.unit_price;
@@ -414,7 +414,7 @@ $currencies = Helper::get_currencies();
 
     function updateItemFields(row) {
         var itemId = row.querySelector('select[name^="item_id"]').value;
-        
+
         var selectedItem = items.find(item => item.id == itemId);
 
         if (selectedItem) {
@@ -483,13 +483,13 @@ $currencies = Helper::get_currencies();
             }
         });
     }
-    
+
     document.addEventListener('DOMContentLoaded', function () {
         attachSelect2Event();
 
         $('#foreign_currency_id').on('select2:select', function (event) {
             var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
+
             const rateInput = document.querySelector('#rate');
             rateInput.value = rate;
 
@@ -530,7 +530,7 @@ $currencies = Helper::get_currencies();
                 updateInvoiceItemRow(row);
             }
         });
-        
+
         document.querySelector('#step-2 .nextBtn').addEventListener('click', function() {
             generateBarcodeFields();
         });
@@ -549,7 +549,7 @@ $currencies = Helper::get_currencies();
     document.getElementById('rate').dispatchEvent(new Event('input'));
 </script>
 
-@if(isset($so))
+@if(isset($sales_order))
 <script>
     function addSOItems(data) {
         var table = document.getElementById("invoiceItemsTable").getElementsByTagName('tbody')[0];
@@ -564,7 +564,7 @@ $currencies = Helper::get_currencies();
             newRow.innerHTML = originalRow.innerHTML;
 
             newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-            newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}({{$item->warehouse->name}})</option>@endforeach</select>";
+            newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
 
             fillRowWithData(newRow, data);
 
@@ -580,22 +580,22 @@ $currencies = Helper::get_currencies();
     }
 
     // Fill Client Field
-    @if($so->project->client_id)
-        document.getElementById('client_id').value = {{ $so->project->client_id }};
+    @if($sales_order->client_id)
+        document.getElementById('client_id').value = {{ $sales_order->client_id }};
         document.getElementById('client_id').dispatchEvent(new Event('input'));
 
         // Fill Tax Field
-        document.getElementById('tax_id').value = {{ $so->project->client->tax_id }};
+        document.getElementById('tax_id').value = {{ $sales_order->client->tax_id }};
         document.getElementById('tax_id').dispatchEvent(new Event('input'));
     @endif
 
     // Fill Receipt Items from SO Items
-    @foreach($so->so_items as $soItem)
+    @foreach($sales_order->sales_order_items as $sales_order_item)
         addSOItems({
-            item_id: {{ $soItem->item_id }},
-            quantity: {{ $soItem->quantity }},
-            unit_cost: {{ $soItem->item->unit_cost }},
-            unit_price: {{ $soItem->item->unit_price }},
+            item_id: {{ $sales_order_items->item_id }},
+            quantity: {{ $sales_order_items->quantity }},
+            unit_cost: {{ $sales_order_items->item->unit_cost }},
+            unit_price: {{ $sales_order_items->item->unit_price }},
         });
     @endforeach
 </script>

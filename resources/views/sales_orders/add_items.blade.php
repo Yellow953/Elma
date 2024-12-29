@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'so')
+@section('title', 'sales_orders')
 
 @section('sub-title', 'add_items')
 
 @section('content')
 
-<script src="{{asset('assets/js/so.js')}}"></script>
+<script src="{{asset('assets/js/sales_orders.js')}}"></script>
 
 <div class="container-fluid my-5">
     <div class="row">
@@ -45,15 +45,14 @@
 
             <div class="card p-3 m-1">
                 <div class="card-header p-2">
-                    <h4 class="font-weight-bolder">{{ $so->name }}</h4>
+                    <h4 class="font-weight-bolder">{{ $sales_order->so_number }}</h4>
                     <div class="d-flex justify-between">
-                        <div class="mx-2">Project: {{ucwords($so->project->name)}}</div>
-                        <div class="mx-2">Technician: {{ucwords($so->technician)}}</div>
-                        <div class="mx-2">Description: {{$so->description}}</div>
+                        <div class="mx-2">Technician: {{ucwords($sales_order->technician)}}</div>
+                        <div class="mx-2">Description: {{$sales_order->description}}</div>
                     </div>
                 </div>
                 <div class="card-body p-2">
-                    <form action="{{ route('so.SaveItems', $so->id) }}" method="post">
+                    <form action="{{ route('sales_orders.SaveItems', $sales_order->id) }}" method="post">
 
                         {{ csrf_field() }}
                         {{ method_field('post') }}
@@ -69,10 +68,10 @@
                             <tbody class="so-list">
                             </tbody>
 
-                            @foreach ($so_items as $so_item)
+                            @foreach ($sales_order_items as $sales_order_item)
                             <tr>
-                                <td>{{$so_item->item->itemcode}}</td>
-                                <td class="text-center">{{number_format($so_item->quantity, 2)}}</td>
+                                <td>{{$sales_order_item->item->itemcode}}</td>
+                                <td class="text-center">{{number_format($sales_order_item->quantity, 2)}}</td>
                             </tr>
                             @endforeach
                         </table><!-- end of table -->
@@ -134,21 +133,21 @@
                 //         }
                 //     });
                 // });
-            
+
                 $("#search").on("input", function () {
                 var searchTerm = $("#search").val();
-                
+
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('so.search') }}",
-                    data: { search: searchTerm,  so_id: {{ $so->id }} },
+                    url: "{{ route('sales_orders.search') }}",
+                    data: { search: searchTerm,  so_id: {{ $sales_order->id }} },
                     dataType: 'json',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(data) {
                         item = $(`#item-${data.id}`);
-            
+
                         var html = `<tr>
                                     <td>${item.data("name")}</td>
                                     <td><input type="number" step="any" min="0" name="items[${item.data(
@@ -159,7 +158,7 @@
                                     )}"><i class="fa-solid fa-trash"></i></button></td>
                                 </tr>`;
                         $(".so-list").append(html);
-            
+
                         // clear form
                         $("#search").val('');
                     },
@@ -184,12 +183,12 @@
                 function liveSearch() {
                     var liveSearchValue = $('#live_search').val();
                     $.ajax({
-                    url: '{{ route("so.live_search") }}',
+                    url: '{{ route("sales_orders.live_search") }}',
                     method: 'GET',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
                         live_search: liveSearchValue,
-                        so_id: {{$so->id}},
+                        so_id: {{$sales_order->id}},
                     },
                     success: function(data) {
                         generateTableRows(data);
@@ -206,7 +205,7 @@
                         <th class="w-300">Itemcode</th>
                         <th class="text-center">Quantity</th>
                         <th>Add</th>
-                    </tr>   
+                    </tr>
                     <tr>
                         <td colspan="3">No data.</td>
                     </tr>`;
@@ -255,7 +254,7 @@
                     e.preventDefault();
                     var name = $(this).data("name");
                     var id = $(this).data("id");
-                    
+
                     $(this).removeClass("btn-success bg-success").addClass("btn-default disabled");
 
                     var html = `

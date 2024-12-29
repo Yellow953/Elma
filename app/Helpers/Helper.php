@@ -4,10 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Account;
 use App\Models\Client;
-use App\Models\Company;
 use App\Models\Currency;
-use App\Models\SOItem;
-use App\Models\POItem;
 use App\Models\SearchRoute;
 use App\Models\Tax;
 use App\Models\Item;
@@ -42,16 +39,6 @@ class Helper
         } catch (\Throwable $th) {
             session()->flash('error', 'No Clients in our database!');
         }
-    }
-
-    public static function get_po_item($id)
-    {
-        return POItem::find($id);
-    }
-
-    public static function get_so_item($id)
-    {
-        return SOItem::find($id);
     }
 
     public static function get_accounts()
@@ -119,12 +106,6 @@ class Helper
             case 'voc':
                 $text = 'VOC';
                 break;
-            case 'po':
-                $text = 'PO';
-                break;
-            case 'so':
-                $text = 'SO';
-                break;
             default:
                 $text = str_replace('_', ' ', $text);
                 $text = ucwords($text);
@@ -139,11 +120,6 @@ class Helper
         $main_currency_id = auth()->user()->currency_id;
         $foreign_currency = Currency::where('id', '!=', $main_currency_id)->firstOrFail();
         return $foreign_currency;
-    }
-
-    public static function get_company()
-    {
-        return Company::first();
     }
 
     public static function get_route_names()

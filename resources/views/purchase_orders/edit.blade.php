@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'po')
+@section('title', 'purchase_orders')
 
 @section('sub-title', 'edit')
 
@@ -12,10 +12,11 @@
 
     <div class="card">
         <div class="card-header bg-info border-b">
-            <h4 class="font-weight-bolder">Edit PO</h4>
+            <h4 class="font-weight-bolder">Edit Purchase Order</h4>
         </div>
         <div class="card-body p-0 px-3 mt-3">
-            <form method="POST" action="{{ route('po.update', $po->id) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('purchase_orders.update', $purchase_order->id) }}"
+                enctype="multipart/form-data">
                 @csrf
 
                 <div class="input-group input-group-outline row my-3">
@@ -26,7 +27,7 @@
                         <select name="supplier_id" id="supplier_id" required class="form-select select2">
                             <option value=""></option>
                             @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}" {{ $supplier->id == $po->supplier_id ?
+                            <option value="{{ $supplier->id }}" {{ $supplier->id == $purchase_order->supplier_id ?
                                 'selected':'' }}>{{ $supplier->name }}</option>
                             @endforeach
                         </select>
@@ -40,7 +41,7 @@
                     <div class="col-md-6">
                         <input id="description" type="text"
                             class=" form-control @error('description') is-invalid @enderror" name="description"
-                            value="{{ $po->description }}">
+                            value="{{ $purchase_order->description }}">
 
                         @error('description')
                         <span class="invalid-feedback" role="alert">
@@ -54,7 +55,7 @@
                     <label for="date" class="col-md-5 col-form-label text-md-end">{{ __('Date') }}</label>
 
                     <div class="col-md-6">
-                        <input id="date" type="date" value="{{$po->date}}"
+                        <input id="date" type="date" value="{{$purchase_order->date}}"
                             class="form-control date-input @error('date') is-invalid @enderror" name="date">
 
                         @error('date')
@@ -75,10 +76,12 @@
             <div class="container">
                 <div class="row my-3">
                     <div class="col-md-3">
-                        <a href="{{ route('po.po_export_items', $po->id) }}" class="btn btn-info">Export Items</a>
+                        <a href="{{ route('purchase_orders.po_export_items', $purchase_order->id) }}"
+                            class="btn btn-info">Export
+                            Items</a>
                     </div>
 
-                    <form action="{{ route('po.po_import_items', $po->id) }}" method="POST"
+                    <form action="{{ route('purchase_orders.po_import_items', $purchase_order->id) }}" method="POST"
                         enctype="multipart/form-data" class="col-md-9">
                         @csrf
                         <div class="d-flex justify-content-end">
@@ -96,7 +99,7 @@
                     </form>
                 </div>
 
-                <form action="{{ route('po.edit', $po->id) }}" method="get" class="mb-3">
+                <form action="{{ route('purchase_orders.edit', $purchase_order->id) }}" method="get" class="mb-3">
                     @csrf
                     <div class="input-group input-group-outline">
                         <label for="search" class="my-auto">
@@ -110,12 +113,13 @@
                     </div>
                 </form>
 
-                @if ($poItems->count() != 0)
+                @if ($purchase_order_items->count() != 0)
 
                 @if (!request()->query('search'))
                 <div class="row">
                     <div class="offset-9 col-3">
-                        <a href="{{ route('po.return_all', $po->id) }}" class="btn btn-danger ignore-confirm">Return
+                        <a href="{{ route('purchase_orders.return_all', $purchase_order->id) }}"
+                            class="btn btn-danger ignore-confirm">Return
                             All</a>
                     </div>
                 </div>
@@ -130,20 +134,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($poItems as $item)
+                        @foreach ($purchase_order_items as $item)
                         <tr>
                             <td>
                                 {{$item->item->itemcode}}
                             </td>
                             <td>{{number_format($item->quantity, 2)}}</td>
                             <td>
-                                <a href="{{ route('po.return', $item->id) }}"
+                                <a href="{{ route('purchase_orders.return', $item->id) }}"
                                     class="btn btn-danger ignore-confirm">Return</a>
                             </td>
                         </tr>
                         @endforeach
                         <tr>
-                            <td colspan="3">{{$poItems->links()}}</td>
+                            <td colspan="3">{{$purchase_order_items->links()}}</td>
                         </tr>
                     </tbody>
                 </table>

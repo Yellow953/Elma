@@ -154,8 +154,7 @@ $currencies = Helper::get_currencies();
                                     <select name="item_id[]" class="form-control select2">
                                         <option value=""></option>
                                         @foreach ($items as $item)
-                                        <option value="{{ $item->id }}">{{ $item->itemcode }}
-                                            ({{$item->warehouse->name}})</option>
+                                        <option value="{{ $item->id }}">{{ $item->itemcode }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -312,7 +311,7 @@ $currencies = Helper::get_currencies();
         newRow.innerHTML = originalRow.innerHTML;
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}'>{{ $item->itemcode }}({{$item->warehouse->name}})</option>@endforeach</select>";
+        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}'>{{ $item->itemcode }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {

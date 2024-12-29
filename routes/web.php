@@ -62,21 +62,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [ItemController::class, 'export'])->name('items.export');
         Route::get('/new', [ItemController::class, 'new'])->name('items.new');
         Route::post('/create', [ItemController::class, 'create'])->name('items.create');
-        Route::get('/in/{item}', [ItemController::class, 'In'])->name('items.In');
-        Route::post('/in/{item}/save', [ItemController::class, 'InSave'])->name('items.InSave');
-        Route::get('/out/{item}', [ItemController::class, 'Out'])->name('items.Out');
-        Route::post('/out/{item}/save', [ItemController::class, 'OutSave'])->name('items.OutSave');
         Route::get('/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
         Route::post('/{item}/update', [ItemController::class, 'update'])->name('items.update');
         Route::get('/{item}/activity', [ItemController::class, 'activity'])->name('items.activity');
-        Route::get('/{item}/barcodes', [ItemController::class, 'barcodes'])->name('items.barcodes');
-        Route::post('/track', [ItemController::class, 'track'])->name('items.track');
-        Route::get('/track', [ItemController::class, 'track_page'])->name('items.track_page');
         Route::post('/report', [ItemController::class, 'report'])->name('items.report');
         Route::get('/report', [ItemController::class, 'report_page'])->name('items.report_page');
         Route::get('/{item}/report', [ItemController::class, 'item_report'])->name('items.item_report');
         Route::get('/{item}/delete', [ItemController::class, 'destroy'])->name('items.destroy');
-        Route::get('/{item}/images', [ItemController::class, 'images'])->name('items.images');
         Route::get('/', [ItemController::class, 'index'])->name('items');
     });
 

@@ -12,9 +12,9 @@ class Supplier extends Model
 
     protected $guarded = [];
 
-    public function pos()
+    public function purchase_orders()
     {
-        return $this->hasMany(PO::class);
+        return $this->hasMany(PurchaseOrder::class);
     }
 
     public function transactions()
@@ -40,12 +40,6 @@ class Supplier extends Model
     public function payable_account()
     {
         return $this->belongsTo(Account::class, 'payable_account_id');
-    }
-
-    // Permissions
-    public function can_delete()
-    {
-        return $this->pos->count() == 0 && $this->transactions->count() == 0;
     }
 
     // Filter

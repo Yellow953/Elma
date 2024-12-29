@@ -276,7 +276,7 @@ class ReceiptController extends Controller
     public function edit(Receipt $receipt)
     {
         if ($receipt->can_edit()) {
-            $items = Item::select('id', 'itemcode', 'warehouse_id')->get();
+            $items = Item::select('id', 'itemcode')->get();
             $taxes = Tax::select('id', 'name', 'rate')->get();
             $suppliers = Supplier::select('id', 'name')->get();
 

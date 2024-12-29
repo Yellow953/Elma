@@ -6,10 +6,10 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\Supplier;
 use App\Models\Client;
-use App\Models\SO;
+use App\Models\SalesOrder;
 use App\Models\Invoice;
 use App\Models\JournalVoucher;
-use App\Models\PO;
+use App\Models\PurchaseOrder;
 use App\Models\Receipt;
 use App\Models\SearchRoute;
 use Illuminate\Support\Facades\Auth;
@@ -24,14 +24,14 @@ class HomeController extends Controller
         $total_users = User::count();
         $total_suppliers = Supplier::count();
         $total_clients = Client::count();
-        $total_sos = SO::count();
-        $total_pos = PO::count();
+        $total_sales_orders = SalesOrder::count();
+        $total_purchase_orders = PurchaseOrder::count();
         $total_items = Item::count();
         $total_jvs = JournalVoucher::count();
         $total_receipts = Receipt::count();
         $total_invoices = Invoice::count();
 
-        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_sos', 'total_pos', 'total_items', 'total_jvs', 'total_receipts', 'total_invoices');
+        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_jvs', 'total_receipts', 'total_invoices');
         return view('dashboard', $data);
     }
 

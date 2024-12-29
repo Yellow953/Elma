@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'po')
+@section('title', 'purchase_orders')
 
 @section('sub-title', 'new')
 
@@ -12,10 +12,10 @@
 
     <div class="card">
         <div class="card-header bg-info border-b">
-            <h4 class="font-weight-bolder">New PO</h4>
+            <h4 class="font-weight-bolder">New Purchase Order</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('po.create') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('purchase_orders.create') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="input-group input-group-outline row my-3">
                     <label for="supplier_id" class="col-md-5 col-form-label text-md-end">{{ __('Supplier

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'po')
+@section('title', 'purchase_orders')
 
 @section('actions')
 @can('purchase_orders.create')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('po.new') }}">New PO</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_orders.new') }}">New Purchase Order</a>
 @endcan
 @can('purchase_orders.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('po.export') }}">Export POs</a>
-<a class="btn btn-sm btn-info mx-1" href="{{ route('po_items.export') }}">Export PO Items</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_orders.export') }}">Export Purchase Orders</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_order_items.export') }}">Export Purchase Order Items</a>
 @endcan
 @endsection
 
@@ -19,7 +19,7 @@
 </button>
 <div class="dropdown-menu dropdown-menu-right mt-2 p-4" aria-labelledby="filterDropdown" style="width: 300px">
     <h4 class="mb-2">Filter POs</h4>
-    <form action="{{ route('po') }}" method="get" enctype="multipart/form-data">
+    <form action="{{ route('purchase_orders') }}" method="get" enctype="multipart/form-data">
         @csrf
         <div class="input-group input-group-outline my-2">
             <div class="w-100">
@@ -68,7 +68,7 @@
 @section('content')
 <div class="container-fluid py-2">
     <div class="d-flex align-items-center justify-content-between">
-        <form action="{{ route('po') }}" method="get" enctype="multipart/form-data"
+        <form action="{{ route('purchase_orders') }}" method="get" enctype="multipart/form-data"
             class="d-flex flex-row justify-content-start my-3">
             @csrf
 
@@ -98,56 +98,57 @@
                         <table class="table align-items-center mb-0 text-sm text-dark">
                             <thead>
                                 <tr>
-                                    <th class="col-5">PO</th>
+                                    <th class="col-5">PO Number</th>
                                     <th class="col-5">Date</th>
                                     <th class="col-2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($pos as $po)
+                                @forelse ($purchase_orders as $purchase_order)
                                 <tr class="rounded">
                                     <td>
-                                        <h6 class="my-auto">{{$po->name}}</h6>
+                                        <h6 class="my-auto">{{$purchase_order->po_number}}</h6>
                                     </td>
                                     <td>
-                                        <p>{{$po->date}}</p>
+                                        <p>{{$purchase_order->order_date}}</p>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
                                             @can('purchase_orders.create')
-                                            <a href="{{ route('po.AddItems', $po->id) }}"
+                                            <a href="{{ route('purchase_orders.AddItems', $purchase_order->id) }}"
                                                 class="btn btn-info btn-custom" title="Add items">
                                                 <i class="fa-solid fa-plus"></i>
                                             </a>
                                             @endcan
 
                                             @can('purchase_orders.read')
-                                            <a href="{{ route('po.show', $po->id) }}" class="btn btn-info btn-custom"
-                                                title="Show">
+                                            <a href="{{ route('purchase_orders.show', $purchase_order->id) }}"
+                                                class="btn btn-info btn-custom" title="Show">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('po.activity', $po->id) }}"
+                                            <a href="{{ route('purchase_orders.activity', $purchase_order->id) }}"
                                                 class="btn btn-secondary btn-custom" title="Activity">
                                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                             </a>
                                             @endcan
 
                                             @can('purchase_orders.update')
-                                            <a href="{{ route('po.edit', $po->id) }}" class="btn btn-warning btn-custom"
-                                                title="Edit">
+                                            <a href="{{ route('purchase_orders.edit', $purchase_order->id) }}"
+                                                class="btn btn-warning btn-custom" title="Edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             @endcan
 
                                             @can('receipts.create')
-                                            <a href="{{ route('po.new_receipt', $po->id) }}"
+                                            <a href="{{ route('purchase_orders.new_receipt', $purchase_order->id) }}"
                                                 class="btn btn-success btn-custom" title="New Receipt">
                                                 <i class="fa-solid fa-receipt"></i>
                                             </a>
                                             @endcan
 
                                             @can('purchase_orders.delete')
-                                            <form method="GET" action="{{ route('po.destroy', $po->id) }}">
+                                            <form method="GET"
+                                                action="{{ route('purchase_orders.destroy', $purchase_order->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
                                                     data-toggle="tooltip" title='Delete'>
@@ -160,13 +161,13 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5">
-                                        No POs Found
+                                    <td colspan="3">
+                                        No Purchase Orders Found
                                     </td>
                                 </tr>
                                 @endforelse
                                 <tr>
-                                    <td colspan="5">{{ $pos->appends(request()->all())->links() }}</td>
+                                    <td colspan="3">{{ $purchase_orders->appends(request()->all())->links() }}</td>
                                 </tr>
                             </tbody>
                         </table>

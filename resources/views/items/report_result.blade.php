@@ -20,16 +20,11 @@
                 <div class="col-6">
                     <strong>Item Name:</strong> {{ ucwords($itemReport['item']->name) }} <br>
                     <strong>Itemcode:</strong> {{ $itemReport['item']->itemcode }} <br>
-                    <strong>Warehouse:</strong> {{ ucwords($itemReport['item']->warehouse->name) }} <br>
                     <strong>Description:</strong> {{ $itemReport['item']->description }} <br>
                 </div>
                 <div class="col-6 text-right">
-                    <strong>Inventory Account: </strong>{{
-                    ucwords($itemReport['item']->inventory_account->account_number) }} <br>
-                    <strong>Cost Of Sales Account: </strong>{{
-                    ucwords($itemReport['item']->cost_of_sales_account->account_number) }} <br>
-                    <strong>Sales Account: </strong>{{ ucwords($itemReport['item']->sales_account->account_number) }}
-                    <br>
+                    <strong>Revenue Account: </strong>{{
+                    ucwords($itemReport['item']->revenue_account->account_number) }}
                 </div>
             </div>
 
@@ -120,7 +115,6 @@
                 <div class="col-6">
                     <strong>Item Name:</strong> {{ ucwords($item->name) }} <br>
                     <strong>Itemcode:</strong> {{ $item->itemcode }} <br>
-                    <strong>Warehouse:</strong> {{ ucwords($item->warehouse->name) }} <br>
                     <strong>Description:</strong> {{ $item->description }} <br>
                 </div>
                 <div class="col-6 text-right">

@@ -102,7 +102,7 @@
                 </a>
             </div>
         </div>
-        <h6 class="mt-2">SO Items</h6>
+        <h6 class="mt-2">Sales Order Items</h6>
         <div class="row my-2 ">
             <div class="col-md-6">
                 <form action="{{ route('import.so_items') }}" method="POST" enctype="multipart/form-data">
@@ -138,7 +138,7 @@
                 </a>
             </div>
         </div>
-        <h6 class="mt-2">PO Items</h6>
+        <h6 class="mt-2">Purchase Order Items</h6>
         <div class="row my-2 ">
             <div class="col-md-6">
                 <form action="{{ route('import.po_items') }}" method="POST" enctype="multipart/form-data">

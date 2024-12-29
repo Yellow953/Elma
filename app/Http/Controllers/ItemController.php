@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
-use App\Models\SO;
 use App\Models\Item;
 use App\Models\Log;
-use App\Models\PO;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -23,7 +21,7 @@ class ItemController extends Controller
 
     public function index()
     {
-        $items = Item::select('id', 'image', 'name', 'quantity', 'leveling', 'itemcode', 'description', 'type', 'inventory_account_id', 'cost_of_sales_account_id', 'sales_account_id')->filter()->orderBy('itemcode', 'ASC')->paginate(25);
+        $items = Item::select('id', 'image', 'name', 'quantity', 'leveling', 'itemcode', 'description', 'type', 'revenue_account_id')->filter()->orderBy('itemcode', 'ASC')->paginate(25);
 
         $data = compact('items');
         return view('items.index', $data);
@@ -129,70 +127,6 @@ class ItemController extends Controller
         return redirect()->route('items')->with('warning', 'Item updated successfully!');
     }
 
-    public function In(Item $item)
-    {
-        $pos = PO::select('id', 'name')->orderBy('id', 'desc')->get();
-
-        $data = compact('item', 'pos');
-        return view('items.in', $data);
-    }
-
-    public function InSave(Item $item, Request $request)
-    {
-        $request->validate([
-            'po_id' => ['required', 'numeric'],
-            'quantity' => ['required', 'numeric', 'min:0'],
-        ]);
-
-        $po = PO::findOrFail($request->po_id);
-        $parts = explode('-', $po->name);
-
-        ModelsRequest::create([
-            'item_id' => $item->id,
-            'user_id' => auth()->user()->id,
-            'quantity' => $request->quantity,
-            'type' => 9,
-            'status' => 0,
-            'po_id' => $po->id,
-        ]);
-
-        return redirect()->route('items')->with('info', 'Request sent!');
-    }
-
-    public function Out(Item $item)
-    {
-        $sos = SO::select('id', 'name')->orderBy('id', 'desc')->get();
-
-        $data = compact('item', 'sos');
-        return view('items.out', $data);
-    }
-
-    public function OutSave(Item $item, Request $request)
-    {
-        $request->validate([
-            'so_id' => ['required', 'numeric'],
-            'quantity' => ['required', 'numeric', 'min:0'],
-        ]);
-
-        $so = SO::findOrFail($request->so_id);
-        $parts = explode('-', $so->name);
-
-        if (($item->quantity - $request->quantity) >= 0) {
-            ModelsRequest::create([
-                'item_id' => $item->id,
-                'user_id' => auth()->user()->id,
-                'quantity' => $request->quantity,
-                'type' => 2,
-                'status' => 0,
-                'so_id' => $so->id,
-            ]);
-        } else {
-            return redirect()->back()->with('error', 'Item Empty, Cannot Send Request!');
-        }
-
-        return redirect()->route('items')->with('info', 'Request sent!');
-    }
-
     public function activity(Item $item)
     {
         $search_term1 = " " . trim($item->itemcode) . " ";
@@ -200,11 +134,6 @@ class ItemController extends Controller
 
         $data = compact('logs', 'item');
         return view('items.activity', $data);
-    }
-
-    public function images(Item $item)
-    {
-        return view('items.images', compact('item'));
     }
 
     public function destroy(Item $item)

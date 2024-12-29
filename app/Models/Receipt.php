@@ -37,35 +37,14 @@ class Receipt extends Model
         return $this->belongsTo(JournalVoucher::class);
     }
 
-    public function po()
+    public function purchase_order()
     {
-        return $this->belongsTo(PO::class);
+        return $this->belongsTo(PurchaseOrder::class);
     }
 
     public function receipt_items()
     {
         return $this->hasMany(ReceiptItem::class);
-    }
-
-    public function landed_costs()
-    {
-        return $this->hasMany(LandedCost::class);
-    }
-
-    public function barcodes()
-    {
-        return $this->hasMany(BarcodeItem::class);
-    }
-
-    // Permissions
-    public function can_delete()
-    {
-        return $this->receipt_items->count() == 0 && $this->landed_costs->count() == 0;
-    }
-
-    public function can_edit()
-    {
-        return $this->journal_voucher->status == 'unposted';
     }
 
     // Filter
@@ -103,9 +82,9 @@ class Receipt extends Model
             $journal_voucher_id = request('journal_voucher_id');
             $q->where('journal_voucher_id', $journal_voucher_id);
         }
-        if (request('po_id')) {
-            $po_id = request('po_id');
-            $q->where('po_id', $po_id);
+        if (request('purchase_order_id')) {
+            $purchase_order_id = request('purchase_order_id');
+            $q->where('purchase_order_id', $purchase_order_id);
         }
 
         return $q;

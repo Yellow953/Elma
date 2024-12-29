@@ -75,7 +75,7 @@
                         @forelse ($logs as $l)
                         <div class="timeline-item">
                             <div
-                                class="alert alert-{{Str::contains($l->text, 'for project') ? 'info' : 'secondary'}} alert-{{Str::contains($l->text, 'edited') ? 'warning' : ''}} alert-dismissible text-white mx-0">
+                                class="alert alert-secondary alert-{{Str::contains($l->text, 'edited') ? 'warning' : ''}} alert-dismissible text-white mx-0">
                                 <span class="text-sm">{{$l->text}}</span>
                             </div>
                         </div>

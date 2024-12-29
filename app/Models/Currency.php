@@ -42,17 +42,6 @@ class Currency extends Model
         return $this->hasMany(Transaction::class)->where('hidden', false);
     }
 
-    public function pos()
-    {
-        return $this->hasMany(PO::class);
-    }
-
-    // Permissions
-    public function can_delete()
-    {
-        return $this->users->count() == 0 && $this->accounts->count() == 0 && $this->suppliers->count() == 0 && $this->clients->count() == 0 && $this->journal_vouchers->count() == 0 && $this->transactions->count() == 0 && $this->pos->count() == 0;
-    }
-
     // Filter
     public function scopeFilter($q)
     {

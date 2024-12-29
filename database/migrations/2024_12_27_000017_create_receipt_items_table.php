@@ -18,7 +18,6 @@ return new class extends Migration
             $table->double('vat')->unsigned();
             $table->double('rate')->unsigned();
             $table->double('total_cost_after_vat')->unsigned();
-            $table->double('total_after_landed_cost')->unsigned();
             $table->double('total_foreign_cost')->unsigned();
             $table->timestamps();
             $table->softDeletes();

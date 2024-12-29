@@ -34,7 +34,7 @@ class SalesOrderController extends Controller
 
     public function new()
     {
-        return view('sos.new', compact('projects'));
+        return view('sales_orders.new');
     }
 
     public function create(Request $request)
@@ -52,36 +52,31 @@ class SalesOrderController extends Controller
         $text = ucwords(auth()->user()->name) . " created " . $sales_order->name . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('so')->with('success', 'SalesOrder created successfully!');
+        return redirect()->route('sales_orders')->with('success', 'SalesOrder created successfully!');
     }
 
     public function show(SalesOrder $sales_order)
     {
-        return view('sos.show', compact('so'));
+        return view('sales_orders.show', compact('sales_order'));
     }
 
     public function display(SalesOrder $sales_order)
     {
-        return view('sos.display', compact('so'));
+        return view('sales_orders.display', compact('sales_order'));
     }
 
     public function print(SalesOrder $sales_order)
     {
-        return view('sos.show', compact('so'));
+        return view('sales_orders.show', compact('sales_order'));
     }
 
     public function edit(SalesOrder $sales_order)
     {
         $parts = explode('-', $sales_order->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
         $search = request()->query('search');
 
-        if (auth()->user()->role != 'admin' && auth()->user()->location_id != $warehouse->id) {
-            return redirect()->back()->with('error', 'You are not allowed to access this page...');
-        }
-
         if ($search) {
-            $item = Item::where('warehouse_id', $warehouse->id)->where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
+            $item = Item::where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
             if ($item != null) {
                 $sales_order_items = SalesOrderItem::select('id', 'item_id', 'quantity')->where('so_id', $sales_order->id)->where('item_id', $item->id)->paginate(50);
             } else {
@@ -91,10 +86,9 @@ class SalesOrderController extends Controller
             $sales_order_items = SalesOrderItem::select('id', 'item_id', 'quantity')->where('so_id', $sales_order->id)->orderBy('created_at', 'asc')->paginate(50);
         }
 
-        $projects = Project::select('id', 'name')->orderBy('id', 'desc')->get();
-        $data = compact('so', 'sales_order_items', 'projects');
+        $data = compact('sales_order', 'sales_order_items');
 
-        return view('sos.edit', $data);
+        return view('sales_orders.edit', $data);
     }
 
     public function update(SalesOrder $sales_order, Request $request)
@@ -111,7 +105,7 @@ class SalesOrderController extends Controller
         $text = ucwords(auth()->user()->name) . ' updated ' . $sales_order->name . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('so')->with('warning', 'SalesOrder updated successfully!');
+        return redirect()->route('sales_orders')->with('warning', 'SalesOrder updated successfully!');
     }
 
     public function activity(SalesOrder $sales_order)
@@ -120,8 +114,8 @@ class SalesOrderController extends Controller
         $search_term2 = " " . trim($sales_order->name) . " ";
         $logs = Log::select('text')->where('text', 'LIKE', "%{$search_term1}%")->orWhere('text', 'LIKE', "%{$search_term2}%")->orderBy('id', 'desc')->get();
 
-        $data = compact('so', 'logs');
-        return view('sos.activity', $data);
+        $data = compact('sales_order', 'logs');
+        return view('sales_orders.activity', $data);
     }
 
     public function Return(SalesOrderItem $sales_orderItem)
@@ -136,7 +130,6 @@ class SalesOrderController extends Controller
             'quantity' => $sales_orderItem->quantity,
             'type' => 10,
             'status' => 0,
-            'warehouse_id' => $item->warehouse_id,
         ]);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
@@ -158,7 +151,6 @@ class SalesOrderController extends Controller
                 'quantity' => $sales_orderItem->quantity,
                 'type' => 10,
                 'status' => 0,
-                'warehouse_id' => $item->warehouse_id,
             ]);
         }
 
@@ -169,17 +161,12 @@ class SalesOrderController extends Controller
     public function AddItems(SalesOrder $sales_order)
     {
         $parts = explode('-', $sales_order->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
-
-        if (auth()->user()->role != 'admin' && auth()->user()->location_id != $warehouse->id) {
-            return redirect()->back()->with('error', 'You are not allowed to access this page...');
-        }
 
         $sales_order_items = SalesOrderItem::select('item_id', 'quantity')->where('so_id', $sales_order->id)->orderBy('created_at', 'desc')->get();
         $requests = ModelsRequest::select('user_id', 'quantity', 'item_id')->where('status', 0)->where('type', 2)->where('so_id', $sales_order->id)->orderBy('created_at', 'DESC')->get();
 
-        $data = compact('so', 'so_items', 'requests');
-        return view('sos.add_items', $data);
+        $data = compact('sales_order', 'so_items', 'requests');
+        return view('sales_orders.add_items', $data);
     }
 
     public function SaveItems(SalesOrder $sales_order, Request $request)
@@ -190,7 +177,6 @@ class SalesOrderController extends Controller
         ]);
 
         $parts = explode('-', $sales_order->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
         $counter = 0;
 
         foreach ($request->items as $id => $quantity) {
@@ -203,10 +189,8 @@ class SalesOrderController extends Controller
             ModelsRequest::create([
                 'user_id' => auth()->user()->id,
                 'item_id' => $item->id,
-                'project_id' => $sales_order->project_id,
                 'so_id' => $sales_order->id,
                 'quantity' => $quantity['quantity'],
-                'warehouse_id' => $warehouse->id,
                 'type' => 2,
                 'status' => 0,
                 'created_at' => Carbon::now()->addSeconds($counter),
