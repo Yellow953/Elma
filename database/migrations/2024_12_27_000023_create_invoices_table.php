@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('date');
             $table->unsignedBigInteger('journal_voucher_id');
             $table->string('type')->default('invoice');
-            $table->unsignedBigInteger('so_id')->nullable();
+            $table->unsignedBigInteger('sales_order_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->foreign('foreign_currency_id')->references('id')->on('currencies');
             $table->foreign('tax_id')->references('id')->on('taxes');
             $table->foreign('journal_voucher_id')->references('id')->on('journal_vouchers');
-            $table->foreign('so_id')->references('id')->on('s_o_s');
+            $table->foreign('sales_order_id')->references('id')->on('sales_orders');
         });
     }
 

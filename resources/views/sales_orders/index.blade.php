@@ -3,10 +3,10 @@
 @section('title', 'so')
 
 @section('actions')
-@can('sos.create')
+@can('sales_orders.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('so.new') }}">New SO</a>
 @endcan
-@can('sos.export')
+@can('sales_orders.export')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('so.export') }}">Export SOs</a>
 <a class="btn btn-sm btn-info mx-1" href="{{ route('so_items.export') }}">Export SO Items</a>
 @endcan
@@ -114,14 +114,14 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
-                                            @can('sos.create')
+                                            @can('sales_orders.create')
                                             <a href="{{ route('so.AddItems', $so->id) }}"
                                                 class="btn btn-info btn-custom" title="Add Items">
                                                 <i class="fa-solid fa-plus"></i>
                                             </a>
                                             @endcan
 
-                                            @can('sos.read')
+                                            @can('sales_orders.read')
                                             <a href="{{ route('so.show', $so->id) }}" class="btn btn-info btn-custom"
                                                 title="Show">
                                                 <i class="fa-solid fa-eye"></i>
@@ -132,7 +132,7 @@
                                             </a>
                                             @endcan
 
-                                            @can('sos.update')
+                                            @can('sales_orders.update')
                                             <a href="{{ route('so.edit', $so->id) }}" title="Edit"
                                                 class="btn btn-warning btn-custom">
                                                 <i class="fa-solid fa-pen-to-square"></i>
@@ -146,7 +146,7 @@
                                             </a>
                                             @endcan
 
-                                            @can('sos.delete')
+                                            @can('sales_orders.delete')
                                             <form method="GET" action="{{ route('so.destroy', $so->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"

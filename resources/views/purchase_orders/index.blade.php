@@ -3,10 +3,10 @@
 @section('title', 'po')
 
 @section('actions')
-@can('pos.create')
+@can('purchase_orders.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('po.new') }}">New PO</a>
 @endcan
-@can('pos.export')
+@can('purchase_orders.export')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('po.export') }}">Export POs</a>
 <a class="btn btn-sm btn-info mx-1" href="{{ route('po_items.export') }}">Export PO Items</a>
 @endcan
@@ -114,14 +114,14 @@
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
-                                            @can('pos.create')
+                                            @can('purchase_orders.create')
                                             <a href="{{ route('po.AddItems', $po->id) }}"
                                                 class="btn btn-info btn-custom" title="Add items">
                                                 <i class="fa-solid fa-plus"></i>
                                             </a>
                                             @endcan
 
-                                            @can('pos.read')
+                                            @can('purchase_orders.read')
                                             <a href="{{ route('po.show', $po->id) }}" class="btn btn-info btn-custom"
                                                 title="Show">
                                                 <i class="fa-solid fa-eye"></i>
@@ -132,7 +132,7 @@
                                             </a>
                                             @endcan
 
-                                            @can('pos.update')
+                                            @can('purchase_orders.update')
                                             <a href="{{ route('po.edit', $po->id) }}" class="btn btn-warning btn-custom"
                                                 title="Edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
@@ -146,7 +146,7 @@
                                             </a>
                                             @endcan
 
-                                            @can('pos.delete')
+                                            @can('purchase_orders.delete')
                                             <form method="GET" action="{{ route('po.destroy', $po->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"

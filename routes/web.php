@@ -6,10 +6,10 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\ExcellController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\SOController;
+use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LogController;
-use App\Http\Controllers\POController;
+use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TaxController;
@@ -20,7 +20,6 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\VOCController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\SecondaryImageController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CashReceiptController;
 use App\Http\Controllers\CreditNoteController;
@@ -79,12 +78,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{item}/delete', [ItemController::class, 'destroy'])->name('items.destroy');
         Route::get('/{item}/images', [ItemController::class, 'images'])->name('items.images');
         Route::get('/', [ItemController::class, 'index'])->name('items');
-    });
-
-    // Secondary Images Routes
-    Route::prefix('secondary_images')->group(function () {
-        Route::post('/create', [SecondaryImageController::class, 'create'])->name('secondary_images.create');
-        Route::get('/destroy/{secondary_image}', [SecondaryImageController::class, 'destroy'])->name('secondary_images.destroy');
     });
 
     // Logs Routes
@@ -155,57 +148,57 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [ExcellController::class, 'index'])->name('backup');
     });
 
-    // SOS Routes
-    Route::prefix('so')->group(function () {
-        Route::get('/export', [SOController::class, 'export'])->name('so.export');
-        Route::get('/new', [SOController::class, 'new'])->name('so.new');
-        Route::post('/create', [SOController::class, 'create'])->name('so.create');
-        Route::get('/{so}/edit', [SOController::class, 'edit'])->name('so.edit');
-        Route::post('/{so}/update', [SOController::class, 'update'])->name('so.update');
-        Route::get('/{so}/show', [SOController::class, 'show'])->name('so.show');
-        Route::get('/{so}/activity', [SOController::class, 'activity'])->name('so.activity');
-        Route::post('/{so}/saveitems', [SOController::class, 'SaveItems'])->name('so.SaveItems');
-        Route::get('/{so}/print', [SOController::class, 'print'])->name('so.print');
-        Route::get('/{so}/display', [SOController::class, 'display'])->name('so.display');
-        Route::get('/{so}/additems', [SOController::class, 'AddItems'])->name('so.AddItems');
-        Route::get('/live_search', [SOController::class, 'live_search'])->name('so.live_search');
-        Route::get('/search', [SOController::class, 'search'])->name('so.search');
-        Route::get('/{so}/delete', [SOController::class, 'destroy'])->name('so.destroy');
-        Route::get('/{so}/export_items', [ExcellController::class, 'so_export_items'])->name('so.so_export_items');
-        Route::post('/{so}/import_items', [ExcellController::class, 'so_import_items'])->name('so.so_import_items');
-        Route::get('/{so}/new_invoice', [SOController::class, 'new_invoice'])->name('so.new_invoice');
-        Route::get('/', [SOController::class, 'index'])->name('so');
+    // Sales Orders Routes
+    Route::prefix('sales_orders')->group(function () {
+        Route::get('/export', [SalesOrderController::class, 'export'])->name('sales_orders.export');
+        Route::get('/new', [SalesOrderController::class, 'new'])->name('sales_orders.new');
+        Route::post('/create', [SalesOrderController::class, 'create'])->name('sales_orders.create');
+        Route::get('/{sales_order}/edit', [SalesOrderController::class, 'edit'])->name('sales_orders.edit');
+        Route::post('/{sales_order}/update', [SalesOrderController::class, 'update'])->name('sales_orders.update');
+        Route::get('/{sales_order}/show', [SalesOrderController::class, 'show'])->name('sales_orders.show');
+        Route::get('/{sales_order}/activity', [SalesOrderController::class, 'activity'])->name('sales_orders.activity');
+        Route::post('/{sales_order}/saveitems', [SalesOrderController::class, 'SaveItems'])->name('sales_orders.SaveItems');
+        Route::get('/{sales_order}/print', [SalesOrderController::class, 'print'])->name('sales_orders.print');
+        Route::get('/{sales_order}/display', [SalesOrderController::class, 'display'])->name('sales_orders.display');
+        Route::get('/{sales_order}/additems', [SalesOrderController::class, 'AddItems'])->name('sales_orders.AddItems');
+        Route::get('/live_search', [SalesOrderController::class, 'live_search'])->name('sales_orders.live_search');
+        Route::get('/search', [SalesOrderController::class, 'search'])->name('sales_orders.search');
+        Route::get('/{sales_order}/delete', [SalesOrderController::class, 'destroy'])->name('sales_orders.destroy');
+        Route::get('/{sales_order}/export_items', [ExcellController::class, 'so_export_items'])->name('sales_orders.so_export_items');
+        Route::post('/{sales_order}/import_items', [ExcellController::class, 'so_import_items'])->name('sales_orders.so_import_items');
+        Route::get('/{sales_order}/new_invoice', [SalesOrderController::class, 'new_invoice'])->name('sales_orders.new_invoice');
+        Route::get('/', [SalesOrderController::class, 'index'])->name('sales_orders');
     });
-    Route::prefix('so_items')->group(function () {
-        Route::get('/{so_item}/return', [SOController::class, 'Return'])->name('so.return');
-        Route::get('/{so}/returnall', [SOController::class, 'return_all'])->name('so.return_all');
-        Route::get('/export', [SOController::class, 'export_so_items'])->name('so_items.export');
+    Route::prefix('sales_order_items')->group(function () {
+        Route::get('/{sales_order_item}/return', [SalesOrderController::class, 'Return'])->name('sales_orders.return');
+        Route::get('/{sales_order}/returnall', [SalesOrderController::class, 'return_all'])->name('sales_orders.return_all');
+        Route::get('/export', [SalesOrderController::class, 'export_so_items'])->name('sales_order_items.export');
     });
 
-    // POS Routes
-    Route::prefix('po')->group(function () {
-        Route::get('/export', [POController::class, 'export'])->name('po.export');
-        Route::get('/new', [POController::class, 'new'])->name('po.new');
-        Route::post('/create', [POController::class, 'create'])->name('po.create');
-        Route::get('/{po}/edit', [POController::class, 'edit'])->name('po.edit');
-        Route::post('/{po}/update', [POController::class, 'update'])->name('po.update');
-        Route::get('/{po}/show', [POController::class, 'show'])->name('po.show');
-        Route::get('/{po}/activity', [POController::class, 'activity'])->name('po.activity');
-        Route::post('/{po}/saveitems', [POController::class, 'SaveItems'])->name('po.SaveItems');
-        Route::get('/{po}/print', [POController::class, 'print'])->name('po.print');
-        Route::get('/{po}/additems', [POController::class, 'AddItems'])->name('po.AddItems');
-        Route::get('/live_search', [POController::class, 'live_search'])->name('po.live_search');
-        Route::get('/search', [POController::class, 'search'])->name('po.search');
-        Route::get('/{po}/delete', [POController::class, 'destroy'])->name('po.destroy');
-        Route::get('/{po}/export_items', [ExcellController::class, 'po_export_items'])->name('po.po_export_items');
-        Route::post('/{po}/import_items', [ExcellController::class, 'po_import_items'])->name('po.po_import_items');
-        Route::get('/{po}/new_receipt', [POController::class, 'new_receipt'])->name('po.new_receipt');
-        Route::get('/', [POController::class, 'index'])->name('po');
+    // Purchase Orders Routes
+    Route::prefix('purchase_orders')->group(function () {
+        Route::get('/export', [PurchaseOrderController::class, 'export'])->name('purchase_orders.export');
+        Route::get('/new', [PurchaseOrderController::class, 'new'])->name('purchase_orders.new');
+        Route::post('/create', [PurchaseOrderController::class, 'create'])->name('purchase_orders.create');
+        Route::get('/{purchase_order}/edit', [PurchaseOrderController::class, 'edit'])->name('purchase_orders.edit');
+        Route::post('/{purchase_order}/update', [PurchaseOrderController::class, 'update'])->name('purchase_orders.update');
+        Route::get('/{purchase_order}/show', [PurchaseOrderController::class, 'show'])->name('purchase_orders.show');
+        Route::get('/{purchase_order}/activity', [PurchaseOrderController::class, 'activity'])->name('purchase_orders.activity');
+        Route::post('/{purchase_order}/saveitems', [PurchaseOrderController::class, 'SaveItems'])->name('purchase_orders.SaveItems');
+        Route::get('/{purchase_order}/print', [PurchaseOrderController::class, 'print'])->name('purchase_orders.print');
+        Route::get('/{purchase_order}/additems', [PurchaseOrderController::class, 'AddItems'])->name('purchase_orders.AddItems');
+        Route::get('/live_search', [PurchaseOrderController::class, 'live_search'])->name('purchase_orders.live_search');
+        Route::get('/search', [PurchaseOrderController::class, 'search'])->name('purchase_orders.search');
+        Route::get('/{purchase_order}/delete', [PurchaseOrderController::class, 'destroy'])->name('purchase_orders.destroy');
+        Route::get('/{purchase_order}/export_items', [ExcellController::class, 'po_export_items'])->name('purchase_orders.po_export_items');
+        Route::post('/{purchase_order}/import_items', [ExcellController::class, 'po_import_items'])->name('purchase_orders.po_import_items');
+        Route::get('/{purchase_order}/new_receipt', [PurchaseOrderController::class, 'new_receipt'])->name('purchase_orders.new_receipt');
+        Route::get('/', [PurchaseOrderController::class, 'index'])->name('purchase_orders');
     });
-    Route::prefix('po_items')->group(function () {
-        Route::get('/{po_item}/return', [POController::class, 'Return'])->name('po.return');
-        Route::get('/{po}/returnall', [POController::class, 'return_all'])->name('po.return_all');
-        Route::get('/export', [POController::class, 'export_po_items'])->name('po_items.export');
+    Route::prefix('purchase_order_items')->group(function () {
+        Route::get('/{purchase_order_item}/return', [PurchaseOrderController::class, 'Return'])->name('purchase_orders.return');
+        Route::get('/{purchase_order}/returnall', [PurchaseOrderController::class, 'return_all'])->name('purchase_orders.return_all');
+        Route::get('/export', [PurchaseOrderController::class, 'export_po_items'])->name('purchase_order_items.export');
     });
 
     // Clients Routes
@@ -415,7 +408,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/company/update', [SettingsController::class, 'update'])->name('company.update');
     Route::post('/company/toggle-allow-past-dates', [SettingsController::class, 'toggle_allow_past_dates'])->name('company.toggle_allow_past_dates');
 
-    // navigation
+    // Navigation
     Route::post('/navigate', [HomeController::class, 'navigate'])->name('navigate');
 
     // App

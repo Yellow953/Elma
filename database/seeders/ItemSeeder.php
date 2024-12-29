@@ -10,10 +10,76 @@ class ItemSeeder extends Seeder
     public function run(): void
     {
         $items = [
-            ['name' => 'Item 1', 'image' => '/assets/images/no_img.png', 'quantity' => 100, 'leveling' => 10, 'itemcode' => 'item1', 'description' => 'Item 1 Description', 'type' => 'Non Serialized', 'inventory_account_id' => 128, 'cost_of_sales_account_id' => 240, 'sales_account_id' => 316],
-            ['name' => 'Item 1', 'image' => '/assets/images/no_img.png', 'quantity' => 100, 'leveling' => 10, 'itemcode' => 'item1', 'description' => 'Item 1 Description', 'type' => 'Serialized', 'inventory_account_id' => 128, 'cost_of_sales_account_id' => 240, 'sales_account_id' => 316],
-            ['name' => 'Item 2', 'image' => '/assets/images/no_img.png', 'quantity' => 100, 'leveling' => 10, 'itemcode' => 'item2', 'description' => 'Item 2 Description', 'type' => 'Non Serialized', 'inventory_account_id' => 128, 'cost_of_sales_account_id' => 240, 'sales_account_id' => 316],
-            ['name' => 'Item 2', 'image' => '/assets/images/no_img.png', 'quantity' => 100, 'leveling' => 10, 'itemcode' => 'item2', 'description' => 'Item 2 Description', 'type' => 'Serialized', 'inventory_account_id' => 128, 'cost_of_sales_account_id' => 240, 'sales_account_id' => 316],
+            [
+                'name' => 'Small Package Shipping',
+                'description' => 'Shipping services for small packages.',
+                'unit_price' => 50.00,
+                'unit' => 'per package',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Container Shipment',
+                'description' => 'Shipping services for containers.',
+                'unit_price' => 500.00,
+                'unit' => 'per container',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Customs Clearance',
+                'description' => 'Customs clearance services for shipments.',
+                'unit_price' => 100.00,
+                'unit' => 'per shipment',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Warehousing',
+                'description' => 'Storage services for goods in the warehouse.',
+                'unit_price' => 200.00,
+                'unit' => 'per day',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Freight Forwarding',
+                'description' => 'Management and coordination of freight shipments.',
+                'unit_price' => 150.00,
+                'unit' => 'per shipment',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Documentation Handling',
+                'description' => 'Handling and preparation of shipping documents.',
+                'unit_price' => 30.00,
+                'unit' => 'per document',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Insurance Processing',
+                'description' => 'Processing insurance for shipments.',
+                'unit_price' => 50.00,
+                'unit' => 'per shipment',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Port Charges',
+                'description' => 'Charges incurred at the port for shipment handling.',
+                'unit_price' => 75.00,
+                'unit' => 'per shipment',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Packaging Services',
+                'description' => 'Packing goods securely for transportation.',
+                'unit_price' => 25.00,
+                'unit' => 'per package',
+                'revenue_account_id' => 327,
+            ],
+            [
+                'name' => 'Custom Duties Advance',
+                'description' => 'Advancing custom duties on behalf of clients.',
+                'unit_price' => 0.00,
+                'unit' => 'per shipment',
+                'revenue_account_id' => 327,
+            ],
         ];
 
         foreach ($items as $item) {

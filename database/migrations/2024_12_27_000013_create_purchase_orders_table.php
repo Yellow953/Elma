@@ -8,11 +8,15 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('taxes', function (Blueprint $table) {
+        Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->double('rate')->default(0);
+            $table->string('po_number');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
+            $table->date('order_date');
+            $table->date('due_date')->nullable();
+            $table->string('status')->default('new');
+            $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -20,6 +24,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('taxes');
+        Schema::dropIfExists('purchase_orders');
     }
 };

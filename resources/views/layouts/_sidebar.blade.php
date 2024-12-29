@@ -10,6 +10,10 @@
 
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
+            <li class="nav-item mt-3">
+                <h5 class="ps-4 ms-2 text-uppercase title-nav">Data</h5>
+            </li>
+
             @can('items.read')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('items*') ? 'active bg-gradient-info' : '' }}"
@@ -20,35 +24,29 @@
             </li>
             @endcan
 
-            @can('pos.read')
+            @can('client.read')
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('po*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('po') }}">
-                    <span><i class="fa-solid fa-folder"></i></span>
-                    PO
+                <a class="nav-link {{ request()->routeIs('clients*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('clients') }}">
+                    <span><i class="fa-solid fa-users"></i></span>
+                    Clients
                 </a>
             </li>
             @endcan
 
-            @can('sos.read')
+            @can('suppliers.read')
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('so*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('so') }}">
-                    <span><i class="fa-solid fa-folder"></i></span>
-                    SO
+                <a class="nav-link {{ request()->routeIs('suppliers*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('suppliers') }}">
+                    <span><i class="fa-solid fa-users"></i></span>
+                    Suppliers
                 </a>
             </li>
             @endcan
 
-            @can('logs.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('logs*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('logs') }}">
-                    <span><i class="fa-solid fa-receipt"></i></span>
-                    Logs
-                </a>
+            <li class="nav-item mt-3">
+                <h5 class="ps-4 ms-2 text-uppercase title-nav">Accounting</h5>
             </li>
-            @endcan
 
             @can('accounts.read')
             <li class="nav-item">
@@ -70,12 +68,16 @@
             </li>
             @endcan
 
-            @can('suppliers.read')
+            <li class="nav-item mt-3">
+                <h6 class="title-sub-nav">Purchase</h6>
+            </li>
+
+            @can('purchase_orders.read')
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('suppliers*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('suppliers') }}">
-                    <span><i class="fa-solid fa-users"></i></span>
-                    Suppliers
+                <a class="nav-link {{ request()->routeIs('purchase_orders*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('purchase_orders') }}">
+                    <span><i class="fa-solid fa-folder"></i></span>
+                    Purchase Orders
                 </a>
             </li>
             @endcan
@@ -120,12 +122,16 @@
             </li>
             @endcan
 
-            @can('client.read')
+            <li class="nav-item mt-3">
+                <h6 class="title-sub-nav">Sales</h6>
+            </li>
+
+            @can('sales_orders.read')
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('clients*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('clients') }}">
-                    <span><i class="fa-solid fa-users"></i></span>
-                    Clients
+                <a class="nav-link {{ request()->routeIs('sales_orders*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('sales_orders') }}">
+                    <span><i class="fa-solid fa-folder"></i></span>
+                    Sales Orders
                 </a>
             </li>
             @endcan
@@ -160,6 +166,10 @@
             </li>
             @endcan
 
+            <li class="nav-item mt-3">
+                <h5 class="ps-4 ms-2 text-uppercase title-nav">System</h5>
+            </li>
+
             @can('currencies.read')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('currencies*') ? 'active bg-gradient-info' : '' }}"
@@ -186,6 +196,16 @@
                     href="{{ route('users') }}">
                     <span><i class="fa-solid fa-users"></i></span>
                     Users
+                </a>
+            </li>
+            @endcan
+
+            @can('logs.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('logs*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('logs') }}">
+                    <span><i class="fa-solid fa-receipt"></i></span>
+                    Logs
                 </a>
             </li>
             @endcan

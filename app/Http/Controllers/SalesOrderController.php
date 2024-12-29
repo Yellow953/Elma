@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\SO;
-use App\Models\SOItem;
+use App\Models\SalesOrder;
+use App\Models\SalesOrderItem;
 use App\Models\Item;
 use App\Models\Log;
 use App\Models\Tax;
@@ -13,23 +13,23 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 
-class SOController extends Controller
+class SalesOrderController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:sos.read')->only('index');
-        $this->middleware('permission:sos.create')->only(['new', 'create']);
-        $this->middleware('permission:sos.update')->only(['edit', 'update']);
-        $this->middleware('permission:sos.delete')->only('destroy');
-        $this->middleware('permission:sos.export')->only('export');
+        $this->middleware('permission:sales_orders.read')->only('index');
+        $this->middleware('permission:sales_orders.create')->only(['new', 'create']);
+        $this->middleware('permission:sales_orders.update')->only(['edit', 'update']);
+        $this->middleware('permission:sales_orders.delete')->only('destroy');
+        $this->middleware('permission:sales_orders.export')->only('export');
     }
 
     public function index()
     {
-        $sos = SO::select('id', 'name', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
+        $sales_orders = SalesOrder::select('id', 'name', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
 
-        $data = compact('sos');
-        return view('sos.index', $data);
+        $data = compact('sales_orders');
+        return view('sales_orders.index', $data);
     }
 
     public function new()
@@ -43,36 +43,36 @@ class SOController extends Controller
             'date' => 'required|date',
         ]);
 
-        $so = SO::create([
-            'name' => SO::generate_name(),
+        $sales_order = SalesOrder::create([
+            'name' => SalesOrder::generate_name(),
             'description' => $request->description,
             'date' => $request->date ?? Carbon::now(),
         ]);
 
-        $text = ucwords(auth()->user()->name) . " created " . $so->name . ", datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . " created " . $sales_order->name . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('so')->with('success', 'SO created successfully!');
+        return redirect()->route('so')->with('success', 'SalesOrder created successfully!');
     }
 
-    public function show(SO $so)
+    public function show(SalesOrder $sales_order)
     {
         return view('sos.show', compact('so'));
     }
 
-    public function display(SO $so)
+    public function display(SalesOrder $sales_order)
     {
         return view('sos.display', compact('so'));
     }
 
-    public function print(SO $so)
+    public function print(SalesOrder $sales_order)
     {
         return view('sos.show', compact('so'));
     }
 
-    public function edit(SO $so)
+    public function edit(SalesOrder $sales_order)
     {
-        $parts = explode('-', $so->name);
+        $parts = explode('-', $sales_order->name);
         $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
         $search = request()->query('search');
 
@@ -83,57 +83,57 @@ class SOController extends Controller
         if ($search) {
             $item = Item::where('warehouse_id', $warehouse->id)->where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
             if ($item != null) {
-                $soItems = SOItem::select('id', 'item_id', 'quantity')->where('so_id', $so->id)->where('item_id', $item->id)->paginate(50);
+                $sales_order_items = SalesOrderItem::select('id', 'item_id', 'quantity')->where('so_id', $sales_order->id)->where('item_id', $item->id)->paginate(50);
             } else {
-                $soItems = new Collection();
+                $sales_order_items = new Collection();
             }
         } else {
-            $soItems = SOItem::select('id', 'item_id', 'quantity')->where('so_id', $so->id)->orderBy('created_at', 'asc')->paginate(50);
+            $sales_order_items = SalesOrderItem::select('id', 'item_id', 'quantity')->where('so_id', $sales_order->id)->orderBy('created_at', 'asc')->paginate(50);
         }
 
         $projects = Project::select('id', 'name')->orderBy('id', 'desc')->get();
-        $data = compact('so', 'soItems', 'projects');
+        $data = compact('so', 'sales_order_items', 'projects');
 
         return view('sos.edit', $data);
     }
 
-    public function update(SO $so, Request $request)
+    public function update(SalesOrder $sales_order, Request $request)
     {
         $request->validate([
             'date' => 'required|date',
         ]);
 
-        $so->update([
+        $sales_order->update([
             'description' => $request->description,
             'date' => $request->date,
         ]);
 
-        $text = ucwords(auth()->user()->name) . ' updated ' . $so->name . ", datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . ' updated ' . $sales_order->name . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('so')->with('warning', 'SO updated successfully!');
+        return redirect()->route('so')->with('warning', 'SalesOrder updated successfully!');
     }
 
-    public function activity(SO $so)
+    public function activity(SalesOrder $sales_order)
     {
-        $search_term1 = " " . trim($so->name) . ",";
-        $search_term2 = " " . trim($so->name) . " ";
+        $search_term1 = " " . trim($sales_order->name) . ",";
+        $search_term2 = " " . trim($sales_order->name) . " ";
         $logs = Log::select('text')->where('text', 'LIKE', "%{$search_term1}%")->orWhere('text', 'LIKE', "%{$search_term2}%")->orderBy('id', 'desc')->get();
 
         $data = compact('so', 'logs');
         return view('sos.activity', $data);
     }
 
-    public function Return(SOItem $soItem)
+    public function Return(SalesOrderItem $sales_orderItem)
     {
-        $item = Item::findOrFail($soItem->item_id);
+        $item = Item::findOrFail($sales_orderItem->item_id);
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
         ModelsRequest::create([
             'user_id' => auth()->user()->id,
             'item_id' => $item->id,
-            'so_id' => $soItem->id,
-            'quantity' => $soItem->quantity,
+            'so_id' => $sales_orderItem->id,
+            'quantity' => $sales_orderItem->quantity,
             'type' => 10,
             'status' => 0,
             'warehouse_id' => $item->warehouse_id,
@@ -147,15 +147,15 @@ class SOController extends Controller
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
-        $soItems = SOItem::where('so_id', $id)->get();
-        foreach ($soItems as $soItem) {
-            $item = Item::findOrFail($soItem->item_id);
+        $sales_order_items = SalesOrderItem::where('so_id', $id)->get();
+        foreach ($sales_order_items as $sales_orderItem) {
+            $item = Item::findOrFail($sales_orderItem->item_id);
 
             ModelsRequest::create([
                 'user_id' => auth()->user()->id,
                 'item_id' => $item->id,
-                'so_id' => $soItem->id,
-                'quantity' => $soItem->quantity,
+                'so_id' => $sales_orderItem->id,
+                'quantity' => $sales_orderItem->quantity,
                 'type' => 10,
                 'status' => 0,
                 'warehouse_id' => $item->warehouse_id,
@@ -166,30 +166,30 @@ class SOController extends Controller
         return redirect()->back()->with('info', 'Requests sent!');
     }
 
-    public function AddItems(SO $so)
+    public function AddItems(SalesOrder $sales_order)
     {
-        $parts = explode('-', $so->name);
+        $parts = explode('-', $sales_order->name);
         $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
 
         if (auth()->user()->role != 'admin' && auth()->user()->location_id != $warehouse->id) {
             return redirect()->back()->with('error', 'You are not allowed to access this page...');
         }
 
-        $so_items = SOItem::select('item_id', 'quantity')->where('so_id', $so->id)->orderBy('created_at', 'desc')->get();
-        $requests = ModelsRequest::select('user_id', 'quantity', 'item_id')->where('status', 0)->where('type', 2)->where('so_id', $so->id)->orderBy('created_at', 'DESC')->get();
+        $sales_order_items = SalesOrderItem::select('item_id', 'quantity')->where('so_id', $sales_order->id)->orderBy('created_at', 'desc')->get();
+        $requests = ModelsRequest::select('user_id', 'quantity', 'item_id')->where('status', 0)->where('type', 2)->where('so_id', $sales_order->id)->orderBy('created_at', 'DESC')->get();
 
         $data = compact('so', 'so_items', 'requests');
         return view('sos.add_items', $data);
     }
 
-    public function SaveItems(SO $so, Request $request)
+    public function SaveItems(SalesOrder $sales_order, Request $request)
     {
         $request->validate([
             'items' => 'required|array',
             'items.*.quantity' => 'required|min:1',
         ]);
 
-        $parts = explode('-', $so->name);
+        $parts = explode('-', $sales_order->name);
         $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
         $counter = 0;
 
@@ -203,8 +203,8 @@ class SOController extends Controller
             ModelsRequest::create([
                 'user_id' => auth()->user()->id,
                 'item_id' => $item->id,
-                'project_id' => $so->project_id,
-                'so_id' => $so->id,
+                'project_id' => $sales_order->project_id,
+                'so_id' => $sales_order->id,
                 'quantity' => $quantity['quantity'],
                 'warehouse_id' => $warehouse->id,
                 'type' => 2,
@@ -220,13 +220,12 @@ class SOController extends Controller
 
     public function search(Request $request)
     {
-        $so = SO::findOrFail($request->so_id);
-        $parts = explode('-', $so->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
+        $sales_order = SalesOrder::findOrFail($request->so_id);
+        $parts = explode('-', $sales_order->name);
 
         $query = $request->search;
 
-        $result = Item::select('id', 'itemcode', 'quantity')->where('warehouse_id', $warehouse->id)->where('itemcode', $query)->get()->firstOrFail();
+        $result = Item::select('id', 'itemcode', 'quantity')->where('itemcode', $query)->get()->firstOrFail();
 
         if ($result == null) {
             abort(400, 'Bad Request');
@@ -237,16 +236,15 @@ class SOController extends Controller
 
     public function live_search(Request $request)
     {
-        $so = SO::findOrFail($request->so_id);
-        $parts = explode('-', $so->name);
-        $warehouse = Warehouse::where("code", $parts[0])->firstOrFail();
+        $sales_order = SalesOrder::findOrFail($request->so_id);
+        $parts = explode('-', $sales_order->name);
 
         $query = $request->live_search;
 
         if ($query != null) {
-            $items = Item::select('id', 'itemcode', 'quantity')->where('warehouse_id', $warehouse->id)->where('itemcode', 'LIKE', "%{$query}%")->get();
+            $items = Item::select('id', 'itemcode', 'quantity')->where('itemcode', 'LIKE', "%{$query}%")->get();
         } else {
-            $items = Item::select('id', 'itemcode', 'quantity')->where('warehouse_id', $warehouse->id)->get();
+            $items = Item::select('id', 'itemcode', 'quantity')->get();
         }
 
         if ($items == null) {
@@ -256,30 +254,22 @@ class SOController extends Controller
         }
     }
 
-    public function quantities(SO $so)
+    public function destroy(SalesOrder $sales_order)
     {
-        $so_items = SOItem::select('item_id', 'quantity')->where('so_id', $so->id)->get();
-
-        $data = compact('so', 'so_items');
-        return view('sos.quantities', $data);
-    }
-
-    public function destroy(SO $so)
-    {
-        $text = ucwords(auth()->user()->name) . " deleted so : " . $so->name . ", datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . " deleted so : " . $sales_order->name . ", datetime :   " . now();
 
         Log::create(['text' => $text]);
-        $so->delete();
+        $sales_order->delete();
 
-        return redirect()->back()->with('error', 'SO deleted successfully!');
+        return redirect()->back()->with('error', 'Sales Order deleted successfully!');
     }
 
-    public function new_invoice(SO $so)
+    public function new_invoice(SalesOrder $sales_order)
     {
         $clients = Client::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'warehouse_id', 'unit_cost', 'unit_price', 'type')->get();
+        $items = Item::select('id', 'itemcode', 'unit_cost', 'unit_price', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
-        $data = compact('clients', 'items', 'taxes', 'so');
+        $data = compact('clients', 'items', 'taxes', 'sales_order');
 
         return view('invoices.new', $data);
     }
