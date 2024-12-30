@@ -14,7 +14,7 @@ class Helper
 {
     public static function get_items()
     {
-        return Item::select('id', 'itemcode')->get();
+        return Item::select('id', 'name')->get();
     }
 
     public static function get_currencies()

@@ -12,9 +12,14 @@ class Item extends Model
 
     protected $guarded = [];
 
-    public function revenue_account()
+    public function purchase_order_items()
     {
-        return $this->belongsTo(Account::class, 'revenue_account_id');
+        return $this->hasMany(PurchaseOrderItem::class);
+    }
+
+    public function sales_order_items()
+    {
+        return $this->hasMany(SalesOrderItem::class);
     }
 
     public function receipt_items()
@@ -30,17 +35,9 @@ class Item extends Model
     // Filter
     public function scopeFilter($q)
     {
-        if (request('search')) {
-            $search = request('search');
-            $q->where('itemcode', 'LIKE', "%{$search}%")->orWhere('description', 'LIKE', "%{$search}%");
-        }
         if (request('name')) {
             $name = request('name');
             $q->where('name', 'LIKE', "%{$name}%");
-        }
-        if (request('itemcode')) {
-            $itemcode = request('itemcode');
-            $q->where('itemcode', 'LIKE', "%{$itemcode}%");
         }
         if (request('description')) {
             $description = request('description');
@@ -48,11 +45,7 @@ class Item extends Model
         }
         if (request('type')) {
             $type = request('type');
-            $q->where('type', 'LIKE', "%{$type}%");
-        }
-        if (request('revenue_account_id')) {
-            $revenue_account_id = request('revenue_account_id');
-            $q->where('revenue_account_id', $revenue_account_id);
+            $q->where('type', $type);
         }
 
         return $q;

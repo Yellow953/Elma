@@ -24,7 +24,7 @@
             </li>
             @endcan
 
-            @can('client.read')
+            @can('clients.read')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('clients*') ? 'active bg-gradient-info' : '' }}"
                     href="{{ route('clients') }}">

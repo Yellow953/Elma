@@ -7,155 +7,80 @@
 @section('content')
 <div class="inner-container">
     <div class="card">
-        <div class="card-header bg-info border-b">
-            <h4 class="font-weight-bolder">New Item</h4>
+        <div class="card-header bg-info">
+            <h4 class="font-weight-bold">New Item</h4>
         </div>
         <div class="card-body">
             <form method="POST" action="{{ route('items.create') }}" enctype="multipart/form-data">
                 @csrf
 
-                <div class="input-group input-group-outline row my-3">
-                    <label for="name" class="col-md-5 col-form-label text-md-end">{{ __('Name *') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="name" type="text" class=" form-control @error('name') is-invalid @enderror"
-                            name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
+                <!-- Item Name -->
+                <div class="form-group row my-3">
+                    <label for="name" class="col-md-4 col-form-label">Name *</label>
+                    <div class="col-md-8">
+                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                            name="name" value="{{ old('name') }}" required>
                         @error('name')
-                        <span class="invalid-feedback" role="alert">
+                        <span class="invalid-feedback">
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
                     </div>
                 </div>
 
-                <div class="input-group input-group-outline row my-3">
-                    <label for="itemcode" class="col-md-5 col-form-label text-md-end">{{ __('Item code *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <input id="itemcode" type="text" class=" form-control @error('itemcode') is-invalid @enderror"
-                            name="itemcode" value="{{ old('itemcode') }}" required autocomplete="itemcode">
-
-                        @error('itemcode')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="leveling" class="col-md-5 col-form-label text-md-end">{{ __('Leveling *')
-                        }} <br><small>(0 inactive)</small></label>
-
-                    <div class="col-md-6">
-                        <input id="leveling" type="number" min="0" step="any"
-                            class="form-control @error('leveling') is-invalid @enderror" name="leveling" min="0"
-                            step="any" value="{{ old('leveling') ?? 1 }}" required autocomplete="leveling">
-
-                        @error('leveling')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="type" class="col-md-5 col-form-label text-md-end">{{ __('Type *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="type" id="type" class="form-select select2" required>
-                            <option value=""></option>
-                            @foreach (Helper::get_item_types() as $type)
-                            <option value="{{ $type }}" {{ old('type')==$type ? 'selected' : '' }}>{{
-                                ucwords($type) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="inventory_account_id" class="col-md-5 col-form-label text-md-end">{{ __('Inventory
-                        Account *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="inventory_account_id" id="inventory_account_id" class="form-select select2"
-                            required>
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $account->id == old('inventory_account_id') ?
-                                'selected' : '' }}>{{
-                                $account->account_number }} | {{ $account->account_description }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="cost_of_sales_account_id" class="col-md-5 col-form-label text-md-end">{{ __('Cost Of
-                        Sales Account *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="cost_of_sales_account_id" id="cost_of_sales_account_id"
-                            class="form-select select2" required>
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $account->id == old('cost_of_sales_account_id') ?
-                                'selected' : '' }}>{{
-                                $account->account_number }} | {{ $account->account_description }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="sales_account_id" class="col-md-5 col-form-label text-md-end">{{ __('Sales Account *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="sales_account_id" id="sales_account_id" class="form-select select2" required>
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $account->id == old('sales_account_id') ?
-                                'selected' : '' }}>{{
-                                $account->account_number }} | {{ $account->account_description }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="description" class="col-md-5 col-form-label text-md-end">{{ __('Description')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <textarea id="description" rows="5" cols="20"
-                            class="form-textarea @error('description') is-invalid @enderror" name="description"
-                            value="{{ old('description') }}"></textarea>
+                <!-- Description -->
+                <div class="form-group row my-3">
+                    <label for="description" class="col-md-4 col-form-label">Description</label>
+                    <div class="col-md-8">
+                        <textarea id="description" class="form-control @error('description') is-invalid @enderror"
+                            name="description" rows="3">{{ old('description') }}</textarea>
                         @error('description')
-                        <span class="invalid-feedback" role="alert">
+                        <span class="invalid-feedback">
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
                     </div>
                 </div>
 
-                <div class="input-group input-group-outline row my-3">
-                    <label for="image" class="col-md-5 col-form-label text-md-end">{{ __('Image') }}</label>
+                <!-- Unit Price -->
+                <div class="form-group row my-3">
+                    <label for="unit_price" class="col-md-4 col-form-label">Unit Price *</label>
+                    <div class="col-md-8">
+                        <input id="unit_price" type="number" step="0.01"
+                            class="form-control @error('unit_price') is-invalid @enderror" name="unit_price"
+                            value="{{ old('unit_price') }}" required>
+                        @error('unit_price')
+                        <span class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
 
-                    <div class="col-md-6">
-                        <input id="image" type="file" class=" w-100 @error('image') is-invalid @enderror" name="image">
+                <!-- Unit -->
+                <div class="form-group row my-3">
+                    <label for="unit" class="col-md-4 col-form-label">Unit *</label>
+                    <div class="col-md-8">
+                        <input id="unit" type="text" class="form-control @error('unit') is-invalid @enderror"
+                            name="unit" value="{{ old('unit') }}" required>
+                        @error('unit')
+                        <span class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
 
-                        @error('image')
-                        <span class="invalid-feedback" role="alert">
+                <!-- Type -->
+                <div class="form-group row my-3">
+                    <label for="type" class="col-md-4 col-form-label">Type *</label>
+                    <div class="col-md-8">
+                        <select id="type" class="form-select @error('type') is-invalid @enderror" name="type" required>
+                            <option value="item" {{ old('type')=='item' ? 'selected' : '' }}>Item</option>
+                            <option value="expense" {{ old('type')=='expense' ? 'selected' : '' }}>Expense</option>
+                        </select>
+                        @error('type')
+                        <span class="invalid-feedback">
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror

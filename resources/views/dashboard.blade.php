@@ -193,27 +193,6 @@
             </div>
         </div>
         @endif
-
-        @php
-        $company = Helper::get_company();
-        @endphp
-        <h1 class="text-center mt-4">{{ ucwords($company->name) }}</h1>
-        <div class="row my-2">
-            <div class="col-md-3">
-                <img src="{{asset($company->logo) }}" alt="{{ $company->name }} Logo"
-                    class="rounded img-responsive w-100 h-auto">
-            </div>
-            <div class="col-md-9 my-auto">
-                <p class="my-1">
-                    Our Inventory and Accounting System is a comprehensive solution designed to streamline and automate
-                    your
-                    business’s financial and inventory management processes. This system integrates various
-                    functionalities that
-                    cater to managing inventory, tracking journal vouchers, and handling transactions with ease and
-                    precision.
-                </p>
-            </div>
-        </div>
     </div>
 </div>
 @endsection

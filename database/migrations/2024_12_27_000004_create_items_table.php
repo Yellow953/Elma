@@ -14,7 +14,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('unit_price', 15, 2)->default(0.00);
             $table->string('unit')->nullable();
-            $table->foreignId('revenue_account_id')->constrained('accounts')->onDelete('cascade');
+            $table->string('type')->default('item');
             $table->timestamps();
             $table->softDeletes();
         });

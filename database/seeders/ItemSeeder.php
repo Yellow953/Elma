@@ -10,76 +10,34 @@ class ItemSeeder extends Seeder
     public function run(): void
     {
         $items = [
-            [
-                'name' => 'Small Package Shipping',
-                'description' => 'Shipping services for small packages.',
-                'unit_price' => 50.00,
-                'unit' => 'per package',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Container Shipment',
-                'description' => 'Shipping services for containers.',
-                'unit_price' => 500.00,
-                'unit' => 'per container',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Customs Clearance',
-                'description' => 'Customs clearance services for shipments.',
-                'unit_price' => 100.00,
-                'unit' => 'per shipment',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Warehousing',
-                'description' => 'Storage services for goods in the warehouse.',
-                'unit_price' => 200.00,
-                'unit' => 'per day',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Freight Forwarding',
-                'description' => 'Management and coordination of freight shipments.',
-                'unit_price' => 150.00,
-                'unit' => 'per shipment',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Documentation Handling',
-                'description' => 'Handling and preparation of shipping documents.',
-                'unit_price' => 30.00,
-                'unit' => 'per document',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Insurance Processing',
-                'description' => 'Processing insurance for shipments.',
-                'unit_price' => 50.00,
-                'unit' => 'per shipment',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Port Charges',
-                'description' => 'Charges incurred at the port for shipment handling.',
-                'unit_price' => 75.00,
-                'unit' => 'per shipment',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Packaging Services',
-                'description' => 'Packing goods securely for transportation.',
-                'unit_price' => 25.00,
-                'unit' => 'per package',
-                'revenue_account_id' => 327,
-            ],
-            [
-                'name' => 'Custom Duties Advance',
-                'description' => 'Advancing custom duties on behalf of clients.',
-                'unit_price' => 0.00,
-                'unit' => 'per shipment',
-                'revenue_account_id' => 327,
-            ],
+            // Sea Freight
+            ['name' => 'Sea Freight - 20DRY', 'description' => 'Sea freight for a 20DRY container', 'unit_price' => 1000, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Sea Freight - 40HC', 'description' => 'Sea freight for a 40HC container', 'unit_price' => 1500, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Sea Freight - 20T', 'description' => 'Sea freight for a 20T container', 'unit_price' => 1200, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Sea Freight - 40T', 'description' => 'Sea freight for a 40T container', 'unit_price' => 1800, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Sea Freight - 20 Reefer', 'description' => 'Sea freight for a 20 Reefer container', 'unit_price' => 2000, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Sea Freight - 40 Reefer', 'description' => 'Sea freight for a 40 Reefer container', 'unit_price' => 2500, 'unit' => 'per container', 'type' => 'item'],
+
+            // Air Freight
+            ['name' => 'Air Freight - 20DRY', 'description' => 'Air freight for a 20DRY container', 'unit_price' => 3000, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Air Freight - 40HC', 'description' => 'Air freight for a 40HC container', 'unit_price' => 4500, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Air Freight - 20T', 'description' => 'Air freight for a 20T container', 'unit_price' => 3500, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Air Freight - 40T', 'description' => 'Air freight for a 40T container', 'unit_price' => 5000, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Air Freight - 20 Reefer', 'description' => 'Air freight for a 20 Reefer container', 'unit_price' => 5500, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Air Freight - 40 Reefer', 'description' => 'Air freight for a 40 Reefer container', 'unit_price' => 7000, 'unit' => 'per container', 'type' => 'item'],
+
+            // Land Freight
+            ['name' => 'Land Freight - 20DRY', 'description' => 'Land freight for a 20DRY container', 'unit_price' => 800, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Land Freight - 40HC', 'description' => 'Land freight for a 40HC container', 'unit_price' => 1200, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Land Freight - 20T', 'description' => 'Land freight for a 20T container', 'unit_price' => 900, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Land Freight - 40T', 'description' => 'Land freight for a 40T container', 'unit_price' => 1300, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Land Freight - 20 Reefer', 'description' => 'Land freight for a 20 Reefer container', 'unit_price' => 1600, 'unit' => 'per container', 'type' => 'item'],
+            ['name' => 'Land Freight - 40 Reefer', 'description' => 'Land freight for a 40 Reefer container', 'unit_price' => 2000, 'unit' => 'per container', 'type' => 'item'],
+
+            // Other
+            ['name' => 'Shipping Fee', 'description' => 'Shipping cost charged by supplier', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
+            ['name' => 'Customs Fee', 'description' => 'Customs clearance fee', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
+            ['name' => 'Transporter Fee', 'description' => 'Transportation cost by agent', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
         ];
 
         foreach ($items as $item) {

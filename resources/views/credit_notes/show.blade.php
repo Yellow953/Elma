@@ -58,10 +58,6 @@
 </head>
 
 <body>
-    @php
-    $company = Helper::get_company();
-    @endphp
-
     <div class="container mt-3">
         <a href="{{ url()->previous() }}" class="btn btn-secondary px-3 py-2 mb-3">
             <i class="fa-solid fa-chevron-left"></i> Back </a>
@@ -86,9 +82,7 @@
                                         From
                                     </div>
                                     <div class="card-body">
-                                        {{ ucwords($company->name) }} <br>
-                                        {{ $company->address }} <br>
-                                        {{ $company->phone }} <br>
+                                        Elma
                                     </div>
                                 </div>
                             </div>
