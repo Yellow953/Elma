@@ -67,22 +67,10 @@
 
 @section('content')
 <div class="container-fluid py-2">
-    <div class="d-flex align-items-center justify-content-between">
-        <form action="{{ route('purchase_orders') }}" method="get" enctype="multipart/form-data"
-            class="d-flex flex-row justify-content-start my-3">
-            @csrf
+    <div class="d-flex align-items-center justify-content-end">
+        @yield('actions')
 
-            <input type="text" name="search" id="search" class="form-control input-field my-auto border mx-1" required
-                autofocus value="{{ request()->query('search') }}">
-            <button type="submit" class="btn btn-info btn-custom my-auto">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-        </form>
-        <div>
-            @yield('actions')
-
-            @yield('filter')
-        </div>
+        @yield('filter')
     </div>
 
     <div class="row">

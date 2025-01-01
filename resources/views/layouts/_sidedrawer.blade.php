@@ -42,22 +42,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function updateGrowthFactor() {
-      var rangeInput = document.getElementById('monthly_growth_factor');
-      var factorDisplay = document.getElementById('factorDisplay');
-      var growthFactorValue = document.getElementById('growthFactorValue');
-
-      var value = parseFloat(rangeInput.value).toFixed(2);
-      factorDisplay.textContent = value;
-
-      if (value >= 1.0) {
-        growthFactorValue.style.color = 'green';
-      } else {
-        growthFactorValue.style.color = 'red';
-      }
-    }
-
-    updateGrowthFactor();
-</script>

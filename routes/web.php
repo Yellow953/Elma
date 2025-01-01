@@ -24,6 +24,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CashReceiptController;
 use App\Http\Controllers\CreditNoteController;
 use App\Http\Controllers\DebitNoteController;
+use App\Http\Controllers\ShipmentController;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
@@ -392,6 +393,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/accounting/stock-valuation', [StatisticsController::class, 'stockValuation'])->name('accounting.stockValuation');
 
         Route::get('/', [StatisticsController::class, 'index'])->name('statistics');
+    });
+
+    // Shipments Routes
+    Route::prefix('shipments')->group(function () {
+        Route::get('/export', [ShipmentController::class, 'export'])->name('shipments.export');
+        Route::get('/new', [ShipmentController::class, 'new'])->name('shipments.new');
+        Route::post('/create', [ShipmentController::class, 'create'])->name('shipments.create');
+        Route::get('/items/{shipment_item}/delete', [ShipmentController::class, 'item_destroy'])->name('shipments.items.destroy');
+        Route::get('/{shipment}/edit', [ShipmentController::class, 'edit'])->name('shipments.edit');
+        Route::post('/{shipment}/update', [ShipmentController::class, 'update'])->name('shipments.update');
+        Route::get('/{shipment}/delete', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
+        Route::get('/{shipment}/show', [ShipmentController::class, 'show'])->name('shipments.show');
+        Route::get('/{shipment}/delete', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
+        Route::get('/', [ShipmentController::class, 'index'])->name('shipments');
     });
 
     // Settings

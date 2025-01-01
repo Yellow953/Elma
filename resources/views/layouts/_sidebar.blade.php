@@ -44,6 +44,16 @@
             </li>
             @endcan
 
+            @can('shipments.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('shipments*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('shipments') }}">
+                    <span><i class="fa-solid fa-truck"></i></span>
+                    Shipments
+                </a>
+            </li>
+            @endcan
+
             <li class="nav-item mt-3">
                 <h5 class="ps-4 ms-2 text-uppercase title-nav">Accounting</h5>
             </li>

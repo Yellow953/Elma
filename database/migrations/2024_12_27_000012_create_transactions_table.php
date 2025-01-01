@@ -16,11 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('currency_id');
             $table->double('debit')->unsigned()->default(0);
             $table->double('credit')->unsigned()->default(0);
-            $table->double('balance')->unsigned()->default(0);
+            $table->double('balance')->default(0);
             $table->unsignedBigInteger('foreign_currency_id')->nullable();
             $table->double('foreign_debit')->unsigned()->nullable();
             $table->double('foreign_credit')->unsigned()->nullable();
-            $table->double('foreign_balance')->unsigned()->nullable();
+            $table->double('foreign_balance')->nullable();
             $table->double('rate')->unsigned()->nullable();
             $table->boolean('hidden')->default(false);
             $table->unsignedBigInteger('client_id')->nullable();

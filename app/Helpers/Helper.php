@@ -140,4 +140,19 @@ class Helper
 
         return ucfirst($words) . ' Dollar' . ($dollars > 1 ? 's' : '');
     }
+
+    public static function get_shipping_modes()
+    {
+        return ['Air', 'Sea', 'Land'];
+    }
+
+    public static function get_shipping_statuses()
+    {
+        return ['New', 'Ongoing', 'Closed'];
+    }
+
+    public static function get_shipping_ports()
+    {
+        return ['Port Beirut', 'Dubai AirPort'];
+    }
 }
