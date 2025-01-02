@@ -2,112 +2,71 @@
 
 @section('title', 'sales_orders')
 
-@section('title', 'show')
+@section('sub-title', 'show')
 
 @section('content')
 <div class="container">
     <a href="{{ url()->previous() }}" class="btn btn-secondary px-3 py-2">
         <i class="fa-solid fa-chevron-left"></i> Back </a>
 
-    <div class="receipt-main"
-        style="{{
-		(!Str::contains(Route::current()->uri, 'print')) ? 'border-bottom: 12px solid #333333; border-top: 12px solid blue;' : 'border: none;'}}">
+    <div class="receipt-main">
         @include('layouts._invoice_header')
 
         <div class="container">
             <div>
                 <div class="row mb-5">
-                    <div class="col-3">
-                        <strong>SO Number:</strong>
-                        {{ $sales_order->so_number }} <br>
-
-                        <strong>Date: </strong>
-                        {{ ucwords($sales_order->date) }} <br>
-
-                        <strong>Description: </strong>
-                        {{ $sales_order->description }} <br>
+                    <div class="col-md-6">
+                        <strong>SO Number:</strong> {{ $sales_order->so_number }} <br>
+                        <strong>Client: </strong>{{ucwords($sales_order->client->name)}} <br>
+                        <strong>Status: </strong>{{ucwords($sales_order->status)}} <br>
                     </div>
-                    <div class="offset-6 col-3">
-                        <strong>Technician: </strong>
-                        {{ucwords($sales_order->technician) }}<br>
-
-                        <strong>Job Number: </strong>
-                        {{ $sales_order->job_number }} <br>
+                    <div class="col-md-6 text-right">
+                        <strong>Order Date: </strong>{{ $sales_order->order_date}} <br>
+                        @if ($sales_order->due_date)
+                        <strong>Due Date: </strong>{{ $sales_order->due_date}} <br>
+                        @endif
                     </div>
                 </div>
 
-                <h3 class="text-blue my-4">Items</h3>
-                <div class="items">
+                <div class="">
                     <div class="table-responsive overflow-auto">
                         <table class="table table-striped">
-                            <thead>
-                                <tr class="text-center">
+                            <thead class="text-center">
+                                <tr style="font-size: 0.9rem">
                                     <th>Item</th>
-                                    <th>Description</th>
                                     <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total Price</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($sales_order->so_items as $item)
-                                <tr class="text-center">
-                                    <td class="col-4">{{$item->item->itemcode}}</td>
-                                    <td class="col-4">{{$item->item->description}}</td>
-                                    <td class="col-4">{{number_format($item->quantity, 2)}}</td>
+                            <tbody class="text-center">
+                                @forelse ($sales_order->items as $item)
+                                <tr>
+                                    <td class="col-4">
+                                        {{ $item->item->name }}
+                                    </td>
+                                    <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
+                                    <td class="col-2">{{ number_format($item->unit_price, 2) }}</td>
+                                    <td class="col-2">{{ number_format($item->total_price, 2) }}</td>
                                 </tr>
                                 @empty
-                                <tr class="text-center">
-                                    <td colspan="3">No Items Yet ...</td>
+                                <tr>
+                                    <td colspan="5">No Sales Order Items Yet</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                </div>
 
-                <h3 class="text-blue my-4">Signatures</h3>
-                <div>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Management</th>
-                                <th>Account</th>
-                                <th>Stock Keeper</th>
-                                <th>Receiver</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><br><br><br></td>
-                                <td><br><br><br></td>
-                                <td><br><br><br></td>
-                                <td><br><br><br></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="mt-4">
+                        <h5>Notes</h5>
+                        <p class="text-center mt-2">
+                            {{ $sales_order->notes ?? 'No Notes...' }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-{{-- print --}}
-@if (Str::contains(Route::current()->uri, 'print'))
-<script>
-    $(document).ready(function () {
-			window.print();
-		});
-</script>
-@else
-<div class="print">
-    <a href="{{ route('sales_orders.print', $sales_order->id) }}" class="btn btn-primary m-3">Print</a>
-</div>
-
-{{-- @if (auth()->user()->role == 'admin' && isset($sales_order->client))
-<div class="send">
-    <a href="{{ route('sales_orders.send', $sales_order->id) }}" class="btn btn-primary m-3">Send</a>
-</div>
-@endif --}}
-
-@endif
-
 @endsection

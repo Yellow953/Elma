@@ -2,13 +2,16 @@
 
 @section('title', 'purchase_orders')
 
+@php
+$statuses = Helper::get_order_statuses();
+@endphp
+
 @section('actions')
 @can('purchase_orders.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_orders.new') }}">New Purchase Order</a>
 @endcan
 @can('purchase_orders.export')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_orders.export') }}">Export Purchase Orders</a>
-<a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_order_items.export') }}">Export Purchase Order Items</a>
 @endcan
 @endsection
 
@@ -21,12 +24,34 @@
     <h4 class="mb-2">Filter POs</h4>
     <form action="{{ route('purchase_orders') }}" method="get" enctype="multipart/form-data">
         @csrf
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="name">Name</label>
-                <div>
-                    <input type="text" class="form-control border" name="name" placeholder="Name"
-                        value="{{request()->query('name')}}">
+
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="po_number">PO Number</label>
+                        <div>
+                            <input type="text" class="form-control border" name="po_number" placeholder="PO Number"
+                                value="{{request()->query('po_number')}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="shipment_id">Shipment</label>
+                        <div>
+                            <select name="shipment_id" id="shipment_id" class="form-select select2">
+                                <option value=""></option>
+                                @foreach ($shipments as $shipment)
+                                <option value="{{ $shipment->id }}" {{ $shipment->id ==
+                                    request()->query('shipment_id') ?
+                                    'selected' : '' }}>{{ $shipment->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,10 +60,16 @@
             <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
-                        <label for="date">Date</label>
+                        <label for="supplier_id">Supplier</label>
                         <div>
-                            <input type="date" class="form-control border" name="date"
-                                value="{{request()->query('date')}}">
+                            <select name="supplier_id" id="supplier_id" class="form-select select2">
+                                <option value=""></option>
+                                @foreach ($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}" {{ $supplier->id ==
+                                    request()->query('supplier_id') ?
+                                    'selected' : '' }}>{{ $supplier->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -46,12 +77,52 @@
             <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
-                        <label for="description">Description</label>
+                        <label for="status">Status</label>
                         <div>
-                            <input type="text" class="form-control border" name="description" placeholder="Description"
-                                value="{{request()->query('description')}}">
+                            <select name="status" id="status" class="form-select select2">
+                                <option value=""></option>
+                                @foreach ($statuses as $status)
+                                <option value="{{ $status }}" {{ $status==request()->query('status') ?
+                                    'selected' : '' }}>{{ $status }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="order_date">Order Date</label>
+                        <div>
+                            <input type="date" class="form-control border" name="order_date"
+                                value="{{request()->query('order_date')}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="due_date">Due Date</label>
+                        <div>
+                            <input type="date" class="form-control border" name="due_date"
+                                value="{{request()->query('due_date')}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group input-group-outline my-2">
+            <div class="w-100">
+                <label for="notes">Notes</label>
+                <div>
+                    <input type="text" class="form-control border" name="notes" placeholder="Notes"
+                        value="{{request()->query('notes')}}">
                 </div>
             </div>
         </div>
@@ -78,7 +149,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3">
                     <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3">
-                        <h5 class="text-capitalize ps-3">PO table</h5>
+                        <h5 class="text-capitalize ps-3">Purchase Orders table</h5>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -86,8 +157,10 @@
                         <table class="table align-items-center mb-0 text-sm text-dark">
                             <thead>
                                 <tr>
-                                    <th class="col-5">PO Number</th>
-                                    <th class="col-5">Date</th>
+                                    <th class="col-2">PO Number</th>
+                                    <th class="col-2">Shipment</th>
+                                    <th class="col-2">Supplier</th>
+                                    <th class="col-2">Dates</th>
                                     <th class="col-2">Actions</th>
                                 </tr>
                             </thead>
@@ -95,10 +168,22 @@
                                 @forelse ($purchase_orders as $purchase_order)
                                 <tr class="rounded">
                                     <td>
-                                        <h6 class="my-auto">{{$purchase_order->po_number}}</h6>
+                                        <h6> {{ $purchase_order->po_number }} </h6>
+                                        <span class="text-dark">{{ $purchase_order->status }}</span>
                                     </td>
                                     <td>
-                                        <p>{{$purchase_order->order_date}}</p>
+                                        {{ $purchase_order->shipment->shipment_number }}
+                                    </td>
+                                    <td>
+                                        {{ $purchase_order->supplier->name }}
+                                    </td>
+                                    <td>
+                                        <p>
+                                            {{ $purchase_order->order_date }}
+                                            @if ($purchase_order->due_date)
+                                            -> {{ $purchase_order->due_date }}
+                                            @endif
+                                        </p>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
@@ -149,13 +234,13 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3">
-                                        No Purchase Orders Found
+                                    <td colspan="5">
+                                        No Purchase Orders Found...
                                     </td>
                                 </tr>
                                 @endforelse
                                 <tr>
-                                    <td colspan="3">{{ $purchase_orders->appends(request()->all())->links() }}</td>
+                                    <td colspan="5">{{ $purchase_orders->appends(request()->all())->links() }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -165,5 +250,4 @@
         </div>
     </div>
 </div>
-
 @endsection

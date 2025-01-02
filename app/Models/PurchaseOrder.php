@@ -17,9 +17,9 @@ class PurchaseOrder extends Model
         return $this->belongsTo(Supplier::class);
     }
 
-    public function account()
+    public function shipment()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Shipment::class);
     }
 
     public function items()
@@ -42,10 +42,6 @@ class PurchaseOrder extends Model
         if (request('supplier_id')) {
             $supplier_id = request('supplier_id');
             $q->where('supplier_id', $supplier_id);
-        }
-        if (request('account_id')) {
-            $account_id = request('account_id');
-            $q->where('account_id', $account_id);
         }
         if (request('notes')) {
             $notes = request('notes');
@@ -74,7 +70,7 @@ class PurchaseOrder extends Model
 
         $lastPO = PurchaseOrder::where("po_number", "LIKE", "%{$searchTerm}%")->get()->last();
         if ($lastPO) {
-            $lastNumber = explode('-', $lastPO->po_number)[3];
+            $lastNumber = explode('-', $lastPO->po_number)[2];
             return 'PO-' . $year . '-' . ($lastNumber + 1);
         } else {
             return 'PO-' . $year . '-1';

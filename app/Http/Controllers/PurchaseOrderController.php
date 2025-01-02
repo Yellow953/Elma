@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Log;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderItem;
+use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\Tax;
 use Carbon\Carbon;
@@ -26,15 +27,21 @@ class PurchaseOrderController extends Controller
 
     public function index()
     {
-        $purchase_orders = PurchaseOrder::select('id', 'name', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
+        $purchase_orders = PurchaseOrder::select('id', 'po_number', 'supplier_id', 'shipment_id', 'order_date', 'due_date', 'status')->filter()->orderBy('id', 'desc')->paginate(25);
+        $suppliers = Supplier::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
 
-        $data = compact('purchase_orders');
+        $data = compact('purchase_orders', 'shipments', 'suppliers');
         return view('purchase_orders.index', $data);
     }
 
     public function new()
     {
-        return view('purchase_orders.new', compact('suppliers'));
+        $suppliers = Supplier::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
+
+        $data = compact('shipments', 'suppliers');
+        return view('purchase_orders.new', $data);
     }
 
     public function create(Request $request)

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Item;
 use App\Models\Log;
+use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderItem;
+use App\Models\SalesOrder;
+use App\Models\SalesOrderItem;
 use App\Models\Shipment;
 use App\Models\ShipmentItem;
 use App\Models\Supplier;
@@ -47,7 +51,7 @@ class ShipmentController extends Controller
             'mode' => 'required',
             'departure' => 'required',
             'arrival' => 'required',
-            'commodity'  => 'required',
+            'commodity' => 'required',
             'status' => 'required',
             'client_id' => 'required',
             'shipping_date' => 'required|date',
@@ -69,8 +73,11 @@ class ShipmentController extends Controller
             'notes' => $request->notes,
         ]);
 
+        $salesOrderItems = [];
+        $groupedPurchaseOrderItems = []; // Group by supplier_id
+
         foreach ($request['items'] as $item) {
-            ShipmentItem::create([
+            $shipmentItem = ShipmentItem::create([
                 'shipment_id' => $shipment->id,
                 'item_id' => $item['item_id'],
                 'supplier_id' => $item['supplier_id'] ?? null,
@@ -79,13 +86,69 @@ class ShipmentController extends Controller
                 'quantity' => $item['quantity'] ?? 1,
                 'total_price' => $item['price'] * ($item['quantity'] ?? 1)
             ]);
+
+            if ($shipmentItem->type === 'item') {
+                $salesOrderItems[] = [
+                    'type' => 'item',
+                    'item_id' => $shipmentItem->item_id,
+                    'quantity' => $shipmentItem->quantity,
+                    'unit_price' => $shipmentItem->unit_price,
+                    'total_price' => $shipmentItem->total_price,
+                ];
+            } elseif ($shipmentItem->type === 'expense' && $shipmentItem->supplier_id) {
+                $groupedPurchaseOrderItems[$shipmentItem->supplier_id][] = [
+                    'type' => 'expense',
+                    'item_id' => $shipmentItem->item_id,
+                    'quantity' => $shipmentItem->quantity,
+                    'unit_price' => $shipmentItem->unit_price,
+                    'total_price' => $shipmentItem->total_price,
+                ];
+            }
         }
 
-        $text = ucwords(auth()->user()->name) . " created new Shipment : " . $shipment->shipment_number . ", datetime :   " . now();
+        // Create Sales Order
+        if (!empty($salesOrderItems)) {
+            $salesOrder = SalesOrder::create([
+                'so_number' => SalesOrder::generate_so_number(),
+                'client_id' => $request->client_id,
+                'order_date' => $request->shipping_date,
+                'due_date' => $request->delivery_date,
+                'status' => 'new',
+                'shipment_id' => $shipment->id,
+                'notes' => $request->notes,
+            ]);
+
+            foreach ($salesOrderItems as $item) {
+                $item['sales_order_id'] = $salesOrder->id;
+                SalesOrderItem::create($item);
+            }
+        }
+
+        // Create Purchase Orders for each supplier
+        foreach ($groupedPurchaseOrderItems as $supplierId => $items) {
+            $purchaseOrder = PurchaseOrder::create([
+                'po_number' => PurchaseOrder::generate_po_number(),
+                'supplier_id' => $supplierId,
+                'order_date' => $request->shipping_date,
+                'due_date' => $request->delivery_date,
+                'status' => 'new',
+                'shipment_id' => $shipment->id,
+                'notes' => $request->notes,
+            ]);
+
+            foreach ($items as $item) {
+                $item['purchase_order_id'] = $purchaseOrder->id;
+                PurchaseOrderItem::create($item);
+            }
+        }
+
+        // Log the creation
+        $text = ucwords(auth()->user()->name) . " created new Shipment: " . $shipment->shipment_number . ", datetime: " . now();
         Log::create(['text' => $text]);
 
         return redirect()->route('shipments')->with('success', 'Shipment created successfully!');
     }
+
 
     public function edit(Shipment $shipment)
     {

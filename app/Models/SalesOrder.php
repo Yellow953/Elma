@@ -17,9 +17,9 @@ class SalesOrder extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function account()
+    public function shipment()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Shipment::class);
     }
 
     public function items()
@@ -43,9 +43,9 @@ class SalesOrder extends Model
             $client_id = request('client_id');
             $q->where('client_id', $client_id);
         }
-        if (request('account_id')) {
-            $account_id = request('account_id');
-            $q->where('account_id', $account_id);
+        if (request('shipment_id')) {
+            $shipment_id = request('shipment_id');
+            $q->where('shipment_id', $shipment_id);
         }
         if (request('notes')) {
             $notes = request('notes');
@@ -74,7 +74,7 @@ class SalesOrder extends Model
 
         $lastSO = SalesOrder::where("so_number", "LIKE", "%{$searchTerm}%")->get()->last();
         if ($lastSO) {
-            $lastNumber = explode('-', $lastSO->so_number)[3];
+            $lastNumber = explode('-', $lastSO->so_number)[2];
             return 'SO-' . $year . '-' . ($lastNumber + 1);
         } else {
             return 'SO-' . $year . '-1';

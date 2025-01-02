@@ -155,4 +155,9 @@ class Helper
     {
         return ['Port Beirut', 'Dubai AirPort'];
     }
+
+    public static function get_order_statuses()
+    {
+        return ['New', 'Ongoing', 'Closed'];
+    }
 }

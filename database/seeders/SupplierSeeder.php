@@ -35,6 +35,32 @@ class SupplierSeeder extends Seeder
                 'payable_account_id' => 134,
                 'currency_id' => 1,
                 'vat_number' => 125,
+            ],
+            [
+                'name' => 'CMA',
+                'phone' => '+4915204820649',
+                'address' => 'beirut',
+                'country' => 'Lebanon',
+                'email' => 'support@cma.lb',
+                'contact_person' => 'Maria',
+                'tax_id' => 2,
+                'account_id' => 393,
+                'payable_account_id' => 134,
+                'currency_id' => 1,
+                'vat_number' => 12231325,
+            ],
+            [
+                'name' => 'Maersk',
+                'phone' => '+4915204820649',
+                'address' => 'beirut',
+                'country' => 'Lebanon',
+                'email' => 'support@maersk.lb',
+                'contact_person' => 'Joe',
+                'tax_id' => 2,
+                'account_id' => 394,
+                'payable_account_id' => 134,
+                'currency_id' => 1,
+                'vat_number' => 1297325,
             ]
         ];
 

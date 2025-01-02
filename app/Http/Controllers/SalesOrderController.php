@@ -7,6 +7,7 @@ use App\Models\SalesOrder;
 use App\Models\SalesOrderItem;
 use App\Models\Item;
 use App\Models\Log;
+use App\Models\Shipment;
 use App\Models\Tax;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -26,15 +27,21 @@ class SalesOrderController extends Controller
 
     public function index()
     {
-        $sales_orders = SalesOrder::select('id', 'name', 'date')->filter()->orderBy('id', 'desc')->paginate(25);
+        $sales_orders = SalesOrder::select('id', 'so_number', 'client_id', 'shipment_id', 'order_date', 'due_date', 'status')->filter()->orderBy('id', 'desc')->paginate(25);
+        $clients = Client::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
 
-        $data = compact('sales_orders');
+        $data = compact('sales_orders', 'clients', 'shipments');
         return view('sales_orders.index', $data);
     }
 
     public function new()
     {
-        return view('sales_orders.new');
+        $clients = Client::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
+
+        $data = compact('clients', 'shipments');
+        return view('sales_orders.new', $data);
     }
 
     public function create(Request $request)
