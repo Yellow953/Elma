@@ -42,11 +42,6 @@ $currencies = Helper::get_currencies();
                             <div class="stepwizard-step">
                                 <a href="#step-3" type="button"
                                     class="btn btn-circle btn-default ignore-confirm disabled">3</a>
-                                <p>Barcodes</p>
-                            </div>
-                            <div class="stepwizard-step">
-                                <a href="#step-4" type="button"
-                                    class="btn btn-circle btn-default ignore-confirm disabled">4</a>
                                 <p>Confirm</p>
                             </div>
                         </div>
@@ -205,9 +200,8 @@ $currencies = Helper::get_currencies();
                                                     <option value=""></option>
                                                     @foreach ($items as $item)
                                                     <option value="{{ $item->id }}" data-type="{{ $item->type }}"
-                                                        data-unit-cost='{{ $item->unit_cost }}'
                                                         data-unit-price='{{ $item->unit_price }}'>
-                                                        {{ $item->itemcode }}</option>
+                                                        {{ $item->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -217,7 +211,7 @@ $currencies = Helper::get_currencies();
                                             </td>
                                             <td>
                                                 <input type="number" name="unit_cost[]" class="form-control border"
-                                                    required min="0" value="0" step="any" disabled>
+                                                    required min="0" value="0" step="any">
                                             </td>
                                             <td>
                                                 <input type="number" name="unit_price[]" class="form-control border"
@@ -260,39 +254,6 @@ $currencies = Helper::get_currencies();
                             </div>
                         </div>
                         <div class="row setup-content" id="step-3">
-                            <p class="text-danger">
-                                If the item is of type serialized, please fill the item barcodes or upload an excell
-                                file
-                                in the following format for each
-                                row (Item Name, Barcode)
-                            </p>
-                            <div class="form-group">
-                                <label for="invoice_barcode_excel" class="form-label text-dark">Barcodes
-                                    Excel</label>
-                                <input type="file" class="form-control" id="invoice_barcode_excel"
-                                    name="invoice_barcode_excel">
-                            </div>
-
-                            <div class="w-100 my-4 overflow-x-auto">
-                                <table class="table table-bordered border" id="invoiceBarcodeItemsTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-sm">Item</th>
-                                            <th class="text-sm">Quantity</th>
-                                            <th class="text-sm">Barcodes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="barcodeFields">
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-4">
-                                <button class="btn btn-secondary prevBtn ignore-confirm" type="button">Previous</button>
-                                <button class="btn btn-info nextBtn ignore-confirm" type="button">Next</button>
-                            </div>
-                        </div>
-                        <div class="row setup-content" id="step-4">
                             <h3>Confirm</h3>
 
                             <div class="col-md-12">
@@ -345,7 +306,7 @@ $currencies = Helper::get_currencies();
         newRow.innerHTML = originalRow.innerHTML;
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
+        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {
@@ -408,8 +369,9 @@ $currencies = Helper::get_currencies();
         selectElement.val(itemId).trigger('change');
 
         row.querySelector('input[name^="quantity"]').value = data.quantity;
-        row.querySelector('input[name^="unit_cost"]').value = data.unit_cost;
+        // row.querySelector('input[name^="unit_cost"]').value = ;
         row.querySelector('input[name^="unit_price"]').value = data.unit_price;
+        row.querySelector('input[name^="total_price"]').value = data.unit_price * data.quantity;
     }
 
     function updateItemFields(row) {
@@ -418,7 +380,7 @@ $currencies = Helper::get_currencies();
         var selectedItem = items.find(item => item.id == itemId);
 
         if (selectedItem) {
-            row.querySelector('input[name^="unit_cost"]').value = selectedItem.unit_cost;
+            // row.querySelector('input[name^="unit_cost"]').value = ;
             row.querySelector('input[name^="unit_price"]').value = selectedItem.unit_price;
         }
     }
@@ -436,51 +398,6 @@ $currencies = Helper::get_currencies();
             var selectedItem = items.find(item => item.id == itemId);
             updateItemFields(row, selectedItem);
             updateInvoiceItemRow(row);
-        });
-    }
-
-    function generateBarcodeFields() {
-        var items = {!! json_encode($items) !!};
-        var rows = document.querySelectorAll('#invoiceItemsTable tbody tr');
-        var barcodeFieldsHTML = '';
-
-        rows.forEach(function(row) {
-            var itemId = row.querySelector('select[name^="item_id"]').value;
-            var quantity = parseInt(row.querySelector('input[name^="quantity"]').value);
-            var itemType = row.querySelector('select[name^="item_id"] option:checked').getAttribute('data-type');
-
-            if (quantity > 0 && itemType == 'Serialized') {
-                var item = items.find(item => item.id == itemId);
-
-                // Make an Ajax request to fetch barcodes for the current item
-                $.ajax({
-                    url: '{{ route("items.barcodes", ["item" => ":itemId"]) }}'.replace(':itemId', itemId),
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        barcodeFieldsHTML += `<tr><td>${item.itemcode}</td><td>${quantity}</td><td>`;
-
-                        for (let i = 0; i < quantity; i++) {
-                            barcodeFieldsHTML += `<select name="barcodes[${itemId}][]" class="form-control my-1 select2" required> <option value=""></option>`;
-
-                            response.barcodes.forEach(function(barcode) {
-                                barcodeFieldsHTML += `<option value="${barcode.barcode}">${barcode.barcode}</option>`;
-                            });
-
-                            barcodeFieldsHTML += `</select> <br>`;
-                        }
-
-                        barcodeFieldsHTML += `</td></tr>`;
-
-                        document.getElementById('barcodeFields').innerHTML = barcodeFieldsHTML;
-
-                        $('.select2').select2();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error fetching barcodes:', error);
-                    }
-                });
-            }
         });
     }
 
@@ -530,10 +447,6 @@ $currencies = Helper::get_currencies();
                 updateInvoiceItemRow(row);
             }
         });
-
-        document.querySelector('#step-2 .nextBtn').addEventListener('click', function() {
-            generateBarcodeFields();
-        });
     });
 
     // Fill Currency Field
@@ -564,7 +477,7 @@ $currencies = Helper::get_currencies();
             newRow.innerHTML = originalRow.innerHTML;
 
             newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-            newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
+            newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
 
             fillRowWithData(newRow, data);
 
@@ -590,12 +503,12 @@ $currencies = Helper::get_currencies();
     @endif
 
     // Fill Receipt Items from SO Items
-    @foreach($sales_order->sales_order_items as $sales_order_item)
+    @foreach($sales_order->shipment->items as $sales_order_item)
         addSOItems({
-            item_id: {{ $sales_order_items->item_id }},
-            quantity: {{ $sales_order_items->quantity }},
-            unit_cost: {{ $sales_order_items->item->unit_cost }},
-            unit_price: {{ $sales_order_items->item->unit_price }},
+            item_id: {{ $sales_order_item->item_id }},
+            quantity: {{ $sales_order_item->quantity }},
+            // unit_cost: {{ $sales_order_item->item->unit_cost }},
+            unit_price: {{ $sales_order_item->item->unit_price }},
         });
     @endforeach
 </script>

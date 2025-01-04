@@ -8,6 +8,7 @@ use App\Models\SalesOrderItem;
 use App\Models\Item;
 use App\Models\Log;
 use App\Models\Shipment;
+use App\Models\Supplier;
 use App\Models\Tax;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -39,27 +40,51 @@ class SalesOrderController extends Controller
     {
         $clients = Client::select('id', 'name')->get();
         $shipments = Shipment::select('id', 'shipment_number')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'type')->get();
+        $suppliers = Supplier::select('id', 'name')->get();
 
-        $data = compact('clients', 'shipments');
+        $data = compact('clients', 'shipments', 'items', 'suppliers');
         return view('sales_orders.new', $data);
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
+            'client_id' => 'required',
+            'shipment_id' => 'required',
+            'order_date' => 'required|date',
+            'due_date' => 'nullable|date',
+            'status' => 'required',
+            'notes' => 'nullable',
+            'items' => 'array|required'
         ]);
 
         $sales_order = SalesOrder::create([
-            'name' => SalesOrder::generate_name(),
-            'description' => $request->description,
-            'date' => $request->date ?? Carbon::now(),
+            'so_number' => SalesOrder::generate_so_number(),
+            'client_id' => $request->client_id,
+            'shipment_id' => $request->shipment_id,
+            'status' => $request->status,
+            'order_date' => $request->order_date,
+            'due_date' => $request->due_date,
+            'notes' => $request->notes,
         ]);
 
-        $text = ucwords(auth()->user()->name) . " created " . $sales_order->name . ", datetime :   " . now();
+        foreach ($request['items'] as $item) {
+            $sales_order_item = SalesOrderItem::create([
+                'sales_order_id' => $sales_order->id,
+                'item_id' => $item['item_id'],
+                'supplier_id' => $item['supplier_id'] ?? null,
+                'type' => (isset($item['supplier_id']) ? 'expense' : 'item'),
+                'unit_price' => $item['price'],
+                'quantity' => $item['quantity'] ?? 1,
+                'total_price' => $item['price'] * ($item['quantity'] ?? 1)
+            ]);
+        }
+
+        $text = ucwords(auth()->user()->name) . " created Sales Order " . $sales_order->name . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('sales_orders')->with('success', 'SalesOrder created successfully!');
+        return redirect()->route('sales_orders')->with('success', 'Sales Order created successfully!');
     }
 
     public function show(SalesOrder $sales_order)
@@ -67,146 +92,56 @@ class SalesOrderController extends Controller
         return view('sales_orders.show', compact('sales_order'));
     }
 
-    public function display(SalesOrder $sales_order)
-    {
-        return view('sales_orders.display', compact('sales_order'));
-    }
-
-    public function print(SalesOrder $sales_order)
-    {
-        return view('sales_orders.show', compact('sales_order'));
-    }
-
     public function edit(SalesOrder $sales_order)
     {
-        $parts = explode('-', $sales_order->name);
-        $search = request()->query('search');
+        $clients = Client::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'type')->get();
+        $suppliers = Supplier::select('id', 'name')->get();
 
-        if ($search) {
-            $item = Item::where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
-            if ($item != null) {
-                $sales_order_items = SalesOrderItem::select('id', 'item_id', 'quantity')->where('so_id', $sales_order->id)->where('item_id', $item->id)->paginate(50);
-            } else {
-                $sales_order_items = new Collection();
-            }
-        } else {
-            $sales_order_items = SalesOrderItem::select('id', 'item_id', 'quantity')->where('so_id', $sales_order->id)->orderBy('created_at', 'asc')->paginate(50);
-        }
-
-        $data = compact('sales_order', 'sales_order_items');
-
+        $data = compact('sales_order', 'clients', 'shipments', 'items', 'suppliers');
         return view('sales_orders.edit', $data);
     }
 
     public function update(SalesOrder $sales_order, Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
+            'client_id' => 'required',
+            'shipment_id' => 'required',
+            'order_date' => 'required|date',
+            'due_date' => 'nullable|date',
+            'status' => 'required',
+            'notes' => 'nullable',
+            'items' => 'array|required'
         ]);
 
         $sales_order->update([
-            'description' => $request->description,
-            'date' => $request->date,
+            'client_id' => $request->client_id,
+            'shipment_id' => $request->shipment_id,
+            'status' => $request->status,
+            'order_date' => $request->order_date,
+            'due_date' => $request->due_date,
+            'notes' => $request->notes,
         ]);
 
-        $text = ucwords(auth()->user()->name) . ' updated ' . $sales_order->name . ", datetime :   " . now();
+        if (isset($request['items'])) {
+            foreach ($request['items'] as $item) {
+                SalesOrderItem::create([
+                    'sales_order_id' => $sales_order->id,
+                    'item_id' => $item['item_id'],
+                    'supplier_id' => $item['supplier_id'] ?? null,
+                    'type' => (isset($item['supplier_id']) ? 'expense' : 'item'),
+                    'unit_price' => $item['price'],
+                    'quantity' => $item['quantity'] ?? 1,
+                    'total_price' => $item['price'] * ($item['quantity'] ?? 1)
+                ]);
+            }
+        }
+
+        $text = ucwords(auth()->user()->name) . ' updated Sales Order ' . $sales_order->name . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('sales_orders')->with('warning', 'SalesOrder updated successfully!');
-    }
-
-    public function activity(SalesOrder $sales_order)
-    {
-        $search_term1 = " " . trim($sales_order->name) . ",";
-        $search_term2 = " " . trim($sales_order->name) . " ";
-        $logs = Log::select('text')->where('text', 'LIKE', "%{$search_term1}%")->orWhere('text', 'LIKE', "%{$search_term2}%")->orderBy('id', 'desc')->get();
-
-        $data = compact('sales_order', 'logs');
-        return view('sales_orders.activity', $data);
-    }
-
-    public function Return(SalesOrderItem $sales_orderItem)
-    {
-        $item = Item::findOrFail($sales_orderItem->item_id);
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        ModelsRequest::create([
-            'user_id' => auth()->user()->id,
-            'item_id' => $item->id,
-            'so_id' => $sales_orderItem->id,
-            'quantity' => $sales_orderItem->quantity,
-            'type' => 10,
-            'status' => 0,
-        ]);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-        return redirect()->back()->with('info', 'Request sent!');
-    }
-
-    public function return_all($id)
-    {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        $sales_order_items = SalesOrderItem::where('so_id', $id)->get();
-        foreach ($sales_order_items as $sales_orderItem) {
-            $item = Item::findOrFail($sales_orderItem->item_id);
-
-            ModelsRequest::create([
-                'user_id' => auth()->user()->id,
-                'item_id' => $item->id,
-                'so_id' => $sales_orderItem->id,
-                'quantity' => $sales_orderItem->quantity,
-                'type' => 10,
-                'status' => 0,
-            ]);
-        }
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-        return redirect()->back()->with('info', 'Requests sent!');
-    }
-
-    public function AddItems(SalesOrder $sales_order)
-    {
-        $parts = explode('-', $sales_order->name);
-
-        $sales_order_items = SalesOrderItem::select('item_id', 'quantity')->where('so_id', $sales_order->id)->orderBy('created_at', 'desc')->get();
-        $requests = ModelsRequest::select('user_id', 'quantity', 'item_id')->where('status', 0)->where('type', 2)->where('so_id', $sales_order->id)->orderBy('created_at', 'DESC')->get();
-
-        $data = compact('sales_order', 'so_items', 'requests');
-        return view('sales_orders.add_items', $data);
-    }
-
-    public function SaveItems(SalesOrder $sales_order, Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*.quantity' => 'required|min:1',
-        ]);
-
-        $parts = explode('-', $sales_order->name);
-        $counter = 0;
-
-        foreach ($request->items as $id => $quantity) {
-            $item = Item::findOrFail($id);
-
-            if (($item->quantity - $quantity['quantity']) < 0) {
-                return redirect()->back()->with('error', 'Item not available...');
-            }
-
-            ModelsRequest::create([
-                'user_id' => auth()->user()->id,
-                'item_id' => $item->id,
-                'so_id' => $sales_order->id,
-                'quantity' => $quantity['quantity'],
-                'type' => 2,
-                'status' => 0,
-                'created_at' => Carbon::now()->addSeconds($counter),
-            ]);
-
-            $counter++;
-        }
-
-        return redirect()->back()->with('info', 'Request sent!');
+        return redirect()->route('sales_orders')->with('warning', 'Sales Order updated successfully!');
     }
 
     public function search(Request $request)
@@ -258,10 +193,18 @@ class SalesOrderController extends Controller
     public function new_invoice(SalesOrder $sales_order)
     {
         $clients = Client::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'unit_cost', 'unit_price', 'type')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
-        $data = compact('clients', 'items', 'taxes', 'sales_order');
+        $suppliers = Supplier::select('id', 'name')->get();
 
+        $data = compact('clients', 'items', 'taxes', 'sales_order', 'suppliers');
         return view('invoices.new', $data);
+    }
+
+    public function item_destroy(SalesOrderItem $sales_order_item)
+    {
+        $sales_order_item->delete();
+
+        return redirect()->back()->with('success', 'Sales Order Item deleted successfully!');
     }
 }

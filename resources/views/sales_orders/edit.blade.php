@@ -4,27 +4,135 @@
 
 @section('sub-title', 'edit')
 
+@php
+$statuses = Helper::get_order_statuses();
+@endphp
+
 @section('content')
-<div class="inner-container">
-    <div class="card">
-        <div class="card-header bg-info border-b">
-            <h4 class="font-weight-bolder">Edit Sales Order</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm rounded">
+                <img src="{{ asset('assets/images/sales_order.png') }}" alt="sales_order" class="img-fluid">
+            </div>
+
+            <div class="card p-4 mb-4 shadow-sm items-container custom-scroller">
+                <h3 class="text-center text-info">Items</h3>
+
+                <div id="items">
+                    @foreach ($items as $item)
+                    <div class="row">
+                        <div class="col-9">
+                            {{ $item->name }}
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-sm btn-success ignore-confirm"
+                                onclick="addSOItem({{ $item->id }}, '{{ $item->name }}', '{{ $item->type }}', {{ $item->unit_price }})"><i
+                                    class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
-        <div class="card-body p-0 px-3 mt-3">
-            <form method="POST" action="{{ route('sales_orders.update', $sales_order->id) }}"
+
+        <div class="col-md-8">
+            <form action="{{ route('sales_orders.update', $sales_order->id) }}" method="post"
                 enctype="multipart/form-data">
                 @csrf
 
-                <div class="input-group input-group-outline row my-3">
-                    <label for="description" class="col-md-5 col-form-label text-md-end">{{ __('Description')
-                        }}</label>
+                <div class="card p-4 mb-4 shadow-sm">
+                    <h2 class="text-center text-info">Edit Sales Order</h2>
 
-                    <div class="col-md-6">
-                        <input id="description" type="text"
-                            class="form-control @error('description') is-invalid @enderror" name="description"
-                            value="{{ $sales_order->description }}">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="client_id" class="col-form-label">Client *</label>
 
-                        @error('description')
+                                <select name="client_id" id="client_id" required class="form-select select2">
+                                    <option value="">Select Client</option>
+                                    @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" {{ $client->id==$sales_order->client_id ?
+                                        'selected' : ''
+                                        }}>
+                                        {{ $client->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="shipment_id" class="col-form-label">Shipment *</label>
+
+                                <select name="shipment_id" id="shipment_id" required class="form-select select2">
+                                    <option value="">Select Shipment</option>
+                                    @foreach ($shipments as $shipment)
+                                    <option value="{{ $shipment->id }}" {{ $shipment->id==$sales_order->shipment_id ?
+                                        'selected' : '' }}>
+                                        {{ $shipment->shipment_number }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <label for="status" class="col-form-label">Status *</label>
+
+                                <select name="status" id="status" required class="form-select select2">
+                                    @foreach ($statuses as $status)
+                                    <option value="{{ $status }}" {{ $status==$sales_order->status ? 'selected' : '' }}>
+                                        {{ $status }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <label for="order_date" class="col-form-label">Order Date
+                                    *</label>
+
+                                <input id="order_date" type="date" placeholder="Enter order_date" required
+                                    class="form-control @error('order_date') is-invalid @enderror" name="order_date"
+                                    value="{{ $sales_order->order_date }}">
+
+                                @error('order_date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <label for="due_date" class="col-form-label">Due Date</label>
+
+                                <input id="due_date" type="date"
+                                    class="form-control @error('due_date') is-invalid @enderror" name="due_date"
+                                    value="{{ $sales_order->due_date }}">
+
+                                @error('due_date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="notes" class="col-form-label">Notes</label>
+
+                        <textarea id="notes" placeholder="Enter any Notes" rows="3"
+                            class="form-textarea @error('notes') is-invalid @enderror"
+                            name="notes">{{ $sales_order->notes }}</textarea>
+
+                        @error('notes')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -32,117 +140,119 @@
                     </div>
                 </div>
 
-                <div class="input-group input-group-outline row my-3">
-                    <label for="date" class="col-md-5 col-form-label text-md-end">{{ __('Date') }}</label>
+                <div class="card p-4 mb-4 shadow-sm">
+                    <h3 class="text-center text-info">Items</h3>
 
-                    <div class="col-md-6">
-                        <input id="date" type="date" value="{{$sales_order->date}}"
-                            class="form-control date-input @error('date') is-invalid @enderror" name="date">
-
-                        @error('date')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
+                    <div id="existing-items">
+                        <table class="table table-fluid table-striped">
+                            @forelse ($sales_order->items as $item)
+                            <tr>
+                                <td class="col-4">
+                                    {{ $item->item->name }} <br>
+                                    {{ $item->supplier->name ?? '' }}
+                                </td>
+                                <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
+                                <td class="col-2">{{ number_format($item->unit_price, 2) }}</td>
+                                <td class="col-2">{{ number_format($item->total_price, 2) }}</td>
+                                <td class="col-2"><a href="{{ route('sales_orders.items.destroy', $item->id) }}"
+                                        class="btn btn-sm btn-danger show_confirm"><i class="fa fa-trash"></i></a></td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5">No Sales Order Items Yet...</td>
+                            </tr>
+                            @endforelse
+                        </table>
                     </div>
+                    <div id="so-items"></div>
                 </div>
 
-                <div class="d-flex align-items-center justify-content-around mt-3">
-                    <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
-                    <button type="submit" class="btn btn-info">Submit</button>
+                <div class="card mb-4 shadow-sm">
+                    <div class="d-flex align-items-center justify-content-around mt-3">
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
+                        <button type="submit" class="btn btn-info">Submit</button>
+                    </div>
                 </div>
             </form>
-
-            <h3 class="text-blue text-center mt-4">Items</h3>
-            <div class="container">
-                <div class="row my-3">
-                    <div class="col-md-3">
-                        <a href="{{ route('sales_orders.so_export_items', $sales_order->id) }}"
-                            class="btn btn-info">Export
-                            Items</a>
-                    </div>
-
-                    <form action="{{ route('sales_orders.so_export_items', $sales_order->id) }}" method="POST"
-                        enctype="multipart/form-data" class="col-md-9">
-                        @csrf
-                        <div class="d-flex justify-content-end">
-                            <input id="file" type="file"
-                                class=" form-control border @error('file') is-invalid @enderror" name="file">
-
-                            @error('file')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-
-                            <button type="submit" class="btn btn-info mx-2">Import Items</button>
-                        </div>
-                    </form>
-                </div>
-
-                <form action="{{ route('sales_orders.edit', $sales_order->id) }}" method="get" class="mb-3">
-                    @csrf
-                    <div class="input-group input-group-outline">
-                        <label for="search" class="my-auto">
-                            <h4 class="px-5">Item</h4>
-                        </label>
-                        <input type="text" class="form-control" name="search" value="{{request()->query('search')}}"
-                            placeholder="Type here...">
-                        <button type="submit" class="btn btn-info m-1 rounded">
-                            Search
-                        </button>
-                    </div>
-                </form>
-
-                @if ($sales_order_items->count() != 0)
-
-                @if (!request()->query('search'))
-                <div class="row">
-                    <div class="offset-9 col-3">
-                        <a href="{{ route('sales_orders.return_all', $sales_order->id) }}"
-                            class="btn btn-danger ignore-confirm">Return
-                            All</a>
-                    </div>
-                </div>
-                @endif
-
-                <table class="table table-striped bg-white">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Quantity</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($sales_order_items as $item)
-                        <tr>
-                            <td>
-                                {{$item->item->itemcode}}
-                            </td>
-                            <td>
-                                {{number_format($item->quantity, 2)}}
-                            </td>
-                            <td>
-                                <a href="{{ route('sales_orders.return', $item->id) }}"
-                                    class="btn btn-danger ignore-confirm">Return</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                        <tr>
-                            <td colspan="3">{{$sales_order_items->links()}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                @else
-                <div class="text-center my-5">
-                    No Items Found...
-                </div><br>
-                @endif
-            </div>
-
         </div>
     </div>
 </div>
 
+<script>
+    const soItems = [];
+
+    function addSOItem(id, name, type, price) {
+        if (soItems.find(item => item.id === id)) {
+            alert("Item already added...");
+            return;
+        }
+        soItems.push({ id, name, type, price });
+
+        updatesoItemsUI();
+    }
+
+    function removeSOItem(id) {
+        const index = soItems.findIndex(item => item.id === id);
+
+        if (index !== -1) {
+            soItems.splice(index, 1);
+
+            updatesoItemsUI();
+        }
+    }
+
+    function updatesoItemsUI() {
+        const soItemsContainer = document.getElementById('so-items');
+        soItemsContainer.innerHTML = '';
+
+        if (soItems.length === 0) {
+            soItemsContainer.innerHTML = '<p class="text-center text-muted">No items yet...</p>';
+            return;
+        }
+
+        soItems.forEach(item => {
+            const itemRow = document.createElement('div');
+            itemRow.className = 'row mb-2';
+
+            let additionalFields = '';
+
+            if (item.type == 'item') {
+                additionalFields = `
+                    <div class="col-3">
+                        <input type="number" name="items[${item.id}][quantity]" value="1" min="0" step="any" class="form-control" placeholder="Quantity" required>
+                    </div>`;
+            } else if (item.type == 'expense') {
+                additionalFields = `
+                    <div class="col-3">
+                        <select name="items[${item.id}][supplier_id]" class="form-select select2" required>
+                            <option value="">Select Supplier</option>
+                            @foreach ($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>`;
+            }
+
+            itemRow.innerHTML = `
+                <input type="hidden" name="items[${item.id}][item_id]" value="${item.id}">
+                <div class="col-3">
+                    ${item.name}
+                </div>
+                ${additionalFields}
+                <div class="col-3">
+                    <input type="number" min="0" step="any" name="items[${item.id}][price]" value="${item.price}" class="form-control" required>
+                </div>
+                <div class="col-3 text-end">
+                    <button class="btn btn-sm btn-danger ignore-confirm" onclick="removeSOItem(${item.id})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            soItemsContainer.appendChild(itemRow);
+        });
+
+        $('.select2').select2();
+    }
+</script>
 @endsection

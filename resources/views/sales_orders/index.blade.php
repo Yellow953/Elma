@@ -187,21 +187,10 @@ $statuses = Helper::get_order_statuses();
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
-                                            @can('sales_orders.create')
-                                            <a href="{{ route('sales_orders.AddItems', $sales_order->id) }}"
-                                                class="btn btn-info btn-custom" title="Add items">
-                                                <i class="fa-solid fa-plus"></i>
-                                            </a>
-                                            @endcan
-
                                             @can('sales_orders.read')
                                             <a href="{{ route('sales_orders.show', $sales_order->id) }}"
                                                 class="btn btn-info btn-custom" title="Show">
                                                 <i class="fa-solid fa-eye"></i>
-                                            </a>
-                                            <a href="{{ route('sales_orders.activity', $sales_order->id) }}"
-                                                class="btn btn-secondary btn-custom" title="Activity">
-                                                <i class="fa-solid fa-clock-rotate-left"></i>
                                             </a>
                                             @endcan
 

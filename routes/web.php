@@ -146,14 +146,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [SalesOrderController::class, 'export'])->name('sales_orders.export');
         Route::get('/new', [SalesOrderController::class, 'new'])->name('sales_orders.new');
         Route::post('/create', [SalesOrderController::class, 'create'])->name('sales_orders.create');
+        Route::get('/items/{sales_order_item}/delete', [SalesOrderController::class, 'item_destroy'])->name('sales_orders.items.destroy');
         Route::get('/{sales_order}/edit', [SalesOrderController::class, 'edit'])->name('sales_orders.edit');
         Route::post('/{sales_order}/update', [SalesOrderController::class, 'update'])->name('sales_orders.update');
         Route::get('/{sales_order}/show', [SalesOrderController::class, 'show'])->name('sales_orders.show');
-        Route::get('/{sales_order}/activity', [SalesOrderController::class, 'activity'])->name('sales_orders.activity');
-        Route::post('/{sales_order}/saveitems', [SalesOrderController::class, 'SaveItems'])->name('sales_orders.SaveItems');
-        Route::get('/{sales_order}/print', [SalesOrderController::class, 'print'])->name('sales_orders.print');
-        Route::get('/{sales_order}/display', [SalesOrderController::class, 'display'])->name('sales_orders.display');
-        Route::get('/{sales_order}/additems', [SalesOrderController::class, 'AddItems'])->name('sales_orders.AddItems');
         Route::get('/live_search', [SalesOrderController::class, 'live_search'])->name('sales_orders.live_search');
         Route::get('/search', [SalesOrderController::class, 'search'])->name('sales_orders.search');
         Route::get('/{sales_order}/delete', [SalesOrderController::class, 'destroy'])->name('sales_orders.destroy');
@@ -173,13 +169,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [PurchaseOrderController::class, 'export'])->name('purchase_orders.export');
         Route::get('/new', [PurchaseOrderController::class, 'new'])->name('purchase_orders.new');
         Route::post('/create', [PurchaseOrderController::class, 'create'])->name('purchase_orders.create');
+        Route::get('/items/{purchase_order_item}/delete', [PurchaseOrderController::class, 'item_destroy'])->name('purchase_orders.items.destroy');
         Route::get('/{purchase_order}/edit', [PurchaseOrderController::class, 'edit'])->name('purchase_orders.edit');
         Route::post('/{purchase_order}/update', [PurchaseOrderController::class, 'update'])->name('purchase_orders.update');
         Route::get('/{purchase_order}/show', [PurchaseOrderController::class, 'show'])->name('purchase_orders.show');
-        Route::get('/{purchase_order}/activity', [PurchaseOrderController::class, 'activity'])->name('purchase_orders.activity');
-        Route::post('/{purchase_order}/saveitems', [PurchaseOrderController::class, 'SaveItems'])->name('purchase_orders.SaveItems');
-        Route::get('/{purchase_order}/print', [PurchaseOrderController::class, 'print'])->name('purchase_orders.print');
-        Route::get('/{purchase_order}/additems', [PurchaseOrderController::class, 'AddItems'])->name('purchase_orders.AddItems');
         Route::get('/live_search', [PurchaseOrderController::class, 'live_search'])->name('purchase_orders.live_search');
         Route::get('/search', [PurchaseOrderController::class, 'search'])->name('purchase_orders.search');
         Route::get('/{purchase_order}/delete', [PurchaseOrderController::class, 'destroy'])->name('purchase_orders.destroy');
@@ -403,7 +396,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/items/{shipment_item}/delete', [ShipmentController::class, 'item_destroy'])->name('shipments.items.destroy');
         Route::get('/{shipment}/edit', [ShipmentController::class, 'edit'])->name('shipments.edit');
         Route::post('/{shipment}/update', [ShipmentController::class, 'update'])->name('shipments.update');
-        Route::get('/{shipment}/delete', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
         Route::get('/{shipment}/show', [ShipmentController::class, 'show'])->name('shipments.show');
         Route::get('/{shipment}/delete', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
         Route::get('/', [ShipmentController::class, 'index'])->name('shipments');

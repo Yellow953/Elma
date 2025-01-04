@@ -39,161 +39,106 @@ class PurchaseOrderController extends Controller
     {
         $suppliers = Supplier::select('id', 'name')->get();
         $shipments = Shipment::select('id', 'shipment_number')->get();
+        $items = Item::select('id', 'name')->where('type', 'expense')->get();
 
-        $data = compact('shipments', 'suppliers');
+        $data = compact('shipments', 'suppliers', 'items');
         return view('purchase_orders.new', $data);
     }
 
     public function create(Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
+            'supplier_id' => 'required',
+            'shipment_id' => 'required',
+            'order_date' => 'required|date',
+            'due_date' => 'nullable|date',
+            'status' => 'required',
+            'notes' => 'nullable',
+            'items' => 'array|required'
         ]);
 
         $purchase_order = PurchaseOrder::create([
-            'name' => PurchaseOrder::generate_name(),
-            'description' => $request->description,
-            'date' => $request->date ?? Carbon::now(),
+            'po_number' => PurchaseOrder::generate_po_number(),
+            'supplier_id' => $request->supplier_id,
+            'shipment_id' => $request->shipment_id,
+            'status' => $request->status,
+            'order_date' => $request->order_date,
+            'due_date' => $request->due_date,
+            'notes' => $request->notes,
         ]);
 
-        $text = ucwords(auth()->user()->name) . " created " . $purchase_order->name . ", datetime :   " . now();
+        foreach ($request['items'] as $item) {
+            PurchaseOrderItem::create([
+                'purchase_order_id' => $purchase_order->id,
+                'item_id' => $item['item_id'],
+                'supplier_id' => $request->supplier_id,
+                'type' => 'expense',
+                'unit_price' => $item['price'],
+                'quantity' => $item['quantity'] ?? 1,
+                'total_price' => $item['price'] * ($item['quantity'] ?? 1)
+            ]);
+        }
+
+        $text = ucwords(auth()->user()->name) . " created Purchase Order " . $purchase_order->po_number . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('purchase_order')->with('success', 'PurchaseOrder created successfully!');
+        return redirect()->route('purchase_orders')->with('success', 'Purchase Order created successfully!');
     }
 
     public function edit(PurchaseOrder $purchase_order)
     {
-        $parts = explode('-', $purchase_order->name);
-        $search = request()->query('search');
-
-        if ($search) {
-            $item = Item::where('itemcode', 'LIKE', "%{$search}%")->firstOrFail();
-            if ($item != null) {
-                $purchase_order_items = PurchaseOrderItem::select('id', 'item_id', 'quantity')->where('po_id', $purchase_order->id)->where('item_id', $item->id)->paginate(50);
-            } else {
-                $purchase_order_items = new Collection();
-            }
-        } else {
-            $purchase_order_items = PurchaseOrderItem::select('id', 'item_id', 'quantity')->where('po_id', $purchase_order->id)->orderBy('created_at', 'asc')->paginate(50);
-        }
         $suppliers = Supplier::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
+        $items = Item::select('id', 'name')->where('type', 'expense')->get();
 
-        $data = compact('purchase_order', 'purchase_order_items', 'suppliers');
+        $data = compact('purchase_order', 'suppliers', 'shipments', 'items');
         return view('purchase_orders.edit', $data);
     }
 
     public function update(PurchaseOrder $purchase_order, Request $request)
     {
-        $purchase_order->update([
-            'supplier_id' => $request->supplier_id,
-            'description' => $request->description,
-            'date' => $request->date,
+        $request->validate([
+            'supplier_id' => 'required',
+            'shipment_id' => 'required',
+            'order_date' => 'required|date',
+            'due_date' => 'nullable|date',
+            'status' => 'required',
+            'notes' => 'nullable',
+            'items' => 'array|required'
         ]);
 
-        $text = ucwords(auth()->user()->name) . ' updated ' . $purchase_order->name . ", datetime :   " . now();
+        $purchase_order->update([
+            'supplier_id' => $request->supplier_id,
+            'shipment_id' => $request->shipment_id,
+            'status' => $request->status,
+            'order_date' => $request->order_date,
+            'due_date' => $request->due_date,
+            'notes' => $request->notes,
+        ]);
+
+        if (isset($request['items'])) {
+            foreach ($request['items'] as $item) {
+                PurchaseOrderItem::create([
+                    'purchase_order_id' => $purchase_order->id,
+                    'item_id' => $item['item_id'],
+                    'supplier_id' => $request->supplier_id,
+                    'type' => 'expense',
+                    'unit_price' => $item['price'],
+                    'quantity' => $item['quantity'] ?? 1,
+                    'total_price' => $item['price'] * ($item['quantity'] ?? 1)
+                ]);
+            }
+        }
+
+        $text = ucwords(auth()->user()->name) . ' updated Purchase Order ' . $purchase_order->name . ", datetime :   " . now();
         log::create(['text' => $text]);
 
-        return redirect()->route('purchase_order')->with('warning', 'PurchaseOrder updated successfully!');
+        return redirect()->route('purchase_order')->with('warning', 'Purchase Order updated successfully!');
     }
 
     public function show(PurchaseOrder $purchase_order)
     {
         return view('purchase_orders.show', compact('purchase_order'));
-    }
-
-    public function print(PurchaseOrder $purchase_order)
-    {
-        return view('purchase_orders.show', compact('purchase_order'));
-    }
-
-    public function activity(PurchaseOrder $purchase_order)
-    {
-        $search_term1 = " " . trim($purchase_order->name) . ",";
-        $search_term2 = " " . trim($purchase_order->name) . " ";
-        $logs = Log::select('text')->where('text', 'LIKE', "%{$search_term1}%")->orWhere('text', 'LIKE', "%{$search_term2}%")->orderBy('id', 'desc')->get();
-
-        $data = compact('purchase_order', 'logs');
-        return view('purchase_orders.activity', $data);
-    }
-
-    public function Return(PurchaseOrderItem $purchase_order_item)
-    {
-        $item = Item::findOrFail($purchase_order_item->item_id);
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        ModelsRequest::create([
-            'user_id' => auth()->user()->id,
-            'item_id' => $item->id,
-            'po_id' => $purchase_order_item->id,
-            'quantity' => $purchase_order_item->quantity,
-            'type' => 11,
-            'status' => 0,
-        ]);
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-        return redirect()->back()->with('info', 'Request sent!');
-    }
-
-    public function return_all($id)
-    {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-        $purchase_order_items = PurchaseOrderItem::where('po_id', $id)->get();
-        foreach ($purchase_order_items as $purchase_order_item) {
-            $item = Item::findOrFail($purchase_order_item->item_id);
-
-            ModelsRequest::create([
-                'user_id' => auth()->user()->id,
-                'item_id' => $item->id,
-                'po_id' => $purchase_order_item->id,
-                'quantity' => $purchase_order_item->quantity,
-                'type' => 11,
-                'status' => 0,
-            ]);
-        }
-
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
-        return redirect()->back()->with('info', 'Request sent!');
-    }
-
-    public function AddItems(PurchaseOrder $purchase_order)
-    {
-        $parts = explode('-', $purchase_order->name);
-
-        $purchase_order_items = PurchaseOrderItem::select('item_id', 'quantity')->where('purchase_order_id', $purchase_order->id)->orderBy('created_at', 'desc')->get();
-
-        $data = compact('purchase_order', 'purchase_order_items');
-        return view('purchase_orders.add_items', $data);
-    }
-
-    public function SaveItems(PurchaseOrder $purchase_order, Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*.quantity' => 'required|min:1',
-        ]);
-
-        $parts = explode('-', $purchase_order->name);
-        $counter = 0;
-
-        foreach ($request->items as $id => $quantity) {
-            $item = Item::findOrFail($id);
-
-            ModelsRequest::create([
-                'user_id' => auth()->user()->id,
-                'item_id' => $item->id,
-                'po_id' => $purchase_order->id,
-                'quantity' => $quantity['quantity'],
-                'type' => 9,
-                'status' => 0,
-                'created_at' => Carbon::now()->addSeconds($counter),
-            ]);
-
-            $counter++;
-        }
-
-        return redirect()->back()->with('info', 'Request sent!');
     }
 
     public function search(Request $request)
@@ -248,11 +193,18 @@ class PurchaseOrderController extends Controller
 
     public function new_receipt(PurchaseOrder $purchase_order)
     {
-        $suppliers = Supplier::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'type')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
+        $suppliers = Supplier::select('id', 'name')->get();
         $data = compact('suppliers', 'items', 'taxes', 'purchase_order');
 
         return view('receipts.new', $data);
+    }
+
+    public function item_destroy(PurchaseOrderItem $purchase_order_item)
+    {
+        $purchase_order_item->delete();
+
+        return redirect()->back()->with('success', 'Purchase Order Item deleted successfully!');
     }
 }

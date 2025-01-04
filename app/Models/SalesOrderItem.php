@@ -21,4 +21,9 @@ class SalesOrderItem extends Model
     {
         return $this->belongsTo(Item::class);
     }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 }

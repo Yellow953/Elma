@@ -42,16 +42,6 @@ $currencies = Helper::get_currencies();
                             <div class="stepwizard-step">
                                 <a href="#step-3" type="button"
                                     class="btn btn-circle btn-default ignore-confirm disabled">3</a>
-                                <p>Landed Cost</p>
-                            </div>
-                            <div class="stepwizard-step">
-                                <a href="#step-4" type="button"
-                                    class="btn btn-circle btn-default ignore-confirm disabled">4</a>
-                                <p>Barcodes</p>
-                            </div>
-                            <div class="stepwizard-step">
-                                <a href="#step-5" type="button"
-                                    class="btn btn-circle btn-default ignore-confirm disabled">5</a>
                                 <p>Confirm</p>
                             </div>
                         </div>
@@ -229,7 +219,7 @@ $currencies = Helper::get_currencies();
                                                     <option value=""></option>
                                                     @foreach ($items as $item)
                                                     <option value="{{ $item->id }}" data-type="{{ $item->type }}">{{
-                                                        $item->itemcode }}
+                                                        $item->name }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -277,100 +267,6 @@ $currencies = Helper::get_currencies();
                                 <button class="btn btn-info nextBtn ignore-confirm" type="button">Next</button>
                             </div>
                         </div>
-                        <div class="row setup-content" id="step-3">
-                            <div class="w-100 my-4 overflow-x-auto">
-                                <table class="table table-bordered" id="landedCostsTable">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th class="text-sm">Date</th>
-                                            <th class="text-sm">Name</th>
-                                            <th class="text-sm">Supplier</th>
-                                            <th class="text-sm">Currency</th>
-                                            <th class="text-sm">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="landed-cost-row">
-                                            <td>
-                                                <button type="button" class="btn btn-info py-2 px-3 ignore-confirm"
-                                                    onclick="addLandedCostRow()"><i class="fa fa-plus"></i></button>
-                                            </td>
-                                            <td>
-                                                <input type="date" name="landed_cost_date[]"
-                                                    class="form-control border date-input" value="{{ date('Y-m-d') }}">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="name[]" class="form-control border">
-                                            </td>
-                                            <td>
-                                                <select name="landed_cost_supplier_id[]" class="form-control select2">
-                                                    <option value=""></option>
-                                                    @foreach ($suppliers as $supplier)
-                                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="landed_cost_currency_id[]" class="form-control">
-                                                    <option value=""></option>
-                                                    @foreach ($currencies as $currency)
-                                                    <option value="{{ $currency->id }}">{{ $currency->code }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="amount[]" class="form-control border" min="0"
-                                                    value="0" step="any">
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="2">Total</th>
-                                            <th colspan="3"></th>
-                                            <th><span id="landed_cost_total">0</span></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-4">
-                                <button class="btn btn-secondary prevBtn ignore-confirm" type="button">Previous</button>
-                                <button class="btn btn-info nextBtn ignore-confirm" type="button">Next</button>
-                            </div>
-                        </div>
-                        <div class="row setup-content" id="step-4">
-                            <p class="text-danger">
-                                If the item is of type serialized, please fill the item barcodes or upload an excell
-                                file in the following format for each row (Item Name, Barcode)
-                            </p>
-                            <div class="form-group">
-                                <label for="receipt_barcode_excel" class="form-label text-dark">Barcodes
-                                    Excel</label>
-                                <input type="file" class="form-control" id="receipt_barcode_excel"
-                                    name="receipt_barcode_excel">
-                            </div>
-
-                            <div class="w-100 my-4 overflow-x-auto">
-                                <table class="table table-bordered border" id="receiptBarcodeItemsTable">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-sm">Item</th>
-                                            <th class="text-sm">Quantity</th>
-                                            <th class="text-sm">Barcodes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="barcodeFields">
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-4">
-                                <button class="btn btn-secondary prevBtn ignore-confirm" type="button">Previous</button>
-                                <button class="btn btn-info nextBtn ignore-confirm" type="button">Next</button>
-                            </div>
-                        </div>
                         <div class="row setup-content" id="step-5">
                             <h3>Confirm</h3>
 
@@ -402,7 +298,7 @@ $currencies = Helper::get_currencies();
         newRow.innerHTML = originalRow.innerHTML;
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
+        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {
@@ -414,28 +310,10 @@ $currencies = Helper::get_currencies();
         $(newRow).find('.select2').select2();
     }
 
-    function addLandedCostRow() {
-        var table = document.getElementById("landedCostsTable").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        var originalRow = document.querySelector('.landed-cost-row');
-
-        newRow.innerHTML = originalRow.innerHTML;
-
-        newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-        newRow.cells[3].innerHTML = "<select name='landed_cost_supplier_id[]' class='form-control select2' required><option value=''></option>@foreach ($suppliers as $supplier)<option value='{{ $supplier->id }}'>{{ $supplier->name }}</option>@endforeach</select>";
-
-        newRow.querySelectorAll('input').forEach(function(input) {
-            input.addEventListener('input', updateLandedCostTotal);
-        });
-
-        $(newRow).find('.select2').select2();
-    }
-
     function removeRow(button) {
         var row = button.parentNode.parentNode;
         row.parentNode.removeChild(row);
         updateReceiptItemsTotal();
-        updateLandedCostTotal();
     }
 
     function updateTotalCostForRow(row) {
@@ -471,15 +349,6 @@ $currencies = Helper::get_currencies();
         document.getElementById('receipt_items_total_foreign').innerText = total_foreign.toFixed(2);
     }
 
-    function updateLandedCostTotal() {
-        var total = 0;
-        document.querySelectorAll('#landedCostsTable tbody tr').forEach(function(row) {
-            var amount = parseFloat(row.querySelector('input[name^="amount"]').value) || 0;
-            total += amount;
-        });
-        document.getElementById('landed_cost_total').innerText = total.toFixed(2);
-    }
-
     function fillRowWithData(row, data) {
         var itemId = data.item_id;
         var selectElement = $(row).find('select[name^="item_id"]');
@@ -487,52 +356,6 @@ $currencies = Helper::get_currencies();
 
         row.querySelector('input[name^="quantity"]').value = data.quantity;
         row.querySelector('input[name^="unit_cost"]').value = data.unit_cost;
-    }
-
-    function generateBarcodeFields() {
-        var items = {!! json_encode($items) !!};
-        var rows = document.querySelectorAll('#receiptItemsTable tbody tr');
-        var barcodeFieldsHTML = '';
-        var enteredBarcodes = [];
-
-
-        rows.forEach(function(row) {
-            var itemId = row.querySelector('select[name^="item_id"]').value;
-            var quantity = parseInt(row.querySelector('input[name^="quantity"]').value);
-            var itemType = row.querySelector('select[name^="item_id"] option:checked').getAttribute('data-type');
-
-            if (quantity > 0 && itemType === 'Serialized') {
-                var item = items.find(item => item.id == itemId);
-
-                barcodeFieldsHTML += `<tr><td>${item.itemcode}</td><td>${quantity}</td><td>`;
-                for (var i = 0; i < quantity; i++) {
-                    barcodeFieldsHTML += `<input type="text" name="barcodes[${itemId}][${i}]" class="form-control barcode-input" data-item-id="${itemId}" required>`;
-                }
-                barcodeFieldsHTML += `</td></tr>`;
-            }
-        });
-
-        document.getElementById('barcodeFields').innerHTML = barcodeFieldsHTML;
-
-        // Event listener for barcode inputs
-        var barcodeInputs = document.querySelectorAll('.barcode-input');
-        barcodeInputs.forEach(function(input) {
-            input.addEventListener('input', function(event) {
-                var currentBarcode = event.target.value.trim();
-                var isDuplicate = enteredBarcodes.includes(currentBarcode);
-
-                if (isDuplicate) {
-                    event.target.classList.add('is-invalid');
-                    event.target.nextElementSibling.innerHTML = '<div class="invalid-feedback">Duplicate barcode. Please enter a unique barcode.</div>';
-                } else {
-                    event.target.classList.remove('is-invalid');
-                    event.target.nextElementSibling.innerHTML = '';
-                    if (currentBarcode !== '') {
-                        enteredBarcodes.push(currentBarcode);
-                    }
-                }
-            });
-        });
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -579,10 +402,6 @@ $currencies = Helper::get_currencies();
                 input.addEventListener('input', updateLandedCostTotal);
             });
         });
-
-        document.querySelector('#step-3 .nextBtn').addEventListener('click', function() {
-            generateBarcodeFields();
-        });
     });
 
     // Fill Currency Field
@@ -613,7 +432,7 @@ $currencies = Helper::get_currencies();
             newRow.innerHTML = originalRow.innerHTML;
 
             newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-            newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
+            newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
 
             fillRowWithData(newRow, data);
 
