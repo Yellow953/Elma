@@ -402,10 +402,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Settings
-    Route::get('/setup', [SettingsController::class, 'new'])->name('settings.new');
-    Route::post('/setup', [SettingsController::class, 'create'])->name('settings.create');
-    Route::post('/company/update', [SettingsController::class, 'update'])->name('company.update');
-    Route::post('/company/toggle-allow-past-dates', [SettingsController::class, 'toggle_allow_past_dates'])->name('company.toggle_allow_past_dates');
+    Route::get('/settigns', [SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/update', [SettingsController::class, 'update'])->name('settings.update');
 
     // Navigation
     Route::post('/navigate', [HomeController::class, 'navigate'])->name('navigate');

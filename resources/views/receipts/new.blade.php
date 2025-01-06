@@ -288,7 +288,7 @@ $currencies = Helper::get_currencies();
 
 <script src="{{ asset('assets/js/stepper.js') }}"></script>
 <script>
-    let tax_rate = {{ $purchase_order->supplier->tax->rate }};
+    let tax_rate = {{ $purchase_order->supplier->tax->rate/100 ?? 0 }};
 
     function addReceiptItemRow() {
         var table = document.getElementById("receiptItemsTable").getElementsByTagName('tbody')[0];

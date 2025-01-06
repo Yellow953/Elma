@@ -9,6 +9,7 @@ use App\Models\InvoiceItem;
 use App\Models\Item;
 use App\Models\JournalVoucher;
 use App\Models\Log;
+use App\Models\Supplier;
 use App\Models\Tax;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -38,10 +39,11 @@ class InvoiceController extends Controller
     public function new()
     {
         $clients = Client::select('id', 'name', 'tax_id')->get();
-        $items = Item::select('id', 'itemcode', 'unit_cost', 'unit_price', 'type')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
+        $suppliers = Supplier::select('id', 'name')->get();
 
-        $data = compact('clients', 'items', 'taxes');
+        $data = compact('clients', 'items', 'taxes', 'suppliers');
         return view('invoices.new', $data);
     }
 
@@ -83,7 +85,7 @@ class InvoiceController extends Controller
             'rate' => $request->input('rate'),
             'date' => $request->input('date'),
             'type' => 'invoice',
-            'so_id' => $request->input('so_id'),
+            'sales_order_id' => $request->input('sales_order_id'),
         ]);
 
         $taxes = 0;

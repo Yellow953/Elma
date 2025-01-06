@@ -146,7 +146,7 @@ class SalesOrderController extends Controller
 
     public function search(Request $request)
     {
-        $sales_order = SalesOrder::findOrFail($request->so_id);
+        $sales_order = SalesOrder::findOrFail($request->sales_order_id);
         $parts = explode('-', $sales_order->name);
 
         $query = $request->search;
@@ -162,7 +162,7 @@ class SalesOrderController extends Controller
 
     public function live_search(Request $request)
     {
-        $sales_order = SalesOrder::findOrFail($request->so_id);
+        $sales_order = SalesOrder::findOrFail($request->sales_order_id);
         $parts = explode('-', $sales_order->name);
 
         $query = $request->live_search;

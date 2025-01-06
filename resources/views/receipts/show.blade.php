@@ -28,47 +28,6 @@
                     </div>
                 </div>
 
-                <div class="mt-5">
-                    <h4 class="text-primary text-center my-4">Landed Cost</h4>
-                    <div class="table-responsive overflow-auto">
-                        <table class="table table-striped">
-                            <thead class="text-center">
-                                <tr style="font-size: 0.9rem">
-                                    <th>Date</th>
-                                    <th>Name</th>
-                                    <th>Supplier</th>
-                                    <th>Currency</th>
-                                    <th>Rate</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center">
-                                @forelse ($receipt->landed_costs as $lc)
-                                <tr>
-                                    <td>{{ $lc->date }}</td>
-                                    <td>{{ $lc->name }}</td>
-                                    <td>{{ $lc->supplier->name }}</td>
-                                    <td>{{ $lc->currency->code }}</td>
-                                    <td>{{ number_format($lc->rate) }}</td>
-                                    <td>{{ number_format($lc->amount, 2) }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="6">No Landed Costs Yet</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-dark text-white text-center" style="font-size: 0.9rem">
-                                    <th colspan="5"></th>
-                                    <th>{{ number_format($total_landed_cost, 2) }}</th>
-                                    </th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div> <br>
-
                 <div class="">
                     <h4 class="text-primary text-center my-4">Items</h4>
                     <div class="table-responsive overflow-auto">
@@ -76,7 +35,6 @@
                             <thead class="text-center">
                                 <tr style="font-size: 0.9rem;">
                                     <th>Item</th>
-                                    <th>Barcodes</th>
                                     <th>Quantity</th>
                                     <th>Unit Cost</th>
                                     <th>Total Cost</th>
@@ -85,21 +43,8 @@
                             <tbody class="text-center">
                                 @forelse ($receipt->receipt_items as $item)
                                 <tr>
-                                    <td class="col-4">{{ $item->item->itemcode }}
+                                    <td class="col-4">{{ $item->item->name }}
                                         <br>{{ $item->item->description }}
-                                    </td>
-                                    <td class="col-2">
-                                        @if ($item->item->type == 'Serialized')
-                                        @forelse ($item->item->barcodes as $barcode)
-                                        @if($barcode->receipt_id == $receipt->id)
-                                        {{ $barcode->barcode }},
-                                        @endif
-                                        @empty
-                                        No Barcodes
-                                        @endforelse
-                                        @else
-                                        Item Not Serialized
-                                        @endif
                                     </td>
                                     <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
                                     <td class="col-2">{{ number_format($item->unit_cost, 2) }}</td>
@@ -113,29 +58,24 @@
                             </tbody>
                             <tfoot class="text-center">
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Total</th>
                                     <th>{{ number_format($total, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Total Foreign</th>
                                     <th>{{ number_format($total_foreign, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Tax</th>
                                     <th>{{ number_format($total_tax, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Total After TAX</th>
                                     <th>{{ number_format($total_after_tax, 2) }}</th>
-                                </tr>
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
-                                    <th>Total After Landed Cost</th>
-                                    <th>{{ number_format($total_after_landed_cost, 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>

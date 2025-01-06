@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
-use App\Models\Log;
+use App\Models\Account;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -13,96 +13,27 @@ class SettingsController extends Controller
         $this->middleware('permission:settings.all');
     }
 
-    public function new()
+    public function index()
     {
-        return view('settings.new');
-    }
+        $expense_account = Variable::where('title', 'expense_account')->first();
+        $accounts = Account::select('id', 'account_number', 'account_description')->get();
 
-    public function create(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'address' => 'required',
-            'monthly_growth_factor' => 'numeric|min:0|required',
-        ]);
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('uploads/company/', $filename);
-            $path = '/uploads/company/' . $filename;
-        }
-
-        Company::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'vat_number' => $request->vat_number,
-            'website' => $request->website,
-            'logo' => $path ?? null,
-            'allow_past_dates' => $request->boolean('allow_past_dates'),
-            'monthly_growth_factor' => $request->monthly_growth_factor,
-        ]);
-
-        Log::create([
-            'text' => auth()->user()->name . ' completed the setup, datetime: ' . now(),
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Settings saved.');
+        $data = compact('accounts', 'expense_account');
+        return view('settings.index', $data);
     }
 
     public function update(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'address' => 'required',
+            'expense_account_id' => 'required',
         ]);
 
-        $company = Company::first();
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $ext = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $ext;
-            $file->move('uploads/company/', $filename);
-            $path = '/uploads/company/' . $filename;
-        } else {
-            $path = $company->logo;
+        if ($request->expense_account_id) {
+            Variable::where('name', 'expense_account')->first()->update([
+                'value' => $request->expense_account_id
+            ]);
         }
 
-        $company->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'vat_number' => $request->vat_number,
-            'website' => $request->website,
-            'logo' => $path,
-            'monthly_growth_factor' => $request->monthly_growth_factor,
-        ]);
-
-        Log::create([
-            'text' => auth()->user()->name . ' changed the Company settings, datetime: ' . now(),
-        ]);
-
-        return redirect()->back()->with('success', 'Company Settings saved.');
-    }
-
-    public function toggle_allow_past_dates(Request $request)
-    {
-        $company = Company::first();
-        if ($company->allow_past_dates) {
-            $company->update(['allow_past_dates' => false]);
-            return redirect()->back()->with('success', 'Past Dates Disabled...');
-        } else {
-            $company->update(['allow_past_dates' => true]);
-            return redirect()->back()->with('success', 'Past Dates Enabled...');
-        }
+        return redirect()->back()->with('success', 'Configurations updated successfully...');
     }
 }

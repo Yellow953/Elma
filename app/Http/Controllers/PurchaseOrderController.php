@@ -143,7 +143,7 @@ class PurchaseOrderController extends Controller
 
     public function search(Request $request)
     {
-        $purchase_order = PurchaseOrder::findOrFail($request->po_id);
+        $purchase_order = PurchaseOrder::findOrFail($request->purchase_order_id);
         $parts = explode('-', $purchase_order->name);
 
         $query = $request->search;
@@ -159,7 +159,7 @@ class PurchaseOrderController extends Controller
 
     public function live_search(Request $request)
     {
-        $purchase_order = PurchaseOrder::findOrFail($request->po_id);
+        $purchase_order = PurchaseOrder::findOrFail($request->purchase_order_id);
         $parts = explode('-', $purchase_order->name);
 
         $query = $request->live_search;
@@ -193,7 +193,7 @@ class PurchaseOrderController extends Controller
 
     public function new_receipt(PurchaseOrder $purchase_order)
     {
-        $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->where('type', 'expense')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
         $data = compact('suppliers', 'items', 'taxes', 'purchase_order');

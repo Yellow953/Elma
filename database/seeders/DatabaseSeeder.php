@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SearchRouteSeeder::class,
             AccountTypeSeeder::class,
             PermissionSeeder::class,
+            VariableSeeder::class,
         ]);
     }
 }

@@ -12,6 +12,7 @@ use App\Models\JournalVoucher;
 use App\Models\PurchaseOrder;
 use App\Models\Receipt;
 use App\Models\SearchRoute;
+use App\Models\Shipment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -24,6 +25,7 @@ class HomeController extends Controller
         $total_users = User::count();
         $total_suppliers = Supplier::count();
         $total_clients = Client::count();
+        $total_shipments = Shipment::count();
         $total_sales_orders = SalesOrder::count();
         $total_purchase_orders = PurchaseOrder::count();
         $total_items = Item::count();
@@ -31,7 +33,7 @@ class HomeController extends Controller
         $total_receipts = Receipt::count();
         $total_invoices = Invoice::count();
 
-        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_jvs', 'total_receipts', 'total_invoices');
+        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_shipments', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_jvs', 'total_receipts', 'total_invoices');
         return view('dashboard', $data);
     }
 

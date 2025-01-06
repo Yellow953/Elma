@@ -230,6 +230,16 @@
             </li>
             @endcan
 
+            @can('settings.all')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('settings*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('settings') }}">
+                    <span><i class="fa-solid fa-gear"></i></span>
+                    Settings
+                </a>
+            </li>
+            @endcan
+
             @can('backups.all')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('backup*') ? 'active bg-gradient-info' : '' }}"
