@@ -8,7 +8,6 @@ use App\Models\Supplier;
 use App\Models\Client;
 use App\Models\SalesOrder;
 use App\Models\Invoice;
-use App\Models\JournalVoucher;
 use App\Models\PurchaseOrder;
 use App\Models\Receipt;
 use App\Models\SearchRoute;
@@ -29,11 +28,10 @@ class HomeController extends Controller
         $total_sales_orders = SalesOrder::count();
         $total_purchase_orders = PurchaseOrder::count();
         $total_items = Item::count();
-        $total_jvs = JournalVoucher::count();
         $total_receipts = Receipt::count();
         $total_invoices = Invoice::count();
 
-        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_shipments', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_jvs', 'total_receipts', 'total_invoices');
+        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_shipments', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_receipts', 'total_invoices');
         return view('dashboard', $data);
     }
 

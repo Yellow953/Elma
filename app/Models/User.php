@@ -37,11 +37,6 @@ class User extends Authenticatable
         return $this->belongsTo(Currency::class);
     }
 
-    public function journal_vouchers()
-    {
-        return $this->hasMany(JournalVoucher::class);
-    }
-
     public function transactions()
     {
         return $this->hasMany(Transaction::class)->where('hidden', false);
@@ -50,7 +45,7 @@ class User extends Authenticatable
     // Permissions
     public function can_delete()
     {
-        return $this->journal_vouchers->count() == 0 && $this->transactions->count() == 0;
+        return $this->transactions->count() == 0;
     }
 
     // Filter

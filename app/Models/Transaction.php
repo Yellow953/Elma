@@ -12,11 +12,6 @@ class Transaction extends Model
 
     protected $guarded = [];
 
-    public function journal_voucher()
-    {
-        return $this->belongsTo(JournalVoucher::class, 'journal_voucher_id');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -50,10 +45,6 @@ class Transaction extends Model
     // Filter
     public function scopeFilter($q)
     {
-        if (request('journal_voucher_id')) {
-            $journal_voucher_id = request('journal_voucher_id');
-            $q->where('journal_voucher_id', $journal_voucher_id);
-        }
         if (request('account_id')) {
             $account_id = request('account_id');
             $q->where('account_id', $account_id);

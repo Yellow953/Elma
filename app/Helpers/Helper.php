@@ -80,16 +80,6 @@ class Helper
         return $itemTypes;
     }
 
-    public static function get_voc_types()
-    {
-        $vocTypes = [
-            'VOC Transaction',
-            'Debit Memo'
-        ];
-
-        return $vocTypes;
-    }
-
     public static function get_payment_types()
     {
         $paymentTypes = [
@@ -102,16 +92,8 @@ class Helper
 
     public static function format_text($text)
     {
-        switch ($text) {
-            case 'voc':
-                $text = 'VOC';
-                break;
-            default:
-                $text = str_replace('_', ' ', $text);
-                $text = ucwords($text);
-                break;
-        }
-
+        $text = str_replace('_', ' ', $text);
+        $text = ucwords($text);
         return $text;
     }
 

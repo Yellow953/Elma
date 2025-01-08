@@ -5,11 +5,10 @@
 @section('content')
 <div class="container-fluid px-2 px-md-4">
     <div class="page-header min-height-300 border-radius-xl mt-4"
-        style="background-image: url({{asset('/assets/images/warehouse.png')}});"></div>
+        style="background-image: url({{asset('/assets/images/shipping.png')}});"></div>
 
     <div class="card card-body m-3 mx-md-4 mt-n6">
-        @if(auth()->user()->role != 'user')
-        <h1 class="text-center">Statistics</h1>
+        <h1 class="text-center">Elma</h1>
         <div class="row mt-3">
             <div class="col-md-4 mb-xl-0 mb-4">
                 <div class="card my-3">
@@ -192,7 +191,6 @@
                 </div>
             </div>
         </div>
-        @endif
     </div>
 </div>
 @endsection

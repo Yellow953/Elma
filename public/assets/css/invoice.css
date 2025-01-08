@@ -1,5 +1,5 @@
-*{
-    font-family: 'Source Code Pro', monospace;
+* {
+    font-family: "Source Code Pro", monospace;
 }
 
 .text-blue {
@@ -17,10 +17,9 @@
     left: 30px;
 }
 
-.logo {
-    width: 71px;
-    border-radius: 40px;
-    zoom: 130%;
+.logo-invoice {
+    width: 200px;
+    height: 100px;
 }
 
 body {
@@ -48,7 +47,7 @@ body {
     line-height: 1.42857;
 }
 
-.receipt-main table{
+.receipt-main table {
     border-radius: 15px;
     border: 1px solid #333333;
     overflow: hidden;
@@ -64,7 +63,7 @@ body {
     background: #414143 none repeat scroll 0 0;
 }
 
-.receipt-header{
+.receipt-header {
     margin-bottom: 30px;
 }
 

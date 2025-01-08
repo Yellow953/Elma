@@ -46,8 +46,6 @@
                                 @forelse ($supplier->transactions as $transaction)
                                 <tr>
                                     <td>{{ $transaction->created_at->format('Y/m/d') }}</td>
-                                    <td>{{ $transaction->journal_voucher->receipt->receipt_number ??
-                                        $transaction->journal_voucher->invoice->invoice_number }}</td>
                                     <td>{{ $transaction->currency->code }}</td>
                                     <td>{{ number_format($transaction->debit, 2) }}</td>
                                     <td>{{ number_format($transaction->credit, 2) }}</td>

@@ -32,11 +32,6 @@ class Currency extends Model
         return $this->hasMany(Client::class);
     }
 
-    public function journal_vouchers()
-    {
-        return $this->hasMany(JournalVoucher::class);
-    }
-
     public function transactions()
     {
         return $this->hasMany(Transaction::class)->where('hidden', false);

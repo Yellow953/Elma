@@ -15,9 +15,7 @@ use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AccountController;
-use App\Http\Controllers\JournalVoucherController;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\VOCController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\SettingsController;
@@ -85,14 +83,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export/users', [ExcellController::class, 'ExportUsers'])->name('export.users');
         Route::get('/export/logs', [ExcellController::class, 'ExportLogs'])->name('export.logs');
         Route::get('/export/items', [ExcellController::class, 'ExportItems'])->name('export.items');
-        Route::get('/export/sos', [ExcellController::class, 'ExportSOS'])->name('export.sos');
-        Route::get('/export/so_items', [ExcellController::class, 'ExportSOItems'])->name('export.so_items');
-        Route::get('/export/pos', [ExcellController::class, 'ExportPOS'])->name('export.pos');
-        Route::get('/export/po_items', [ExcellController::class, 'ExportPOItems'])->name('export.po_items');
         Route::get('/export/suppliers', [ExcellController::class, 'ExportSuppliers'])->name('export.suppliers');
         Route::get('/export/clients', [ExcellController::class, 'ExportClients'])->name('export.clients');
         Route::get('/export/accounts', [ExcellController::class, 'ExportAccounts'])->name('export.accounts');
-        Route::get('/export/jvs', [ExcellController::class, 'ExportJVs'])->name('export.jvs');
         Route::get('/export/transactions', [ExcellController::class, 'ExportTransactions'])->name('export.transactions');
         Route::get('/export/taxes', [ExcellController::class, 'ExportTaxes'])->name('export.taxes');
         Route::get('/export/currencies', [ExcellController::class, 'ExportCurrencies'])->name('export.currencies');
@@ -100,9 +93,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export/cdnote_items', [ExcellController::class, 'ExportCDNoteItems'])->name('export.cdnote_items');
         Route::get('/export/receipts', [ExcellController::class, 'ExportReceipts'])->name('export.receipts');
         Route::get('/export/receipt_items', [ExcellController::class, 'ExportReceiptItems'])->name('export.receipt_items');
-        Route::get('/export/landed_costs', [ExcellController::class, 'ExportLandedCosts'])->name('export.landed_costs');
-        Route::get('/export/vocs', [ExcellController::class, 'ExportVOCs'])->name('export.vocs');
-        Route::get('/export/voc_items', [ExcellController::class, 'ExportVOCItems'])->name('export.voc_items');
         Route::get('/export/payments', [ExcellController::class, 'ExportPayments'])->name('export.payments');
         Route::get('/export/payment_items', [ExcellController::class, 'ExportPaymentItems'])->name('export.payment_items');
         Route::get('/export/invoices', [ExcellController::class, 'ExportInvoices'])->name('export.invoices');
@@ -113,14 +103,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/import/users', [ExcellController::class, 'ImportUsers'])->name('import.users');
         Route::post('/import/logs', [ExcellController::class, 'ImportLogs'])->name('import.logs');
         Route::post('/import/items', [ExcellController::class, 'ImportItems'])->name('import.items');
-        Route::post('/import/sos', [ExcellController::class, 'ImportSOS'])->name('import.sos');
-        Route::post('/import/so_items', [ExcellController::class, 'ImportSOItems'])->name('import.so_items');
-        Route::post('/import/pos', [ExcellController::class, 'ImportPOS'])->name('import.pos');
-        Route::post('/import/po_items', [ExcellController::class, 'ImportPOItems'])->name('import.po_items');
         Route::post('/import/suppliers', [ExcellController::class, 'ImportSuppliers'])->name('import.suppliers');
         Route::post('/import/clients', [ExcellController::class, 'ImportClients'])->name('import.clients');
         Route::post('/import/accounts', [ExcellController::class, 'ImportAccounts'])->name('import.accounts');
-        Route::post('/import/jvs', [ExcellController::class, 'ImportJVs'])->name('import.jvs');
         Route::post('/import/transactions', [ExcellController::class, 'ImportTransactions'])->name('import.transactions');
         Route::post('/import/taxes', [ExcellController::class, 'ImportTaxes'])->name('import.taxes');
         Route::post('/import/currencies', [ExcellController::class, 'ImportCurrencies'])->name('import.currencies');
@@ -128,9 +113,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/import/cdnote_items', [ExcellController::class, 'ImportCDNoteItems'])->name('import.cdnote_items');
         Route::post('/import/receipts', [ExcellController::class, 'ImportReceipts'])->name('import.receipts');
         Route::post('/import/receipt_items', [ExcellController::class, 'ImportReceiptItems'])->name('import.receipt_items');
-        Route::post('/import/landed_costs', [ExcellController::class, 'ImportLandedCosts'])->name('import.landed_costs');
-        Route::post('/import/vocs', [ExcellController::class, 'ImportVOCs'])->name('import.vocs');
-        Route::post('/import/voc_items', [ExcellController::class, 'ImportVOCItems'])->name('import.voc_items');
         Route::post('/import/payments', [ExcellController::class, 'ImportPayments'])->name('import.payments');
         Route::post('/import/payment_items', [ExcellController::class, 'ImportPaymentItems'])->name('import.payment_items');
         Route::post('/import/invoices', [ExcellController::class, 'ImportInvoices'])->name('import.invoices');
@@ -249,23 +231,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [AccountController::class, 'index'])->name('accounts');
     });
 
-    // Journal Vouchers Routes
-    Route::prefix('journal_vouchers')->group(function () {
-        Route::get('/export', [JournalVoucherController::class, 'export'])->name('journal_vouchers.export');
-        Route::get('/new', [JournalVoucherController::class, 'new'])->name('journal_vouchers.new');
-        Route::post('/create', [JournalVoucherController::class, 'create'])->name('journal_vouchers.create');
-        Route::post('/batch_post', [JournalVoucherController::class, 'batch_post'])->name('journal_vouchers.batch_post');
-        Route::get('/{journal_voucher}/edit', [JournalVoucherController::class, 'edit'])->name('journal_vouchers.edit');
-        Route::post('/{journal_voucher}/update', [JournalVoucherController::class, 'update'])->name('journal_vouchers.update');
-        Route::get('/{journal_voucher}/delete', [JournalVoucherController::class, 'destroy'])->name('journal_vouchers.destroy');
-        Route::get('/{journal_voucher}/show', [JournalVoucherController::class, 'show'])->name('journal_vouchers.show');
-        Route::get('/{journal_voucher}/post', [JournalVoucherController::class, 'post'])->name('journal_vouchers.post');
-        Route::get('/{journal_voucher}/void', [JournalVoucherController::class, 'void'])->name('journal_vouchers.void');
-        Route::get('/{journal_voucher}/backout', [JournalVoucherController::class, 'backout'])->name('journal_vouchers.backout');
-        Route::get('/{journal_voucher}/copy', [JournalVoucherController::class, 'copy'])->name('journal_vouchers.copy');
-        Route::get('/', [JournalVoucherController::class, 'index'])->name('journal_vouchers');
-    });
-
     // Receipts Routes
     Route::prefix('receipts')->group(function () {
         Route::get('/export', [ReceiptController::class, 'export'])->name('receipts.export');
@@ -278,25 +243,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{receipt}/delete', [ReceiptController::class, 'destroy'])->name('receipts.destroy');
         Route::get('/{receipt}/show', [ReceiptController::class, 'show'])->name('receipts.show');
         Route::get('/{receipt}/items', [ReceiptController::class, 'items'])->name('receipts.items');
-        Route::get('/{receipt}/landed_costs', [ReceiptController::class, 'landed_costs'])->name('receipts.landed_costs');
         Route::get('/', [ReceiptController::class, 'index'])->name('receipts');
     });
-
-    // VOC Routes
-    Route::prefix('voc')->group(function () {
-        Route::get('/export', [VOCController::class, 'export'])->name('voc.export');
-        Route::get('/new', [VOCController::class, 'new'])->name('voc.new');
-        Route::post('/create', [VOCController::class, 'create'])->name('voc.create');
-        Route::get('/return', [VOCController::class, 'Return'])->name('voc.return');
-        Route::post('/return_save', [VOCController::class, 'ReturnSave'])->name('voc.return_save');
-        Route::get('/{voc}/edit', [VOCController::class, 'edit'])->name('voc.edit');
-        Route::post('/{voc}/update', [VOCController::class, 'update'])->name('voc.update');
-        Route::get('/{voc}/delete', [VOCController::class, 'destroy'])->name('voc.destroy');
-        Route::get('/{voc}/show', [VOCController::class, 'show'])->name('voc.show');
-        Route::get('/{voc}/items', [VOCController::class, 'items'])->name('voc.items');
-        Route::get('/', [VOCController::class, 'index'])->name('voc');
-    });
-    Route::get('/voc_items/export', [VOCController::class, 'export_voc_items'])->name('voc_items.export');
 
     // Payment Routes
     Route::prefix('payments')->group(function () {

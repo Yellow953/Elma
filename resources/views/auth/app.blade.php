@@ -8,11 +8,8 @@
     {{-- Favicon --}}
     <link rel="icon" type="image/png" href="{{asset('/assets/images/logos/logo.png')}}">
 
-    <title>
-        Elma
+    <title>Elma | @yield('title')
     </title>
-
-    <link rel="shortcut icon" href="{{asset('assets/images/logos/logo.png')}}" type="image/x-icon">
 
     {{-- Font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +24,7 @@
 <body>
     <main class="main-content">
         <div class="page-header align-items-start min-vh-100"
-            style="background-image: url({{ asset('/assets/images/warehouse.png')}});">
+            style="background-image: url({{ asset('/assets/images/shipping.png')}});">
             <div class="container my-auto">
                 <div class="row">
                     <div class="col-xs-12 col-sm-8 col-md-6 col-lg-5 col-xl-4 mx-auto">

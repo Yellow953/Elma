@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('journal_voucher_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('account_id');
             $table->unsignedBigInteger('currency_id');
@@ -28,7 +27,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('journal_voucher_id')->references('id')->on('journal_vouchers');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('account_id')->references('id')->on('accounts');
             $table->foreign('currency_id')->references('id')->on('currencies');

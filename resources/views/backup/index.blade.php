@@ -5,7 +5,7 @@
 @section('content')
 <div class="container-fluid px-2 px-md-4">
     <div class="page-header min-height-300 border-radius-xl mt-4"
-        style="background-image: url({{asset('/assets/images/warehouse.png')}});"></div>
+        style="background-image: url({{asset('/assets/images/shipping.png')}});"></div>
     <div class="card card-body mx-1 mx-md-4 mt-n6">
         <h4 class="mt-2">Full Backup</h4>
         <div class="row my-2 ">
@@ -337,42 +337,6 @@
             </div>
             <div class="col-md-6">
                 <a href="{{ route('export.landed_costs') }}" class="text-center btn btn-info mx-2 py-2 px-3">
-                    Export
-                </a>
-            </div>
-        </div>
-        <hr>
-
-        <h5 class="mt-2 text-decoration-underline">VOCs</h5>
-        <div class="row my-2 ">
-            <div class="col-md-6">
-                <form action="{{ route('import.vocs') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="d-flex flex-row">
-                        <input type="file" name="vocs" required class="input-field">
-                        <button type="submit" class="btn btn-info mx-2 py-2 px-3">Import</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <a href="{{ route('export.vocs') }}" class="text-center btn btn-info mx-2 py-2 px-3">
-                    Export
-                </a>
-            </div>
-        </div>
-        <h6 class="mt-2">VOC Items</h6>
-        <div class="row my-2 ">
-            <div class="col-md-6">
-                <form action="{{ route('import.voc_items') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="d-flex flex-row">
-                        <input type="file" name="voc_items" required class="input-field">
-                        <button type="submit" class="btn btn-info mx-2 py-2 px-3">Import</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <a href="{{ route('export.voc_items') }}" class="text-center btn btn-info mx-2 py-2 px-3">
                     Export
                 </a>
             </div>

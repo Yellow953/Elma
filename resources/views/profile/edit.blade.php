@@ -7,7 +7,7 @@
 @section('content')
 <div class="container-fluid px-2 px-md-4">
     <div class="page-header min-height-300 border-radius-xl mt-4"
-        style="background-image: url({{ asset('/assets/images/warehouse.png') }});"></div>
+        style="background-image: url({{ asset('/assets/images/shipping.png') }});"></div>
     <div class="card card-body mx-3 mx-md-4 mt-n6">
         <div class="row">
             <div class="col-md-6">

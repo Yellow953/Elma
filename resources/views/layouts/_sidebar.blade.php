@@ -2,8 +2,8 @@
     class="sidenav navbar navbar-vertical navbar-expand-xs border-0 fixed-start my-2 mx-1 bg-gradient-dark custom-scroller"
     id="sidenav-main">
     <div class="sidenav-header">
-        <a class="navbar-brand m-0 p-0 d-flex flex-row justify-content-center" href="{{ route('dashboard') }}">
-            <h1 class="text-white">Elma</h1>
+        <a class="navbar-brand m-0 p-0" href="{{ route('dashboard') }}">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="" class="logo-nav p-4">
         </a>
     </div>
     <hr class="horizontal light m-0">
@@ -68,16 +68,6 @@
             </li>
             @endcan
 
-            @can('journal_vouchers.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('journal_vouchers*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('journal_vouchers') }}">
-                    <span><i class="fa-solid fa-cash-register"></i></span>
-                    Journal Vouchers
-                </a>
-            </li>
-            @endcan
-
             <li class="nav-item mt-3">
                 <h6 class="title-sub-nav">Purchase</h6>
             </li>
@@ -108,16 +98,6 @@
                     href="{{ route('payments') }}">
                     <span><i class="fa-solid fa-money-bill"></i></span>
                     Payments
-                </a>
-            </li>
-            @endcan
-
-            @can('vocs.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('voc*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('voc') }}">
-                    <span><i class="fa-solid fa-cart-shopping"></i></span>
-                    VOC
                 </a>
             </li>
             @endcan

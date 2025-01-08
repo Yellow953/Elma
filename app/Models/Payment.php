@@ -32,11 +32,6 @@ class Payment extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function journal_voucher()
-    {
-        return $this->belongsTo(JournalVoucher::class);
-    }
-
     public function payment_items()
     {
         return $this->hasMany(PaymentItem::class);
@@ -46,11 +41,6 @@ class Payment extends Model
     public function can_delete()
     {
         return $this->payment_items->count() == 0;
-    }
-
-    public function can_edit()
-    {
-        return $this->journal_voucher->status == 'unposted';
     }
 
     // Filter
@@ -79,10 +69,6 @@ class Payment extends Model
         if (request('foreign_currency_id')) {
             $foreign_currency_id = request('foreign_currency_id');
             $q->where('foreign_currency_id', $foreign_currency_id);
-        }
-        if (request('journal_voucher_id')) {
-            $journal_voucher_id = request('journal_voucher_id');
-            $q->where('journal_voucher_id', $journal_voucher_id);
         }
         if (request('date')) {
             $date = request('date');

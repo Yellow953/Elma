@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('foreign_currency_id')->nullable();
             $table->double('rate')->nullable();
             $table->string('type');
-            $table->unsignedBigInteger('journal_voucher_id');
             $table->timestamps();
             $table->softDeletes();
 
@@ -29,7 +28,6 @@ return new class extends Migration
             $table->foreign('tax_id')->references('id')->on('taxes');
             $table->foreign('currency_id')->references('id')->on('currencies');
             $table->foreign('foreign_currency_id')->references('id')->on('currencies');
-            $table->foreign('journal_voucher_id')->references('id')->on('journal_vouchers');
         });
     }
 

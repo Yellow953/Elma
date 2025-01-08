@@ -6,9 +6,7 @@ use App\Models\Item;
 use App\Models\User;
 use App\Models\Supplier;
 use App\Models\Client;
-use App\Models\Company;
 use App\Models\Invoice;
-use App\Models\JournalVoucher;
 use App\Models\SalesOrder;
 use App\Models\PurchaseOrder;
 use App\Models\Receipt;
@@ -30,7 +28,6 @@ class StatisticsController extends Controller
         $total_sales_orders = SalesOrder::count();
         $total_purchase_orders = PurchaseOrder::count();
         $total_items = Item::count();
-        $total_jvs = JournalVoucher::count();
         $total_receipts = Receipt::count();
         $total_invoices = Invoice::count();
 

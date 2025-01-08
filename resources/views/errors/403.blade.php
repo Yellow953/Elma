@@ -34,7 +34,7 @@
     </style>
 </head>
 
-<body style="background-image: url({{ asset('assets/images/warehouse.png')}});">
+<body style="background-image: url({{ asset('assets/images/shipping.png')}});">
     <div class="container">
         <div class="row text-center">
             <div class="col-lg-6 offset-lg-3 col-sm-6 offset-sm-3 col-12 p-3 error-main">

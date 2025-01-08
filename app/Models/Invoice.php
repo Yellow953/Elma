@@ -32,11 +32,6 @@ class Invoice extends Model
         return $this->belongsTo(Tax::class);
     }
 
-    public function journal_voucher()
-    {
-        return $this->belongsTo(JournalVoucher::class);
-    }
-
     public function sales_order()
     {
         return $this->belongsTo(SalesOrder::class);
@@ -73,10 +68,6 @@ class Invoice extends Model
         if (request('tax_id')) {
             $tax_id = request('tax_id');
             $q->where('tax_id', $tax_id);
-        }
-        if (request('journal_voucher_id')) {
-            $journal_voucher_id = request('journal_voucher_id');
-            $q->where('journal_voucher_id', $journal_voucher_id);
         }
         if (request('sales_order_id')) {
             $sales_order_id = request('sales_order_id');

@@ -32,11 +32,6 @@ class Receipt extends Model
         return $this->belongsTo(Tax::class);
     }
 
-    public function journal_voucher()
-    {
-        return $this->belongsTo(JournalVoucher::class);
-    }
-
     public function purchase_order()
     {
         return $this->belongsTo(PurchaseOrder::class);
@@ -77,10 +72,6 @@ class Receipt extends Model
         if (request('date')) {
             $date = request('date');
             $q->where('date', $date);
-        }
-        if (request('journal_voucher_id')) {
-            $journal_voucher_id = request('journal_voucher_id');
-            $q->where('journal_voucher_id', $journal_voucher_id);
         }
         if (request('purchase_order_id')) {
             $purchase_order_id = request('purchase_order_id');
