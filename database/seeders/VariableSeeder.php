@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Variable;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class VariableSeeder extends Seeder
@@ -15,6 +14,11 @@ class VariableSeeder extends Seeder
                 'type' => 'configuration',
                 'title' => 'expense_account',
                 'value' => '243',
+            ],
+            [
+                'type' => 'configuration',
+                'title' => 'revenue_account',
+                'value' => '327',
             ],
         ];
 

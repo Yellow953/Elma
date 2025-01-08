@@ -12,16 +12,28 @@
         </div>
         <div class="col-md-8">
             <div class="card shadow-sm p-4">
-                <h2 class="text-center text-info mb-4">Configurations</h2>
+                <h2 class="text-center text-info">Configurations</h2>
                 <form action="{{ route('settings.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="expense_account_id">Expense Account</label>
                         <select name="expense_account_id" class="form-control select2">
                             <option value=""></option>
                             @foreach ($accounts as $account)
                             <option value="{{ $account->id }}" {{ $expense_account->value == $account->id ? 'selected' :
+                                '' }}>{{ $account->account_number }} | {{
+                                $account->account_description }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="revenue_account_id">Revenue Account</label>
+                        <select name="revenue_account_id" class="form-control select2">
+                            <option value=""></option>
+                            @foreach ($accounts as $account)
+                            <option value="{{ $account->id }}" {{ $revenue_account->value == $account->id ? 'selected' :
                                 '' }}>{{ $account->account_number }} | {{
                                 $account->account_description }}</option>
                             @endforeach

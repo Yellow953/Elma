@@ -122,7 +122,7 @@ $currencies = Helper::get_currencies();
                             @foreach ($invoice->invoice_items as $item)
                             <tr>
                                 <td></td>
-                                <td>{{ $item->item->itemcode }}</td>
+                                <td>{{ $item->item->name }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ number_format($item->unit_cost, 2) }}</td>
                                 <td>{{ number_format($item->unit_price, 2) }}</td>
@@ -144,7 +144,7 @@ $currencies = Helper::get_currencies();
                                         <option value="{{ $item->id }}" data-type="{{ $item->type }}"
                                             data-unit-cost='{{ $item->unit_cost }}'
                                             data-unit-price='{{ $item->unit_price }}'>
-                                            {{ $item->itemcode }}</option>
+                                            {{ $item->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -195,25 +195,6 @@ $currencies = Helper::get_currencies();
                     </div>
                 </div>
 
-                <h5 class="mt-5 text-center">Barcodes</h5>
-                <div class="w-100 my-4 overflow-x-auto">
-                    <table class="table table-bordered" id="invoiceBarcodeItemsTable">
-                        <thead>
-                            <tr>
-                                <th class="text-sm">Item</th>
-                                <th class="text-sm">Barcodes</th>
-                            </tr>
-
-                            @foreach ($invoice->barcodes as $barcode)
-                            <tr>
-                                <td>{{ $barcode->item->name }}</td>
-                                <td>{{ $barcode->barcode }}</td>
-                            </tr>
-                            @endforeach
-                        </thead>
-                    </table>
-                </div>
-
                 <div class="d-flex align-items-center justify-content-around mt-3">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
                     <button type="submit" class="btn btn-info">Submit</button>
@@ -260,7 +241,7 @@ $currencies = Helper::get_currencies();
         newRow.innerHTML = originalRow.innerHTML;
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
-        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->itemcode }}</option>@endforeach</select>";
+        newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-cost='{{ $item->unit_cost }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {

@@ -182,6 +182,7 @@ $currencies = Helper::get_currencies();
                                         <tr>
                                             <th></th>
                                             <th class="text-sm">Item</th>
+                                            <th class="text-sm">Supplier</th>
                                             <th class="text-sm">Quantity</th>
                                             <th class="text-sm">Unit Cost</th>
                                             <th class="text-sm">Unit Price</th>
@@ -202,6 +203,15 @@ $currencies = Helper::get_currencies();
                                                     <option value="{{ $item->id }}" data-type="{{ $item->type }}"
                                                         data-unit-price='{{ $item->unit_price }}'>
                                                         {{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="supplier_id[]"
+                                                    class="form-control select2 supplier-select" style="display: none;">
+                                                    <option value=""></option>
+                                                    @foreach ($suppliers as $supplier)
+                                                    <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -274,21 +284,37 @@ $currencies = Helper::get_currencies();
 
 <script src="{{ asset('assets/js/stepper.js') }}"></script>
 <script>
-    let tax_rate = {{ $sales_order->client->tax->rate }};
+    let tax_rate = {{ $sales_order->client->tax->rate ?? 0 }};
     var items = @json($items);
 
     function updateFields(selectElement) {
         const newRow = selectElement.closest('tr');
         const itemId = selectElement.value;
         const selectedItem = items.find(item => item.id == itemId);
+        const supplierSelect = newRow.querySelector('select[name^="supplier_id"]');
+        const supplierSelect2Container = $(supplierSelect).next('.select2-container');
 
         if (selectedItem) {
             newRow.querySelector('input[name^="unit_cost"]').value = selectedItem.unit_cost;
             newRow.querySelector('input[name^="unit_price"]').value = selectedItem.unit_price;
+
+            // Show/hide supplier select based on item type
+            if (selectedItem.type === 'expense') {
+                $(supplierSelect).show();
+                supplierSelect2Container.show();
+                supplierSelect.required = true;
+            } else {
+                $(supplierSelect).hide();
+                supplierSelect2Container.hide();
+                supplierSelect.required = false;
+                // Reset the select2 value
+                $(supplierSelect).val(null).trigger('change');
+            }
         }
 
         updateInvoiceItemRow(newRow);
     }
+
 
     function attachSelect2Event() {
         document.querySelectorAll('select[name="item_id[]"]').forEach(function (selectElement) {
@@ -306,7 +332,12 @@ $currencies = Helper::get_currencies();
         newRow.innerHTML = originalRow.innerHTML;
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
+
+        // Update item select
         newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
+
+        // Update supplier select
+        newRow.cells[2].innerHTML = "<select name='supplier_id[]' class='form-control select2 supplier-select' style='display: none;'><option value=''></option>@foreach ($suppliers as $supplier)<option value='{{ $supplier->id }}'>{{ $supplier->name }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
             input.addEventListener('input', function() {
@@ -315,7 +346,17 @@ $currencies = Helper::get_currencies();
             });
         });
 
-        $(newRow).find('.select2').select2().on('change', function (event) {
+        // Initialize both selects with Select2
+        $(newRow).find('.select2').each(function() {
+            $(this).select2();
+            // Hide supplier select2 container by default for new rows
+            if ($(this).attr('name') === 'supplier_id[]') {
+                $(this).next('.select2-container').hide();
+            }
+        });
+
+        // Add change event for item select
+        $(newRow).find('select[name="item_id[]"]').on('change', function(event) {
             updateFields(event.target);
         });
     }
@@ -460,6 +501,10 @@ $currencies = Helper::get_currencies();
     // Fill Rate Field
     document.getElementById('rate').value = {{ Helper::get_foreign_currency()->rate }};
     document.getElementById('rate').dispatchEvent(new Event('input'));
+
+    $('select[name="supplier_id[]"]').each(function() {
+        $(this).next('.select2-container').hide();
+    });
 </script>
 
 @if(isset($sales_order))

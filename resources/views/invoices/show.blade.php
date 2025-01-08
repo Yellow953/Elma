@@ -32,7 +32,6 @@
                             <thead class="text-center">
                                 <tr style="font-size: 0.9rem">
                                     <th>Item</th>
-                                    <th>Barcodes</th>
                                     <th>Quantity</th>
                                     <th>Unit Price</th>
                                     <th>Total Price</th>
@@ -42,21 +41,8 @@
                                 @forelse ($invoice->invoice_items as $item)
                                 <tr>
                                     <td class="col-4">
-                                        {{ $item->item->itemcode }} <br>
+                                        {{ $item->item->name }} <br>
                                         {{ $item->item->description }}
-                                    </td>
-                                    <td class="col-2">
-                                        @if ($item->item->type == 'Serialized')
-                                        @forelse ($item->item->barcodes as $barcode)
-                                        @if($barcode->invoice_id == $invoice->id)
-                                        {{ $barcode->barcode }},
-                                        @endif
-                                        @empty
-                                        No Barcodes
-                                        @endforelse
-                                        @else
-                                        Item Not Serialized
-                                        @endif
                                     </td>
                                     <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
                                     <td class="col-2">{{ number_format($item->unit_price, 2) }}</td>
@@ -64,28 +50,28 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5">No Invoice Items Yet</td>
+                                    <td colspan="4">No Invoice Items Yet</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                             <tfoot class="text-center">
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Total</th>
                                     <th>{{ number_format($total_price, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Tax</th>
                                     <th>{{ number_format($total_tax, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Total Price After VAT</th>
                                     <th>{{ number_format($total_after_tax, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3"></th>
+                                    <th colspan="2"></th>
                                     <th>Total Foreign</th>
                                     <th>{{ number_format($total_foreign, 2) }}</th>
                                 </tr>

@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('item_id');
+            $table->string('type')->default('item');
+            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->double('quantity')->unsigned();
             $table->double('unit_cost')->unsigned();
             $table->double('total_cost')->unsigned();
@@ -25,7 +27,8 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
         });
     }
 

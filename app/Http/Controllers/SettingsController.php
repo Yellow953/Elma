@@ -16,9 +16,10 @@ class SettingsController extends Controller
     public function index()
     {
         $expense_account = Variable::where('title', 'expense_account')->first();
+        $revenue_account = Variable::where('title', 'revenue_account')->first();
         $accounts = Account::select('id', 'account_number', 'account_description')->get();
 
-        $data = compact('accounts', 'expense_account');
+        $data = compact('accounts', 'expense_account', 'revenue_account');
         return view('settings.index', $data);
     }
 
@@ -31,6 +32,12 @@ class SettingsController extends Controller
         if ($request->expense_account_id) {
             Variable::where('name', 'expense_account')->first()->update([
                 'value' => $request->expense_account_id
+            ]);
+        }
+
+        if ($request->revenue_account_id) {
+            Variable::where('name', 'revenue_account')->first()->update([
+                'value' => $request->revenue_account_id
             ]);
         }
 
