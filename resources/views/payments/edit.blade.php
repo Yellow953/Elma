@@ -42,40 +42,6 @@ $currencies = Helper::get_currencies();
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="foreign_currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Foreign
-                        Currency
-                        *') }}</label>
-
-                    <div class="col-md-6">
-                        <select name="foreign_currency_id" id="foreign_currency_id" required class="form-select select2"
-                            onchange="updateRateField()">
-                            <option value=""></option>
-                            @foreach ($currencies as $currency)
-                            <option value="{{ $currency->id }}" {{ $currency->id == $payment->foreign_currency_id ?
-                                'selected':'' }}>{{ $currency->code }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="rate" class="col-md-5 col-form-label text-md-end">{{
-                        __('Rate *') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="rate" type="number" class=" form-control @error('rate') is-invalid @enderror"
-                            step="any" min="0" required name="rate" required autocomplete="rate"
-                            value="{{ $payment->rate }}">
-
-                        @error('rate')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="description" class="col-md-5 col-form-label text-md-end">{{
                         __('Description *') }}</label>
 
@@ -212,13 +178,6 @@ $currencies = Helper::get_currencies();
         row.parentNode.removeChild(row);
         updatePaymentItemsTotal();
         updateGrandTotal();
-    }
-
-    function updateRateField() {
-        var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-
-        const rateInput = document.querySelector('#rate');
-        rateInput.value = rate;
     }
 
     document.addEventListener('DOMContentLoaded', function () {

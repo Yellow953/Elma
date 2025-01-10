@@ -21,6 +21,12 @@ class Shipment extends Model
         return $this->hasMany(ShipmentItem::class);
     }
 
+    // Permissions
+    public function can_delete()
+    {
+        return true;
+    }
+
     // Filter
     public function scopeFilter($q)
     {

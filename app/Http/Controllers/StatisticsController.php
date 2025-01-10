@@ -31,7 +31,7 @@ class StatisticsController extends Controller
         $total_receipts = Receipt::count();
         $total_invoices = Invoice::count();
 
-        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_jvs', 'total_receipts', 'total_invoices');
+        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_receipts', 'total_invoices');
 
         return view('statistics.index', $data);
     }

@@ -17,11 +17,6 @@ class Receipt extends Model
         return $this->belongsTo(Currency::class);
     }
 
-    public function foreign_currency()
-    {
-        return $this->belongsTo(Currency::class, 'foreign_currency_id');
-    }
-
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
@@ -37,9 +32,15 @@ class Receipt extends Model
         return $this->belongsTo(PurchaseOrder::class);
     }
 
-    public function receipt_items()
+    public function items()
     {
         return $this->hasMany(ReceiptItem::class);
+    }
+
+    // Permissions
+    public function can_delete()
+    {
+        return true;
     }
 
     // Filter
@@ -64,10 +65,6 @@ class Receipt extends Model
         if (request('currency_id')) {
             $currency_id = request('currency_id');
             $q->where('currency_id', $currency_id);
-        }
-        if (request('foreign_currency_id')) {
-            $foreign_currency_id = request('foreign_currency_id');
-            $q->where('foreign_currency_id', $foreign_currency_id);
         }
         if (request('date')) {
             $date = request('date');

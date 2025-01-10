@@ -15,8 +15,6 @@ return new class extends Migration
             $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('tax_id');
             $table->unsignedBigInteger('currency_id');
-            $table->unsignedBigInteger('foreign_currency_id')->nullable();
-            $table->double('rate')->nullable();
             $table->date('date');
             $table->string('type')->default('receipt');
             $table->unsignedBigInteger('purchase_order_id')->nullable();
@@ -26,7 +24,6 @@ return new class extends Migration
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->foreign('tax_id')->references('id')->on('taxes');
             $table->foreign('currency_id')->references('id')->on('currencies');
-            $table->foreign('foreign_currency_id')->references('id')->on('currencies');
             $table->foreign('purchase_order_id')->references('id')->on('purchase_orders');
         });
     }

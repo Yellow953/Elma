@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('description');
             $table->date('date');
             $table->unsignedBigInteger('currency_id');
-            $table->unsignedBigInteger('foreign_currency_id')->nullable();
-            $table->double('rate')->nullable();
             $table->string('type');
             $table->timestamps();
             $table->softDeletes();
@@ -25,7 +23,6 @@ return new class extends Migration
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('currency_id')->references('id')->on('currencies');
-            $table->foreign('foreign_currency_id')->references('id')->on('currencies');
         });
     }
 

@@ -27,7 +27,7 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $invoices = Invoice::select('id', 'invoice_number', 'date', 'client_id', 'currency_id', 'foreign_currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $invoices = Invoice::select('id', 'invoice_number', 'date', 'client_id', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
 
         $data = compact('invoices', 'clients');
@@ -51,7 +51,6 @@ class InvoiceController extends Controller
             'client_id' => 'required|exists:clients,id',
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
-            'foreign_currency_id' => 'nullable|exists:currencies,id',
             'date' => 'required|date',
             'item_id.*' => 'required|exists:items,id',
             'quantity.*' => 'required|numeric|min:1',
@@ -67,8 +66,6 @@ class InvoiceController extends Controller
             'client_id' => $request->client_id,
             'tax_id' => $request->tax_id,
             'currency_id' => $request->currency_id,
-            'foreign_currency_id' => $request->foreign_currency_id,
-            'rate' => $request->rate,
             'date' => $request->date,
             'type' => 'invoice',
         ]);
@@ -100,9 +97,7 @@ class InvoiceController extends Controller
                 'total_cost' => 0,
                 'total_price' => $line_total,
                 'vat' => $line_tax,
-                'rate' => $request->rate,
                 'total_price_after_vat' => $line_total_after_tax,
-                'total_foreign_price' => $line_total_after_tax * $request->rate,
             ]);
 
             $total_price += $line_total;
@@ -117,14 +112,9 @@ class InvoiceController extends Controller
                     'user_id' => auth()->id(),
                     'account_id' => $expense_account->id,
                     'currency_id' => $invoice->currency_id,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $request->rate,
                     'debit' => $line_total_after_tax,
                     'credit' => 0,
                     'balance' => $line_total_after_tax,
-                    'foreign_debit' => $line_total_after_tax * $request->rate,
-                    'foreign_credit' => 0,
-                    'foreign_balance' => $line_total_after_tax * $request->rate,
                 ]);
 
                 // Supplier Payable Transaction
@@ -135,14 +125,9 @@ class InvoiceController extends Controller
                     'account_id' => $supplier_account->id,
                     'supplier_id' => $supplier_id,
                     'currency_id' => $invoice->currency_id,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $request->rate,
                     'debit' => 0,
                     'credit' => $line_total_after_tax,
                     'balance' => -$line_total_after_tax,
-                    'foreign_debit' => 0,
-                    'foreign_credit' => $line_total_after_tax * $request->rate,
-                    'foreign_balance' => - ($line_total_after_tax * $request->rate),
                 ]);
             }
         }
@@ -152,14 +137,9 @@ class InvoiceController extends Controller
             'user_id' => auth()->id(),
             'account_id' => $invoice->tax->account->id,
             'currency_id' => $invoice->currency_id,
-            'foreign_currency_id' => $invoice->foreign_currency_id,
-            'rate' => $request->rate,
             'debit' => 0,
             'credit' => $total_tax,
             'balance' => -$total_tax,
-            'foreign_debit' => 0,
-            'foreign_credit' => $total_tax * $request->rate,
-            'foreign_balance' => - ($total_tax * $request->rate),
         ]);
 
         // Client Receivable Transaction
@@ -170,14 +150,9 @@ class InvoiceController extends Controller
             'account_id' => $receivable_account->id,
             'client_id' => $invoice->client_id,
             'currency_id' => $invoice->currency_id,
-            'foreign_currency_id' => $invoice->foreign_currency_id,
-            'rate' => $request->rate,
             'debit' => $total_after_tax,
             'credit' => 0,
             'balance' => $total_after_tax,
-            'foreign_debit' => $total_after_tax * $request->rate,
-            'foreign_credit' => 0,
-            'foreign_balance' => $total_after_tax * $request->rate,
         ]);
 
         // Revenue Transaction
@@ -187,14 +162,9 @@ class InvoiceController extends Controller
             'user_id' => auth()->id(),
             'account_id' => $revenue_account->id,
             'currency_id' => $invoice->currency_id,
-            'foreign_currency_id' => $invoice->foreign_currency_id,
-            'rate' => $request->rate,
             'debit' => 0,
             'credit' => $total_price,
             'balance' => -$total_price,
-            'foreign_debit' => 0,
-            'foreign_credit' => $total_price * $request->rate,
-            'foreign_balance' => - ($total_price * $request->rate),
         ]);
 
         Log::create([
@@ -212,16 +182,14 @@ class InvoiceController extends Controller
         $total = 0;
         $total_tax = 0;
         $total_after_tax = 0;
-        $total_foreign = 0;
 
         foreach ($invoice->invoice_items as $item) {
             $total += $item->total_price;
             $total_tax += $item->vat;
             $total_after_tax += $item->total_price_after_vat;
-            $total_foreign += $item->total_foreign_price;
         }
 
-        $data = compact('invoice', 'items', 'taxes', 'total', 'total_tax', 'total_after_tax', 'total_foreign');
+        $data = compact('invoice', 'items', 'taxes', 'total', 'total_tax', 'total_after_tax');
         return view('invoices.edit', $data);
     }
 
@@ -230,21 +198,17 @@ class InvoiceController extends Controller
         $request->validate([
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
-            'foreign_currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
         ]);
 
         $invoice->update([
             'tax_id' => $request->input('tax_id'),
             'currency_id' => $request->input('currency_id'),
-            'foreign_currency_id' => $request->input('foreign_currency_id'),
-            'rate' => $request->input('rate'),
             'date' => $request->input('date'),
         ]);
 
         $taxes = 0;
         $total_after_tax = 0;
-        $rate = $request->input('rate');
 
         $tax_rate = Tax::find($request->input('tax_id'))->rate / 100;
         if ($request->input('item_id')[0] != null) {
@@ -265,9 +229,7 @@ class InvoiceController extends Controller
                     'unit_price' => $unit_price,
                     'total_price' => $tp,
                     'vat' => ($tp * $tax_rate),
-                    'rate' => $rate,
                     'total_price_after_vat' =>  $tp + ($tp * $tax_rate),
-                    'total_foreign_price' => ($tp + ($tp * $tax_rate)) * $rate,
                 ]);
                 $taxes += ($tp * $tax_rate);
                 $total_after_tax += $tp + ($tp * $tax_rate);
@@ -281,11 +243,6 @@ class InvoiceController extends Controller
                     'debit' => 0,
                     'credit' => $tc,
                     'balance' => 0 - $tc,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => 0,
-                    'foreign_credit' => ($tc * $rate),
-                    'foreign_balance' => 0 - ($tc * $rate),
                 ]);
 
                 // create cost of sales debit transaction
@@ -297,11 +254,6 @@ class InvoiceController extends Controller
                     'debit' => $tc,
                     'credit' => 0,
                     'balance' => $tc,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => ($tc * $rate),
-                    'foreign_credit' => 0,
-                    'foreign_balance' => ($tc * $rate),
                 ]);
 
                 // create sales credit transaction
@@ -313,11 +265,6 @@ class InvoiceController extends Controller
                     'debit' => 0,
                     'credit' => $tp,
                     'balance' => 0 - $tp,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => 0,
-                    'foreign_credit' => ($tp * $rate),
-                    'foreign_balance' => 0 - ($tp * $rate),
                 ]);
             }
         }
@@ -332,11 +279,6 @@ class InvoiceController extends Controller
                 'debit' => 0,
                 'credit' => $taxes,
                 'balance' => 0 - $taxes,
-                'foreign_currency_id' => $invoice->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => 0,
-                'foreign_credit' => ($taxes * $rate),
-                'foreign_balance' => 0 - ($taxes * $rate),
             ]);
         }
 
@@ -351,11 +293,6 @@ class InvoiceController extends Controller
                 'debit' => $total_after_tax,
                 'credit' => 0,
                 'balance' => $total_after_tax,
-                'foreign_currency_id' => $invoice->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => ($total_after_tax * $rate),
-                'foreign_credit' => 0,
-                'foreign_balance' => ($total_after_tax * $rate),
             ]);
         }
 
@@ -371,17 +308,15 @@ class InvoiceController extends Controller
         $total_price = 0;
         $total_tax = 0;
         $total_after_tax = 0;
-        $total_foreign = 0;
 
         foreach ($invoice->invoice_items as $item) {
             $total_cost += $item->total_cost;
             $total_price += $item->total_price;
             $total_tax += $item->vat;
             $total_after_tax += $item->total_price_after_vat;
-            $total_foreign += $item->total_foreign_price;
         }
 
-        $data = compact('invoice', 'total_cost', 'total_price', 'total_tax', 'total_after_tax', 'total_foreign');
+        $data = compact('invoice', 'total_cost', 'total_price', 'total_tax', 'total_after_tax');
         return view('invoices.show', $data);
     }
 
@@ -406,15 +341,12 @@ class InvoiceController extends Controller
             'client_id' => $old_invoice->client_id,
             'tax_id' => $old_invoice->tax_id,
             'currency_id' => $old_invoice->currency_id,
-            'foreign_currency_id' => $old_invoice->foreign_currency_id,
-            'rate' => $old_invoice->rate,
             'date' => date('Y-m-d'),
             'type' => 'return',
         ]);
 
         $taxes = 0;
         $total_after_tax = 0;
-        $rate = $old_invoice->rate;
         $tax_rate = $old_invoice->tax->rate / 100;
 
         foreach ($request->items as $index => $item) {
@@ -433,9 +365,6 @@ class InvoiceController extends Controller
                     'unit_price' => $old_invoice_item->unit_price,
                     'total_price' => $tp,
                     'vat' => ($tp * $tax_rate),
-                    'rate' => $rate,
-                    'total_price_after_vat' =>  $tp + ($tp * $tax_rate),
-                    'total_foreign_price' => ($tp + ($tp * $tax_rate)) * $rate,
                 ]);
                 $taxes += ($tp * $tax_rate);
                 $total_after_tax += $tp + ($tp * $tax_rate);
@@ -449,11 +378,6 @@ class InvoiceController extends Controller
                     'debit' => $tc,
                     'credit' => 0,
                     'balance' => $tc,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => ($tc * $rate),
-                    'foreign_credit' => 0,
-                    'foreign_balance' => ($tc * $rate),
                 ]);
 
                 // reverse cost of sales debit transaction
@@ -465,11 +389,6 @@ class InvoiceController extends Controller
                     'debit' => 0,
                     'credit' => $tc,
                     'balance' => 0 - $tc,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => 0,
-                    'foreign_credit' => ($tc * $rate),
-                    'foreign_balance' => 0 - ($tc * $rate),
                 ]);
 
                 // reverse sales credit transaction
@@ -481,11 +400,6 @@ class InvoiceController extends Controller
                     'debit' => $tp,
                     'credit' => 0,
                     'balance' => $tp,
-                    'foreign_currency_id' => $invoice->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => ($tp * $rate),
-                    'foreign_credit' => 0,
-                    'foreign_balance' => ($tp * $rate),
                 ]);
             }
         }
@@ -499,11 +413,6 @@ class InvoiceController extends Controller
             'debit' => $taxes,
             'credit' => 0,
             'balance' => $taxes,
-            'foreign_currency_id' => $invoice->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => ($taxes * $rate),
-            'foreign_credit' => 0,
-            'foreign_balance' => ($taxes * $rate),
         ]);
 
         // reverse client credit transaction
@@ -516,11 +425,6 @@ class InvoiceController extends Controller
             'debit' => 0,
             'credit' => $total_after_tax,
             'balance' => 0 - $total_after_tax,
-            'foreign_currency_id' => $invoice->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => 0,
-            'foreign_credit' => ($total_after_tax * $rate),
-            'foreign_balance' => 0 - ($total_after_tax * $rate),
         ]);
 
         Log::create([

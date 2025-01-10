@@ -17,11 +17,6 @@ class Invoice extends Model
         return $this->belongsTo(Currency::class);
     }
 
-    public function foreign_currency()
-    {
-        return $this->belongsTo(Currency::class, 'foreign_currency_id');
-    }
-
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -37,9 +32,15 @@ class Invoice extends Model
         return $this->belongsTo(SalesOrder::class);
     }
 
-    public function invoice_items()
+    public function items()
     {
         return $this->hasMany(InvoiceItem::class);
+    }
+
+    // Permissions
+    public function can_delete()
+    {
+        return true;
     }
 
     // Filter
@@ -56,10 +57,6 @@ class Invoice extends Model
         if (request('currency_id')) {
             $currency_id = request('currency_id');
             $q->where('currency_id', $currency_id);
-        }
-        if (request('foreign_currency_id')) {
-            $foreign_currency_id = request('foreign_currency_id');
-            $q->where('foreign_currency_id', $foreign_currency_id);
         }
         if (request('date')) {
             $date = request('date');

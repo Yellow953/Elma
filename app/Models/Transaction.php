@@ -27,11 +27,6 @@ class Transaction extends Model
         return $this->belongsTo(Currency::class, 'currency_id');
     }
 
-    public function foreign_currency()
-    {
-        return $this->belongsTo(Currency::class, 'foreign_currency_id');
-    }
-
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -68,26 +63,6 @@ class Transaction extends Model
         if (request('balance')) {
             $balance = request('balance');
             $q->where('balance', $balance);
-        }
-        if (request('foreign_currency_id')) {
-            $foreign_currency_id = request('foreign_currency_id');
-            $q->where('foreign_currency_id', $foreign_currency_id);
-        }
-        if (request('foreign_debit')) {
-            $foreign_debit = request('foreign_debit');
-            $q->where('foreign_debit', $foreign_debit);
-        }
-        if (request('foreign_credit')) {
-            $foreign_credit = request('foreign_credit');
-            $q->where('foreign_credit', $foreign_credit);
-        }
-        if (request('foreign_balance')) {
-            $foreign_balance = request('foreign_balance');
-            $q->where('foreign_balance', $foreign_balance);
-        }
-        if (request('rate')) {
-            $rate = request('rate');
-            $q->where('rate', $rate);
         }
 
         return $q;

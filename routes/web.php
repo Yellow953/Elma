@@ -4,7 +4,7 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CurrencyController;
-use App\Http\Controllers\ExcellController;
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\ItemController;
@@ -22,6 +22,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CashReceiptController;
 use App\Http\Controllers\CreditNoteController;
 use App\Http\Controllers\DebitNoteController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ShipmentController;
 use Illuminate\Support\Facades\Route;
 
@@ -79,48 +80,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Backup Routes
     Route::prefix('backup')->group(function () {
-        // Export Routes
-        Route::get('/export/users', [ExcellController::class, 'ExportUsers'])->name('export.users');
-        Route::get('/export/logs', [ExcellController::class, 'ExportLogs'])->name('export.logs');
-        Route::get('/export/items', [ExcellController::class, 'ExportItems'])->name('export.items');
-        Route::get('/export/suppliers', [ExcellController::class, 'ExportSuppliers'])->name('export.suppliers');
-        Route::get('/export/clients', [ExcellController::class, 'ExportClients'])->name('export.clients');
-        Route::get('/export/accounts', [ExcellController::class, 'ExportAccounts'])->name('export.accounts');
-        Route::get('/export/transactions', [ExcellController::class, 'ExportTransactions'])->name('export.transactions');
-        Route::get('/export/taxes', [ExcellController::class, 'ExportTaxes'])->name('export.taxes');
-        Route::get('/export/currencies', [ExcellController::class, 'ExportCurrencies'])->name('export.currencies');
-        Route::get('/export/cdnotes', [ExcellController::class, 'ExportCDNotes'])->name('export.cdnotes');
-        Route::get('/export/cdnote_items', [ExcellController::class, 'ExportCDNoteItems'])->name('export.cdnote_items');
-        Route::get('/export/receipts', [ExcellController::class, 'ExportReceipts'])->name('export.receipts');
-        Route::get('/export/receipt_items', [ExcellController::class, 'ExportReceiptItems'])->name('export.receipt_items');
-        Route::get('/export/payments', [ExcellController::class, 'ExportPayments'])->name('export.payments');
-        Route::get('/export/payment_items', [ExcellController::class, 'ExportPaymentItems'])->name('export.payment_items');
-        Route::get('/export/invoices', [ExcellController::class, 'ExportInvoices'])->name('export.invoices');
-        Route::get('/export/invoice_items', [ExcellController::class, 'ExportInvoiceItems'])->name('export.invoice_items');
-        Route::get('/export', [ExcellController::class, 'export'])->name('backup.export');
-
-        // Import Routes
-        Route::post('/import/users', [ExcellController::class, 'ImportUsers'])->name('import.users');
-        Route::post('/import/logs', [ExcellController::class, 'ImportLogs'])->name('import.logs');
-        Route::post('/import/items', [ExcellController::class, 'ImportItems'])->name('import.items');
-        Route::post('/import/suppliers', [ExcellController::class, 'ImportSuppliers'])->name('import.suppliers');
-        Route::post('/import/clients', [ExcellController::class, 'ImportClients'])->name('import.clients');
-        Route::post('/import/accounts', [ExcellController::class, 'ImportAccounts'])->name('import.accounts');
-        Route::post('/import/transactions', [ExcellController::class, 'ImportTransactions'])->name('import.transactions');
-        Route::post('/import/taxes', [ExcellController::class, 'ImportTaxes'])->name('import.taxes');
-        Route::post('/import/currencies', [ExcellController::class, 'ImportCurrencies'])->name('import.currencies');
-        Route::post('/import/cdnotes', [ExcellController::class, 'ImportCDNotes'])->name('import.cdnotes');
-        Route::post('/import/cdnote_items', [ExcellController::class, 'ImportCDNoteItems'])->name('import.cdnote_items');
-        Route::post('/import/receipts', [ExcellController::class, 'ImportReceipts'])->name('import.receipts');
-        Route::post('/import/receipt_items', [ExcellController::class, 'ImportReceiptItems'])->name('import.receipt_items');
-        Route::post('/import/payments', [ExcellController::class, 'ImportPayments'])->name('import.payments');
-        Route::post('/import/payment_items', [ExcellController::class, 'ImportPaymentItems'])->name('import.payment_items');
-        Route::post('/import/invoices', [ExcellController::class, 'ImportInvoices'])->name('import.invoices');
-        Route::post('/import/invoice_items', [ExcellController::class, 'ImportInvoiceItems'])->name('import.invoice_items');
-        Route::post('/import', [ExcellController::class, 'import'])->name('backup.import');
-
-        // index Route
-        Route::get('/', [ExcellController::class, 'index'])->name('backup');
+        Route::get('/export', [BackupController::class, 'export'])->name('backup.export');
+        Route::post('/import', [BackupController::class, 'import'])->name('backup.import');
+        Route::get('/', [BackupController::class, 'index'])->name('backup');
     });
 
     // Sales Orders Routes
@@ -135,8 +97,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/live_search', [SalesOrderController::class, 'live_search'])->name('sales_orders.live_search');
         Route::get('/search', [SalesOrderController::class, 'search'])->name('sales_orders.search');
         Route::get('/{sales_order}/delete', [SalesOrderController::class, 'destroy'])->name('sales_orders.destroy');
-        Route::get('/{sales_order}/export_items', [ExcellController::class, 'so_export_items'])->name('sales_orders.so_export_items');
-        Route::post('/{sales_order}/import_items', [ExcellController::class, 'so_import_items'])->name('sales_orders.so_import_items');
         Route::get('/{sales_order}/new_invoice', [SalesOrderController::class, 'new_invoice'])->name('sales_orders.new_invoice');
         Route::get('/', [SalesOrderController::class, 'index'])->name('sales_orders');
     });
@@ -158,8 +118,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/live_search', [PurchaseOrderController::class, 'live_search'])->name('purchase_orders.live_search');
         Route::get('/search', [PurchaseOrderController::class, 'search'])->name('purchase_orders.search');
         Route::get('/{purchase_order}/delete', [PurchaseOrderController::class, 'destroy'])->name('purchase_orders.destroy');
-        Route::get('/{purchase_order}/export_items', [ExcellController::class, 'po_export_items'])->name('purchase_orders.po_export_items');
-        Route::post('/{purchase_order}/import_items', [ExcellController::class, 'po_import_items'])->name('purchase_orders.po_import_items');
         Route::get('/{purchase_order}/new_receipt', [PurchaseOrderController::class, 'new_receipt'])->name('purchase_orders.new_receipt');
         Route::get('/', [PurchaseOrderController::class, 'index'])->name('purchase_orders');
     });
@@ -347,6 +305,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{shipment}/show', [ShipmentController::class, 'show'])->name('shipments.show');
         Route::get('/{shipment}/delete', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
         Route::get('/', [ShipmentController::class, 'index'])->name('shipments');
+    });
+
+    // Expenses Routes
+    Route::prefix('expenses')->group(function () {
+        Route::get('/export', [ExpenseController::class, 'export'])->name('expenses.export');
+        Route::get('/new', [ExpenseController::class, 'new'])->name('expenses.new');
+        Route::post('/create', [ExpenseController::class, 'create'])->name('expenses.create');
+        Route::get('/{expense}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
+        Route::post('/{expense}/update', [ExpenseController::class, 'update'])->name('expenses.update');
+        Route::get('/{expense}/show', [ExpenseController::class, 'show'])->name('expenses.show');
+        Route::get('/{expense}/delete', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+        Route::get('/', [ExpenseController::class, 'index'])->name('expenses');
     });
 
     // Settings

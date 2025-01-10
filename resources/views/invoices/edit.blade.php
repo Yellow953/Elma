@@ -42,39 +42,6 @@ $currencies = Helper::get_currencies();
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="foreign_currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Foreign
-                        Currency
-                        *') }}</label>
-
-                    <div class="col-md-6">
-                        <select name="foreign_currency_id" id="foreign_currency_id" required
-                            class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($currencies as $currency)
-                            <option value="{{ $currency->id }}" {{ $currency->id == $invoice->foreign_currency_id ?
-                                'selected':'' }} data-rate="{{ $currency->rate }}">{{ $currency->code }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="rate" class="col-md-5 col-form-label text-md-end">{{
-                        __('Rate *') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="rate" type="number" class="form-control @error('rate') is-invalid @enderror"
-                            name="rate" value="{{ $invoice->rate }}" step="any" min="0" required>
-
-                        @error('rate')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="tax_id" class="col-md-5 col-form-label text-md-end">{{ __('Tax
                         *') }}</label>
 
@@ -188,11 +155,6 @@ $currencies = Helper::get_currencies();
                         <div class="col-6"><span id="invoice_items_total_after_tax">{{
                                 number_format($total_after_tax, 2) }}</span></div>
                     </div>
-                    <div class="row">
-                        <div class="col-6">Total Foreign</div>
-                        <div class="col-6"><span id="invoice_items_total_foreign">{{
-                                number_format($total_foreign, 2) }}</span></div>
-                    </div>
                 </div>
 
                 <div class="d-flex align-items-center justify-content-around mt-3">
@@ -209,7 +171,6 @@ $currencies = Helper::get_currencies();
     let invoice_items_total = parseFloat({{ $total }});
     let invoice_items_total_tax = parseFloat({{ $total_tax }});
     let invoice_items_total_after_tax = parseFloat({{ $total_after_tax }});
-    let invoice_items_total_foreign = parseFloat({{ $total_foreign }});
     var items = @json($items);
 
     function updateFields(selectElement) {
@@ -279,7 +240,6 @@ $currencies = Helper::get_currencies();
         var total = invoice_items_total;
         var total_tax = invoice_items_total_tax;
         var total_after_tax = invoice_items_total_after_tax;
-        var total_foreign = invoice_items_total_foreign;
 
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
             var total_price = parseFloat(row.querySelector('input[name^="total_price"]').value) || 0;
@@ -288,13 +248,11 @@ $currencies = Helper::get_currencies();
             total += total_price;
             total_tax += total_price * tax_rate;
             total_after_tax += total_price + (total_price * tax_rate);
-            total_foreign += (total_price + (total_price * tax_rate)) * rate;
         });
 
         document.getElementById('invoice_items_total').innerText = total.toFixed(2);
         document.getElementById('invoice_items_total_tax').innerText = total_tax.toFixed(2);
         document.getElementById('invoice_items_total_after_tax').innerText = total_after_tax.toFixed(2);
-        document.getElementById('invoice_items_total_foreign').innerText = total_foreign.toFixed(2);
     }
 
     function fillRowWithData(row, data) {
@@ -333,15 +291,6 @@ $currencies = Helper::get_currencies();
 
     document.addEventListener('DOMContentLoaded', function () {
         attachSelect2Event();
-
-        $('#foreign_currency_id').on('select2:select', function (event) {
-            var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-
-            const rateInput = document.querySelector('#rate');
-            rateInput.value = rate;
-
-            updateInvoiceTotal();
-        });
 
         $('#tax_id').on('select2:select', function (event) {
             var rate = document.querySelector('select[name^="tax_id"] option:checked').getAttribute('data-rate');

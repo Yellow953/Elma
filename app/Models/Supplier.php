@@ -42,6 +42,12 @@ class Supplier extends Model
         return $this->belongsTo(Account::class, 'payable_account_id');
     }
 
+    // Permissions
+    public function can_delete()
+    {
+        return $this->transactions->count() == 0 && $this->purchase_orders->count() == 0;
+    }
+
     // Filter
     public function scopeFilter($q)
     {

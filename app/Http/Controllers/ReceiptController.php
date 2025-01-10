@@ -26,7 +26,7 @@ class ReceiptController extends Controller
 
     public function index()
     {
-        $receipts = Receipt::select('id', 'receipt_number', 'supplier_invoice', 'date', 'supplier_id', 'tax_id', 'currency_id', 'foreign_currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $receipts = Receipt::select('id', 'receipt_number', 'supplier_invoice', 'date', 'supplier_id', 'tax_id', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
         $suppliers = Supplier::select('id', 'name')->get();
         $taxes = Tax::select('id', 'name')->get();
 
@@ -51,8 +51,6 @@ class ReceiptController extends Controller
             'supplier_invoice' => 'required|string|max:255|unique:receipts',
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
-            'foreign_currency_id' => 'required|exists:currencies,id',
-            'rate' => 'required|numeric|min:0',
             'date' => 'required|date',
             'item_id.*' => 'required|exists:items,id',
             'quantity.*' => 'required|numeric|min:1',
@@ -60,7 +58,6 @@ class ReceiptController extends Controller
         ]);
 
         $number = Receipt::generate_number();
-        $rate = $validatedData['rate'];
         $taxRate = Tax::findOrFail($validatedData['tax_id'])->rate / 100;
 
         // Create Receipt
@@ -70,8 +67,6 @@ class ReceiptController extends Controller
             'supplier_id' => $validatedData['supplier_id'],
             'tax_id' => $validatedData['tax_id'],
             'currency_id' => $validatedData['currency_id'],
-            'foreign_currency_id' => $validatedData['foreign_currency_id'],
-            'rate' => $rate,
             'date' => $validatedData['date'],
             'purchase_order_id' => $validatedData['purchase_order_id'] ?? null,
             'type' => 'receipt',
@@ -93,9 +88,7 @@ class ReceiptController extends Controller
                 'unit_cost' => $unitCost,
                 'total_cost' => $totalCost,
                 'vat' => $vat,
-                'rate' => $rate,
                 'total_cost_after_vat' => $totalCost + $vat,
-                'total_foreign_cost' => $totalCost * $rate,
             ]);
 
             $totalItemCost += $totalCost;
@@ -106,11 +99,11 @@ class ReceiptController extends Controller
 
         // Expense Debit
         $expenseAccount = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-        $this->createTransaction($jv, $expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $rate, $receipt);
+        $this->createTransaction($expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
 
         // Tax Debit
         $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-        $this->createTransaction($jv, $taxAccount->id, $totalTax, 0, $rate, $receipt);
+        $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
 
         // Supplier Credit
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);
@@ -118,7 +111,6 @@ class ReceiptController extends Controller
             $supplier->payable_account_id,
             0,
             $totalCostAfterVAT,
-            $rate,
             $receipt,
             $supplier->id
         );
@@ -135,18 +127,16 @@ class ReceiptController extends Controller
         $suppliers = Supplier::select('id', 'name')->get();
 
         $total = 0;
-        $total_foreign = 0;
         $total_after_tax = 0;
         $total_tax = 0;
 
         foreach ($receipt->receipt_items as $item) {
             $total += $item->total_cost;
             $total_tax += $item->vat;
-            $total_foreign += $item->total_foreign_cost;
             $total_after_tax += $item->total_cost_after_vat;
         }
 
-        $data = compact('receipt', 'items', 'taxes', 'suppliers', 'total', 'total_foreign', 'total_after_tax', 'total_tax');
+        $data = compact('receipt', 'items', 'taxes', 'suppliers', 'total', 'total_after_tax', 'total_tax');
 
         return view('receipts.edit', $data);
     }
@@ -158,8 +148,6 @@ class ReceiptController extends Controller
             'supplier_invoice' => 'required|string|max:255|unique:receipts,supplier_invoice,' . $receipt->id,
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
-            'foreign_currency_id' => 'required|exists:currencies,id',
-            'rate' => 'required|numeric|min:0',
             'date' => 'required|date',
             'item_id.*' => 'required|exists:items,id',
             'quantity.*' => 'required|numeric|min:1',
@@ -170,13 +158,11 @@ class ReceiptController extends Controller
             'supplier_invoice' => $request->input('supplier_invoice'),
             'tax_id' => $request->input('tax_id'),
             'currency_id' => $request->input('currency_id'),
-            'foreign_currency_id' => $request->input('foreign_currency_id'),
             'date' => $request->input('date'),
         ]);
 
         $totalItemCost = 0;
         $totalTax = 0;
-        $rate = $validatedData['rate'];
         $taxRate = Tax::findOrFail($validatedData['tax_id'])->rate / 100;
 
         // Create new receipt items
@@ -193,9 +179,7 @@ class ReceiptController extends Controller
                 'unit_cost' => $unitCost,
                 'total_cost' => $totalCost,
                 'vat' => $vat,
-                'rate' => $rate,
                 'total_cost_after_vat' => $totalCost + $vat,
-                'total_foreign_cost' => $totalCost * $rate,
             ]);
 
             $totalItemCost += $totalCost;
@@ -206,11 +190,11 @@ class ReceiptController extends Controller
 
         // Expense Debit
         $expenseAccount = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-        $this->createTransaction($expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $rate, $receipt);
+        $this->createTransaction($expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
 
         // Tax Debit
         $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-        $this->createTransaction($taxAccount->id, $totalTax, 0, $rate, $receipt);
+        $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
 
         // Supplier Credit
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);
@@ -218,7 +202,6 @@ class ReceiptController extends Controller
             $supplier->payable_account_id,
             0,
             $totalCostAfterVAT,
-            $rate,
             $receipt,
             $supplier->id
         );
@@ -233,17 +216,15 @@ class ReceiptController extends Controller
     {
         $total = 0;
         $total_tax = 0;
-        $total_foreign = 0;
         $total_after_tax = 0;
 
         foreach ($receipt->receipt_items as $item) {
             $total += $item->total_cost;
             $total_tax += $item->vat;
-            $total_foreign += $item->total_foreign_cost;
             $total_after_tax += $item->total_cost_after_vat;
         }
 
-        $data = compact('receipt', 'total', 'total_tax', 'total_foreign', 'total_after_tax');
+        $data = compact('receipt', 'total', 'total_tax', 'total_after_tax');
         return view('receipts.show', $data);
     }
 
@@ -269,17 +250,12 @@ class ReceiptController extends Controller
             'supplier_invoice' => $old_receipt->supplier_invoice,
             'tax_id' => $old_receipt->tax_id,
             'currency_id' => $old_receipt->currency_id,
-            'foreign_currency_id' => $old_receipt->foreign_currency_id,
-            'rate' => $old_receipt->rate,
             'date' => date('Y-m-d'),
             'type' => 'return',
         ]);
 
         $total = 0;
-        $total_lc = 0;
         $total_tax = 0;
-        $total_landed_cost = 0;
-        $rate = $old_receipt->rate ?? 0;
 
         $tax_rate = $old_receipt->tax->rate / 100;
         foreach ($request->items as $index => $item) {
@@ -316,10 +292,8 @@ class ReceiptController extends Controller
                     'unit_cost' => $original_unit_cost,
                     'total_cost' => $t,
                     'vat' => $vat,
-                    'rate' => $rate,
                     'total_cost_after_vat' => $total_cost_after_vat,
                     'total_after_landed_cost' => $total_after_landed_cost,
-                    'total_foreign_cost' => $t * $rate,
                 ]);
 
 
@@ -336,11 +310,6 @@ class ReceiptController extends Controller
             'debit' => 0,
             'credit' => $total_lc,
             'balance' => 0 - $total_lc,
-            'foreign_currency_id' => $receipt->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => 0,
-            'foreign_credit' => $total_lc * $rate,
-            'foreign_balance' => 0 - ($total_lc * $rate),
         ]);
 
         // create tax credit transaction
@@ -352,11 +321,6 @@ class ReceiptController extends Controller
             'debit' => 0,
             'credit' => $total_tax,
             'balance' => 0 - $total_tax,
-            'foreign_currency_id' => $receipt->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => 0,
-            'foreign_credit' => $total_tax * $rate,
-            'foreign_balance' => 0 - ($total_tax * $rate),
         ]);
 
         // create supplier credit transaction
@@ -369,11 +333,6 @@ class ReceiptController extends Controller
             'debit' => $total_lc + $total_tax - $total_landed_cost,
             'credit' => 0,
             'balance' => $total_lc + $total_tax - $total_landed_cost,
-            'foreign_currency_id' => $receipt->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => ($total_lc + $total_tax - $total_landed_cost) * $rate,
-            'foreign_credit' => 0,
-            'foreign_balance' => ($total_lc + $total_tax - $total_landed_cost) * $rate,
         ]);
 
         Log::create([
@@ -415,7 +374,7 @@ class ReceiptController extends Controller
     // -------------------
     // Private
     // -------------------
-    private function createTransaction($accountId, $debit, $credit, $rate, $receipt, $supplierId = null)
+    private function createTransaction($accountId, $debit, $credit, $receipt, $supplierId = null)
     {
         Transaction::create([
             'user_id' => auth()->id(),
@@ -425,11 +384,6 @@ class ReceiptController extends Controller
             'debit' => $debit,
             'credit' => $credit,
             'balance' => $debit - $credit,
-            'foreign_currency_id' => $receipt->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => $debit * $rate,
-            'foreign_credit' => $credit * $rate,
-            'foreign_balance' => ($debit - $credit) * $rate,
         ]);
     }
 }

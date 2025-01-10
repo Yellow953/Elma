@@ -229,6 +229,7 @@ $ports = Helper::get_shipping_ports();
                                             @endcan
 
                                             @can('shipments.delete')
+                                            @if ($shipment->can_delete())
                                             <form method="GET" action="{{ route('shipments.destroy', $shipment->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -236,6 +237,7 @@ $ports = Helper::get_shipping_ports();
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

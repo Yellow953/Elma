@@ -6,9 +6,6 @@
 @can('items.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('items.new') }}">New Item</a>
 @endcan
-@can('items.read')
-<a class="btn btn-sm btn-info mx-1" href="#" onclick="openModal('item_report_modal')">Item Report</a>
-@endcan
 @can('items.export')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('items.export') }}">Export Items</a>
 @endcan
@@ -59,7 +56,6 @@
 @endsection
 
 @section('content')
-@include('items._report_modal')
 <div class="container-fluid py-2">
     <div class="d-flex align-items-center justify-content-end">
         @yield('actions')
@@ -112,11 +108,6 @@
                                                 class="btn btn-secondary btn-custom" title="Activity">
                                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                             </a>
-
-                                            <a href="{{ route('items.item_report', $item->id) }}"
-                                                class="btn btn-secondary btn-custom" title="Report">
-                                                <i class="fa-solid fa-receipt"></i>
-                                            </a>
                                             @endcan
 
                                             @can('items.update')
@@ -127,6 +118,7 @@
                                             @endcan
 
                                             @can('items.delete')
+                                            @if ($item->can_delete())
                                             <form method="GET" action="{{ route('items.destroy', $item->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -134,6 +126,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

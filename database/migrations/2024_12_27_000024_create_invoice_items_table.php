@@ -20,9 +20,7 @@ return new class extends Migration
             $table->double('unit_price')->unsigned();
             $table->double('total_price')->unsigned();
             $table->double('vat')->unsigned();
-            $table->double('rate')->unsigned();
             $table->double('total_price_after_vat')->unsigned();
-            $table->double('total_foreign_price')->unsigned();
             $table->timestamps();
             $table->softDeletes();
 

@@ -8,6 +8,8 @@
 
     <title>Elma | @yield('title')</title>
 
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo.png') }}" type="image/x-icon">
+
     {{-- Font --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

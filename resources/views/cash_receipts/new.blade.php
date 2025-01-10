@@ -110,47 +110,6 @@ $currencies = Helper::get_currencies();
 
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline row mb-3">
-                                    <label for="foreign_currency_id" class="col-md-4 col-form-label text-md-end">{{
-                                        __('Foreign
-                                        Currency
-                                        *') }}</label>
-
-                                    <div class="col-md-8">
-                                        <select name="foreign_currency_id" id="foreign_currency_id" required
-                                            class="form-select select2" onchange="updateRateField()">
-                                            <option value=""></option>
-                                            @foreach ($currencies as $currency)
-                                            <option value="{{ $currency->id }}" {{ $currency->id ==
-                                                old('foreign_currency_id') ?
-                                                'selected':'' }} data-rate="{{ $currency->rate }}">{{ $currency->code }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline row mb-3">
-                                    <label for="rate" class="col-md-4 col-form-label text-md-end">{{
-                                        __('Rate *') }}</label>
-
-                                    <div class="col-md-8">
-                                        <input id="rate" type="number"
-                                            class="form-control @error('rate') is-invalid @enderror" name="rate"
-                                            required autocomplete="rate" value="{{ old('rate') }}" step="any" min="0">
-
-                                        @error('rate')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline row mb-3">
                                     <label for="description" class="col-md-4 col-form-label text-md-end">{{
                                         __('Description *') }}</label>
 
@@ -247,7 +206,7 @@ $currencies = Helper::get_currencies();
         var originalRow = document.querySelector('.payment-item-row');
 
         newRow.innerHTML = originalRow.innerHTML;
-        
+
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
         newRow.cells[1].innerHTML = "<select name='account_id[]' required class='form-select select2'><option value=''></option>@foreach ($accounts as $account)<option value='{{ $account->id }}'>{{$account->account_number}} | {{ $account->account_description }}</option>@endforeach</select>";
 
@@ -294,24 +253,9 @@ $currencies = Helper::get_currencies();
         });
     });
 
-    function updateRateField() {
-        var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-            
-        const rateInput = document.querySelector('#rate');
-        rateInput.value = rate;
-    }
-
     // Fill Currency Field
     document.getElementById('currency_id').value = {{ auth()->user()->currency_id }};
     document.getElementById('currency_id').dispatchEvent(new Event('input'));
-
-    // Fill Foreign Currency Field
-    document.getElementById('foreign_currency_id').value = {{ Helper::get_foreign_currency()->id }};
-    document.getElementById('foreign_currency_id').dispatchEvent(new Event('input'));
-
-    // Fill Rate Field
-    document.getElementById('rate').value = {{ Helper::get_foreign_currency()->rate }};
-    document.getElementById('rate').dispatchEvent(new Event('input'));
 </script>
 
 @endsection

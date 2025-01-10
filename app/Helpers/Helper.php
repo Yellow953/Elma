@@ -56,28 +56,11 @@ class Helper
     public static function get_account_types()
     {
         $accountTypes = [
-            // 'Asset Accounts',
-            // 'Liability Accounts',
-            // 'Equity Accounts',
-            // 'Income (Revenue) Accounts',
-            // 'Expense Accounts',
-            // 'Cost of Goods Sold (COGS)',
             'Balance Sheet',
             'P/L',
         ];
 
         return $accountTypes;
-    }
-
-    public static function get_item_types()
-    {
-        $itemTypes = [
-            'Serialized',
-            'Non Serialized',
-            'Services',
-        ];
-
-        return $itemTypes;
     }
 
     public static function get_payment_types()
@@ -95,13 +78,6 @@ class Helper
         $text = str_replace('_', ' ', $text);
         $text = ucwords($text);
         return $text;
-    }
-
-    public static function get_foreign_currency()
-    {
-        $main_currency_id = auth()->user()->currency_id;
-        $foreign_currency = Currency::where('id', '!=', $main_currency_id)->firstOrFail();
-        return $foreign_currency;
     }
 
     public static function get_route_names()
@@ -141,5 +117,10 @@ class Helper
     public static function get_order_statuses()
     {
         return ['New', 'Ongoing', 'Closed'];
+    }
+
+    public static function get_expense_types()
+    {
+        return ['Salary', 'Rent', 'Utility', 'Other Expenses'];
     }
 }

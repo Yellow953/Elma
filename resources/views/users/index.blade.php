@@ -105,6 +105,7 @@
                                         @endcan
 
                                         @can('users.delete')
+                                        @if ($user->can_delete())
                                         <form method="GET" action="{{ route('users.destroy', $user->id) }}">
                                             @csrf
                                             <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -112,6 +113,7 @@
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endif
                                         @endcan
                                     </td>
                                 </tr>

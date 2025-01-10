@@ -32,6 +32,11 @@ class Currency extends Model
         return $this->hasMany(Client::class);
     }
 
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class)->where('hidden', false);

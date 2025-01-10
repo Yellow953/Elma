@@ -22,7 +22,6 @@
                     <div class="col-md-3 offset-md-3">
                         <strong>Date: </strong>{{ ucwords($invoice->date) }} <br>
                         <strong>Currency: </strong>{{ucwords($invoice->currency->code)}} <br>
-                        <strong>Foreign Currency: </strong>{{ucwords($invoice->foreign_currency->code)}} <br>
                     </div>
                 </div>
 
@@ -69,11 +68,6 @@
                                     <th colspan="2"></th>
                                     <th>Total Price After VAT</th>
                                     <th>{{ number_format($total_after_tax, 2) }}</th>
-                                </tr>
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
-                                    <th>Total Foreign</th>
-                                    <th>{{ number_format($total_foreign, 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>

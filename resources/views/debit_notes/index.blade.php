@@ -141,6 +141,7 @@
                                             @endcan
 
                                             @can('debit_notes.delete')
+                                            @if ($debit_note->can_delete())
                                             <form method="GET" action="{{ route('debit_notes.destroy', $cdnote->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -148,6 +149,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

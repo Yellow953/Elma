@@ -133,47 +133,6 @@ $currencies = Helper::get_currencies();
 
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline row mb-3">
-                                    <label for="foreign_currency_id" class="col-md-4 col-form-label text-md-end">{{
-                                        __('Foreign
-                                        Currency
-                                        *') }}</label>
-
-                                    <div class="col-md-8">
-                                        <select name="foreign_currency_id" id="foreign_currency_id" required
-                                            class="form-select select2">
-                                            <option value=""></option>
-                                            @foreach ($currencies as $currency)
-                                            <option value="{{ $currency->id }}" {{ $currency->id ==
-                                                old('foreign_currency_id') ?
-                                                'selected':'' }} data-rate="{{ $currency->rate }}">{{ $currency->code }}
-                                            </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline row mb-3">
-                                    <label for="rate" class="col-md-4 col-form-label text-md-end">{{ __('Rate')
-                                        }}</label>
-
-                                    <div class="col-md-8">
-                                        <input id="rate" type="number"
-                                            class="rate form-control @error('rate') is-invalid @enderror" step="any"
-                                            min="0" name="rate" value="{{ old('rate') ?? 0 }}">
-
-                                        @error('rate')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline row mb-3">
                                     <label for="date" class="col-md-4 col-form-label text-md-end">{{
                                         __('Date *') }}</label>
 
@@ -254,11 +213,6 @@ $currencies = Helper::get_currencies();
                                         <div class="col-6"><span id="receipt_items_total_after_tax">0</span>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-6">Total Foreign</div>
-                                        <div class="col-6"><span id="receipt_items_total_foreign">0</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -328,8 +282,6 @@ $currencies = Helper::get_currencies();
         var total = 0;
         var total_tax = 0;
         var total_after_tax = 0;
-        var total_foreign = 0;
-        var rate = parseFloat(document.querySelector('#rate').value) || 0;
 
         document.querySelectorAll('#receiptItemsTable tbody tr').forEach(function(row) {
             var quantity = parseFloat(row.querySelector('input[name^="quantity"]').value) || 0;
@@ -340,13 +292,11 @@ $currencies = Helper::get_currencies();
             total += totalCost;
             total_tax += totalCost * tax_rate;
             total_after_tax += totalCostAfterVat;
-            total_foreign += totalCostAfterVat * rate;
         });
 
         document.getElementById('receipt_items_total').innerText = total.toFixed(2);
         document.getElementById('receipt_items_total_tax').innerText = total_tax.toFixed(2);
         document.getElementById('receipt_items_total_after_tax').innerText = total_after_tax.toFixed(2);
-        document.getElementById('receipt_items_total_foreign').innerText = total_foreign.toFixed(2);
     }
 
     function fillRowWithData(row, data) {
@@ -359,16 +309,6 @@ $currencies = Helper::get_currencies();
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        $('#foreign_currency_id').on('select2:select', function (event) {
-            var rate = document.querySelector('select[name^="foreign_currency_id"] option:checked').getAttribute('data-rate');
-
-            const rateInput = document.querySelector('#rate');
-            rateInput.value = rate;
-
-            updateReceiptItemsTotal();
-            updateLandedCostTotal();
-        });
-
         const supplier_select = document.getElementById('supplier_id');
         $('#supplier_id').on('select2:select', function (event) {
             const supplier_id = supplier_select.value;
@@ -407,14 +347,6 @@ $currencies = Helper::get_currencies();
     // Fill Currency Field
     document.getElementById('currency_id').value = {{ auth()->user()->currency_id }};
     document.getElementById('currency_id').dispatchEvent(new Event('input'));
-
-    // Fill Foreign Currency Field
-    document.getElementById('foreign_currency_id').value = {{ Helper::get_foreign_currency()->id }};
-    document.getElementById('foreign_currency_id').dispatchEvent(new Event('input'));
-
-    // Fill Rate Field
-    document.getElementById('rate').value = {{ Helper::get_foreign_currency()->rate }};
-    document.getElementById('rate').dispatchEvent(new Event('input'));
 </script>
 
 @if(isset($purchase_order))

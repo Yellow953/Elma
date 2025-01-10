@@ -209,6 +209,7 @@ $statuses = Helper::get_order_statuses();
                                             @endcan
 
                                             @can('sales_orders.delete')
+                                            @if ($sales_order->can_delete())
                                             <form method="GET"
                                                 action="{{ route('sales_orders.destroy', $sales_order->id) }}">
                                                 @csrf
@@ -217,6 +218,7 @@ $statuses = Helper::get_order_statuses();
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

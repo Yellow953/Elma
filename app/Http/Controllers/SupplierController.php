@@ -128,20 +128,14 @@ class SupplierController extends Controller
         $total_debit = 0;
         $total_credit = 0;
         $total_balance = 0;
-        $total_foreign_debit = 0;
-        $total_foreign_credit = 0;
-        $total_foreign_balance = 0;
 
         foreach ($supplier->transactions as $transaction) {
             $total_debit += $transaction->debit;
             $total_credit += $transaction->credit;
             $total_balance += $transaction->balance;
-            $total_foreign_debit += $transaction->foreign_debit;
-            $total_foreign_credit += $transaction->foreign_credit;
-            $total_foreign_balance += $transaction->foreign_balance;
         }
 
-        $data = compact('supplier', 'account', 'total_debit', 'total_credit', 'total_balance', 'total_foreign_debit', 'total_foreign_credit', 'total_foreign_balance');
+        $data = compact('supplier', 'account', 'total_debit', 'total_credit', 'total_balance');
 
         return view('suppliers.statement', $data);
     }

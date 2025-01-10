@@ -65,12 +65,6 @@
                                     <th>{{ number_format($total_credit, 2) }}</th>
                                     <th>{{ number_format($total_balance, 2) }}</th>
                                 </tr>
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="3">Foreign Total</th>
-                                    <th>{{ number_format($total_foreign_debit, 2) }}</th>
-                                    <th>{{ number_format($total_foreign_credit, 2) }}</th>
-                                    <th>{{ number_format($total_foreign_balance, 2) }}</th>
-                                </tr>
                             </tfoot>
                         </table>
                     </div>

@@ -24,7 +24,6 @@
                     <div class="col-md-3 offset-md-3">
                         <strong>Date: </strong>{{ ucwords($receipt->date) }} <br>
                         <strong>Currency: </strong>{{ucwords($receipt->currency->code) }} <br>
-                        <strong>Foreign Currency: </strong>{{ucwords($receipt->foreign_currency->code) }} <br>
                     </div>
                 </div>
 
@@ -61,11 +60,6 @@
                                     <th colspan="2"></th>
                                     <th>Total</th>
                                     <th>{{ number_format($total, 2) }}</th>
-                                </tr>
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
-                                    <th>Total Foreign</th>
-                                    <th>{{ number_format($total_foreign, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>

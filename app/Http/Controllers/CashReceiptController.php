@@ -44,8 +44,6 @@ class CashReceiptController extends Controller
         $request->validate([
             'client_id' => 'required|exists:clients,id',
             'currency_id' => 'required|exists:currencies,id',
-            'rate' => 'required|numeric',
-            'foreign_currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
             'date' => 'required|date',
             'account_id.*' => 'required|exists:accounts,id',
@@ -58,15 +56,12 @@ class CashReceiptController extends Controller
             'payment_number' => $number,
             'client_id' => $request->client_id,
             'currency_id' => $request->currency_id,
-            'foreign_currency_id' => $request->foreign_currency_id,
-            'rate' => $request->rate,
             'type' => 'cash receipt',
             'description' => $request->description,
             'date' => $request->date,
         ]);
 
         $total = 0;
-        $rate = $request->rate;
 
         foreach ($request->input('account_id') as $key => $accountId) {
             $amount = $request->input('amount')[$key];
@@ -86,11 +81,6 @@ class CashReceiptController extends Controller
                 'debit' => $amount,
                 'credit' => 0,
                 'balance' => $amount,
-                'foreign_currency_id' => $payment->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => ($amount * $rate),
-                'foreign_credit' => 0,
-                'foreign_balance' => ($amount * $rate),
             ]);
         }
 
@@ -104,11 +94,6 @@ class CashReceiptController extends Controller
             'debit' => 0,
             'credit' => $total,
             'balance' => (0 - $total),
-            'foreign_currency_id' => $payment->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => 0,
-            'foreign_credit' => ($total * $rate),
-            'foreign_balance' => (0 - ($total * $rate)),
         ]);
 
         $text = ucwords(auth()->user()->name) . " created new Cash Receipt : " . $payment->payment_number . ", datetime :   " . now();
@@ -134,22 +119,17 @@ class CashReceiptController extends Controller
     {
         $request->validate([
             'currency_id' => 'required|exists:currencies,id',
-            'rate' => 'required|numeric',
-            'foreign_currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
             'date' => 'required|date',
         ]);
 
         $payment->update([
             'currency_id' => $request->currency_id,
-            'foreign_currency_id' => $request->foreign_currency_id,
-            'rate' => $request->rate,
             'description' => $request->description,
             'date' => $request->date,
         ]);
 
         $total = 0;
-        $rate = $request->rate;
 
         if ($request->input('account_id')[0] != null) {
             foreach ($request->input('account_id') as $key => $accountId) {
@@ -170,11 +150,6 @@ class CashReceiptController extends Controller
                     'debit' => $amount,
                     'credit' => 0,
                     'balance' => $amount,
-                    'foreign_currency_id' => $payment->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => ($amount * $rate),
-                    'foreign_credit' => 0,
-                    'foreign_balance' => ($amount * $rate),
                 ]);
             }
         }
@@ -189,11 +164,6 @@ class CashReceiptController extends Controller
                 'debit' => 0,
                 'credit' => $total,
                 'balance' => 0 - $total,
-                'foreign_currency_id' => $payment->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => 0,
-                'foreign_credit' => ($total * $rate),
-                'foreign_balance' => 0 - ($total * $rate),
             ]);
         }
 
@@ -206,14 +176,12 @@ class CashReceiptController extends Controller
     public function show(Payment $payment)
     {
         $total = 0;
-        $total_foreign = 0;
 
         foreach ($payment->payment_items as $item) {
             $total += $item->amount;
         }
-        $total_foreign = $total * $payment->rate;
 
-        $data = compact('payment', 'total', 'total_foreign');
+        $data = compact('payment', 'total');
         return view('cash_receipts.show', $data);
     }
 
@@ -236,15 +204,12 @@ class CashReceiptController extends Controller
             'payment_number' => Payment::generate_return_number(),
             'client_id' => $old_payment->client_id,
             'currency_id' => $old_payment->currency_id,
-            'foreign_currency_id' => $old_payment->foreign_currency_id,
-            'rate' => $old_payment->rate,
             'type' => 'return ' . $old_payment->type,
             'description' => $old_payment->description,
             'date' => date('Y-m-d'),
         ]);
 
         $total = 0;
-        $rate = $old_payment->rate;
 
         foreach ($request->items as $index => $item) {
             if (isset($item['id'])) {
@@ -265,11 +230,6 @@ class CashReceiptController extends Controller
                     'debit' => $amount,
                     'credit' => 0,
                     'balance' => $amount,
-                    'foreign_currency_id' => $payment->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => ($amount * $rate),
-                    'foreign_credit' => 0,
-                    'foreign_balance' => ($amount * $rate),
                 ]);
                 $total += $amount;
             }
@@ -284,11 +244,6 @@ class CashReceiptController extends Controller
             'debit' => 0,
             'credit' => $total,
             'balance' => 0 - $total,
-            'foreign_currency_id' => $payment->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => 0,
-            'foreign_credit' => ($total * $rate),
-            'foreign_balance' => 0 - ($total * $rate),
         ]);
 
         Log::create([

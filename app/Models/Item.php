@@ -32,6 +32,12 @@ class Item extends Model
         return $this->hasMany(InvoiceItem::class);
     }
 
+    // Permissions
+    public function can_delete()
+    {
+        return $this->purchase_order_items->count() == 0 && $this->sales_order_items->count() == 0 && $this->receipt_items->count() == 0 && $this->invoice_items->count() == 0;
+    }
+
     // Filter
     public function scopeFilter($q)
     {

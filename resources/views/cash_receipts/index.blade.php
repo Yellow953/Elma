@@ -144,6 +144,7 @@
                                             @endcan
 
                                             @can('cash_receipts.delete')
+                                            @if ($cash_receipt->can_delete())
                                             <form method="GET"
                                                 action="{{ route('cash_receipts.destroy', $payment->id) }}">
                                                 @csrf
@@ -152,6 +153,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

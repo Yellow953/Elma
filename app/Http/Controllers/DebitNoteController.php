@@ -46,8 +46,6 @@ class DebitNoteController extends Controller
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
             'currency_id' => 'required|exists:currencies,id',
-            'rate' => 'required|numeric',
-            'foreign_currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
             'date' => 'required|date',
             'tax_id' => 'required',
@@ -61,8 +59,6 @@ class DebitNoteController extends Controller
             'cdnote_number' => $number,
             'supplier_id' => $request->supplier_id,
             'currency_id' => $request->currency_id,
-            'foreign_currency_id' => $request->foreign_currency_id,
-            'rate' => $request->rate,
             'type' => 'debit note',
             'description' => $request->description,
             'date' => $request->date,
@@ -73,7 +69,6 @@ class DebitNoteController extends Controller
         $total_tax = 0;
 
         $tax = Tax::find($request->tax_id);
-        $rate = $request->rate;
 
         foreach ($request->input('account_id') as $key => $accountId) {
             $amount = $request->input('amount')[$key];
@@ -96,11 +91,6 @@ class DebitNoteController extends Controller
                 'debit' => 0,
                 'credit' => $amount,
                 'balance' => 0 - $amount,
-                'foreign_currency_id' => $cdnote->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => 0,
-                'foreign_credit' => ($amount * $rate),
-                'foreign_balance' => 0 - ($amount * $rate),
             ]);
         }
 
@@ -113,11 +103,6 @@ class DebitNoteController extends Controller
                 'debit' => 0,
                 'credit' => $total_tax,
                 'balance' => 0 - $total_tax,
-                'foreign_currency_id' => $cdnote->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => 0,
-                'foreign_credit' => ($total_tax * $rate),
-                'foreign_balance' => 0 - ($total_tax * $rate),
             ]);
         }
 
@@ -131,11 +116,6 @@ class DebitNoteController extends Controller
             'debit' => ($total + $total_tax),
             'credit' => 0,
             'balance' => ($total + $total_tax),
-            'foreign_currency_id' => $cdnote->foreign_currency_id,
-            'rate' => $rate,
-            'foreign_debit' => (($total + $total_tax) * $rate),
-            'foreign_credit' => 0,
-            'foreign_balance' => (($total + $total_tax) * $rate),
         ]);
 
         $text = ucwords(auth()->user()->name) . " created new Debit Note : " . $cdnote->cdnote_number . ", datetime :   " . now();
@@ -166,8 +146,6 @@ class DebitNoteController extends Controller
     {
         $request->validate([
             'currency_id' => 'required|exists:currencies,id',
-            'rate' => 'required|numeric',
-            'foreign_currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
             'date' => 'required|date',
             'tax_id' => 'required',
@@ -175,8 +153,6 @@ class DebitNoteController extends Controller
 
         $cdnote->update([
             'currency_id' => $request->currency_id,
-            'foreign_currency_id' => $request->foreign_currency_id,
-            'rate' => $request->rate,
             'description' => $request->description,
             'date' => $request->date,
             'tax_id' => $request->tax_id,
@@ -186,7 +162,6 @@ class DebitNoteController extends Controller
         $total_tax = 0;
 
         $tax = $cdnote->tax;
-        $rate = $request->rate;
 
         if ($request->input('account_id')[0] != null) {
             foreach ($request->input('account_id') as $key => $accountId) {
@@ -210,11 +185,6 @@ class DebitNoteController extends Controller
                     'debit' => 0,
                     'credit' => $amount,
                     'balance' => 0 - $amount,
-                    'foreign_currency_id' => $cdnote->foreign_currency_id,
-                    'rate' => $rate,
-                    'foreign_debit' => 0,
-                    'foreign_credit' => ($amount * $rate),
-                    'foreign_balance' => 0 - ($amount * $rate),
                 ]);
             }
         }
@@ -228,11 +198,6 @@ class DebitNoteController extends Controller
                 'debit' => 0,
                 'credit' => $total_tax,
                 'balance' => 0 - $total_tax,
-                'foreign_currency_id' => $cdnote->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => 0,
-                'foreign_credit' => ($total_tax * $rate),
-                'foreign_balance' => 0 - ($total_tax * $rate),
             ]);
         }
 
@@ -246,11 +211,6 @@ class DebitNoteController extends Controller
                 'debit' => ($total + $total_tax),
                 'credit' => 0,
                 'balance' => ($total + $total_tax),
-                'foreign_currency_id' => $cdnote->foreign_currency_id,
-                'rate' => $rate,
-                'foreign_debit' => (($total + $total_tax) * $rate),
-                'foreign_credit' => 0,
-                'foreign_balance' => (($total + $total_tax) * $rate),
             ]);
         }
 
@@ -265,16 +225,14 @@ class DebitNoteController extends Controller
         $total = 0;
         $total_tax = 0;
         $total_after_tax = 0;
-        $total_foreign = 0;
 
         foreach ($cdnote->cdnote_items as $item) {
             $total += $item->amount;
             $total_tax += $item->tax;
         }
         $total_after_tax = $total + $total_tax;
-        $total_foreign = $total * $cdnote->rate;
 
-        $data = compact('cdnote', 'total', 'total_tax', 'total_after_tax', 'total_foreign');
+        $data = compact('cdnote', 'total', 'total_tax', 'total_after_tax');
         return view('debit_notes.show', $data);
     }
 

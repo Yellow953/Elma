@@ -7,7 +7,7 @@
 <a class="btn btn-sm btn-info mx-1" href="{{ route('suppliers.new') }}">New Supplier</a>
 @endcan
 @can('suppliers.read')
-<a class="btn btn-sm btn-info mx-1" href="#" onclick="openModal('statement_modal')">Statement OfAccount</a>
+<a class="btn btn-sm btn-info mx-1" href="#" onclick="openModal('statement_modal')">Statement Of Account</a>
 @endcan
 @can('suppliers.export')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('suppliers.export') }}">Export Suppliers</a>
@@ -190,6 +190,7 @@
                                             @endcan
 
                                             @can('suppliers.delete')
+                                            @if ($supplier->can_delete())
                                             <form method="GET" action="{{ route('suppliers.destroy', $supplier->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -197,6 +198,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

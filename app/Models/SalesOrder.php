@@ -32,6 +32,12 @@ class SalesOrder extends Model
         return $this->hasOne(Invoice::class, 'sales_order_id');
     }
 
+    // Permissions
+    public function can_delete()
+    {
+        return $this->invoice == null;
+    }
+
     // Filter
     public function scopeFilter($q)
     {

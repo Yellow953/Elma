@@ -103,20 +103,14 @@ class AccountController extends Controller
         $total_debit = 0;
         $total_credit = 0;
         $total_balance = 0;
-        $total_foreign_debit = 0;
-        $total_foreign_credit = 0;
-        $total_foreign_balance = 0;
 
         foreach ($account->transactions as $transaction) {
             $total_debit += $transaction->debit;
             $total_credit += $transaction->credit;
             $total_balance += $transaction->balance;
-            $total_foreign_debit += $transaction->foreign_debit;
-            $total_foreign_credit += $transaction->foreign_credit;
-            $total_foreign_balance += $transaction->foreign_balance;
         }
 
-        $data = compact('account', 'total_debit', 'total_credit', 'total_balance', 'total_foreign_debit', 'total_foreign_credit', 'total_foreign_balance');
+        $data = compact('account', 'total_debit', 'total_credit', 'total_balance');
 
         return view('accounts.statement', $data);
     }
@@ -155,9 +149,6 @@ class AccountController extends Controller
             $total_debit = 0;
             $total_credit = 0;
             $total_balance = 0;
-            $total_foreign_debit = 0;
-            $total_foreign_credit = 0;
-            $total_foreign_balance = 0;
 
             if ($bbf && $from_date) {
                 $previousTransactions = $account->transactions()
@@ -168,9 +159,6 @@ class AccountController extends Controller
                     $total_debit += $prevTransaction->debit;
                     $total_credit += $prevTransaction->credit;
                     $total_balance += $prevTransaction->balance;
-                    $total_foreign_debit += $prevTransaction->foreign_debit;
-                    $total_foreign_credit += $prevTransaction->foreign_credit;
-                    $total_foreign_balance += $prevTransaction->foreign_balance;
                 }
             }
 
@@ -179,17 +167,11 @@ class AccountController extends Controller
                     $total_debit += $transaction->debit;
                     $total_credit += $transaction->credit;
                     $total_balance += $transaction->balance;
-                    $total_foreign_debit += $transaction->foreign_debit;
-                    $total_foreign_credit += $transaction->foreign_credit;
-                    $total_foreign_balance += $transaction->foreign_balance;
                 }
             } else {
                 $total_debit += $account->transactions->sum('debit');
                 $total_credit += $account->transactions->sum('credit');
                 $total_balance += $account->transactions->sum('balance');
-                $total_foreign_debit += $account->transactions->sum('foreign_debit');
-                $total_foreign_credit += $account->transactions->sum('foreign_credit');
-                $total_foreign_balance += $account->transactions->sum('foreign_balance');
             }
 
             $statements[] = (object)[
@@ -197,9 +179,6 @@ class AccountController extends Controller
                 'total_debit' => $total_debit,
                 'total_credit' => $total_credit,
                 'total_balance' => $total_balance,
-                'total_foreign_debit' => $total_foreign_debit,
-                'total_foreign_credit' => $total_foreign_credit,
-                'total_foreign_balance' => $total_foreign_balance,
             ];
         }
 
@@ -363,14 +342,9 @@ class AccountController extends Controller
                     'user_id' => auth()->user()->id,
                     'account_id' => $account->id,
                     'currency_id' => $usd->id,
-                    'foreign_currency_id' => $lbp->id,
                     'debit' => $transaction->credit,
                     'credit' => $transaction->debit,
                     'balance' => -$transaction->balance,
-                    'foreign_debit' => $transaction->foreign_credit,
-                    'foreign_credit' => $transaction->foreign_debit,
-                    'foreign_balance' => -$transaction->foreign_balance,
-                    'rate' => $lbp->rate,
                     'hidden' => true,
                     'created_at' => $datetime,
                     'updated_at' => $datetime,
@@ -385,14 +359,9 @@ class AccountController extends Controller
                 'user_id' => auth()->user()->id,
                 'account_id' => $loss_account->id,
                 'currency_id' => $usd->id,
-                'foreign_currency_id' => $lbp->id,
                 'debit' =>  abs($total),
                 'credit' => 0,
                 'balance' => $total,
-                'foreign_debit' => abs($total * $lbp->rate),
-                'foreign_credit' => 0,
-                'foreign_balance' => $total * $lbp->rate,
-                'rate' => $lbp->rate,
                 'created_at' => $datetime,
                 'updated_at' => $datetime,
             ]);
@@ -401,14 +370,9 @@ class AccountController extends Controller
                 'user_id' => auth()->user()->id,
                 'account_id' => $profit_account->id,
                 'currency_id' => $usd->id,
-                'foreign_currency_id' => $lbp->id,
                 'debit' => 0,
                 'credit' => abs($total),
                 'balance' => $total,
-                'foreign_debit' => 0,
-                'foreign_credit' => abs($total * $lbp->rate),
-                'foreign_balance' => $total * $lbp->rate,
-                'rate' => $lbp->rate,
                 'created_at' => $datetime,
                 'updated_at' => $datetime,
             ]);

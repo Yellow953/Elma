@@ -144,6 +144,7 @@
                                             @endcan
 
                                             @can('payments.delete')
+                                            @if ($payment->can_delete())
                                             <form method="GET" action="{{ route('payments.destroy', $payment->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
@@ -151,6 +152,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endif
                                             @endcan
                                         </div>
                                     </td>

@@ -13,8 +13,6 @@ return new class extends Migration
             $table->string('invoice_number')->unique();
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('currency_id');
-            $table->unsignedBigInteger('foreign_currency_id')->nullable();
-            $table->double('rate')->nullable();
             $table->unsignedBigInteger('tax_id');
             $table->date('date');
             $table->string('type')->default('invoice');
@@ -24,7 +22,6 @@ return new class extends Migration
 
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('currency_id')->references('id')->on('currencies');
-            $table->foreign('foreign_currency_id')->references('id')->on('currencies');
             $table->foreign('tax_id')->references('id')->on('taxes');
             $table->foreign('sales_order_id')->references('id')->on('sales_orders');
         });

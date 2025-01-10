@@ -32,6 +32,12 @@ class PurchaseOrder extends Model
         return $this->hasOne(Receipt::class, 'purchase_order_id');
     }
 
+    // Permissions
+    public function can_delete()
+    {
+        return $this->receipt == null;
+    }
+
     // Filter
     public function scopeFilter($q)
     {

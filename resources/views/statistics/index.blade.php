@@ -134,26 +134,6 @@
                             <i class="fa-solid fa-receipt"></i>
                         </div>
                         <div class="text-end pt-1">
-                            <p class="text-sm mb-0 text-white">Total JVs</p>
-                            <h4 class="m-3 text-white">
-                                @if ($total_jvs)
-                                {{number_format($total_jvs)}}
-                                @else
-                                No Record
-                                @endif
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 mb-xl-0 mb-4">
-                <div class="card my-3">
-                    <div class="card-header p-3 pt-2 bg-gradient-dark border-radius">
-                        <div
-                            class="icon icon-lg icon-shape bg-gradient-info shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="fa-solid fa-receipt"></i>
-                        </div>
-                        <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-white">Total Receipts</p>
                             <h4 class="m-3 text-white">
                                 @if ($total_receipts)

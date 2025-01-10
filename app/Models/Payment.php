@@ -17,11 +17,6 @@ class Payment extends Model
         return $this->belongsTo(Currency::class, 'currency_id');
     }
 
-    public function foreign_currency()
-    {
-        return $this->belongsTo(Currency::class, 'foreign_currency_id');
-    }
-
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);
@@ -32,7 +27,7 @@ class Payment extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function payment_items()
+    public function items()
     {
         return $this->hasMany(PaymentItem::class);
     }
@@ -40,7 +35,7 @@ class Payment extends Model
     // Permissions
     public function can_delete()
     {
-        return $this->payment_items->count() == 0;
+        return true;
     }
 
     // Filter
@@ -65,10 +60,6 @@ class Payment extends Model
         if (request('currency_id')) {
             $currency_id = request('currency_id');
             $q->where('currency_id', $currency_id);
-        }
-        if (request('foreign_currency_id')) {
-            $foreign_currency_id = request('foreign_currency_id');
-            $q->where('foreign_currency_id', $foreign_currency_id);
         }
         if (request('date')) {
             $date = request('date');
