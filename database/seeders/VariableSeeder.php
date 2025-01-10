@@ -20,6 +20,16 @@ class VariableSeeder extends Seeder
                 'title' => 'revenue_account',
                 'value' => '327',
             ],
+            [
+                'type' => 'configuration',
+                'title' => 'receivable_account',
+                'value' => '148',
+            ],
+            [
+                'type' => 'configuration',
+                'title' => 'payable_account',
+                'value' => '134',
+            ],
         ];
 
         foreach ($variables as $variable) {

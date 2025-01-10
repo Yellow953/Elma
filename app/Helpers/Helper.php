@@ -104,11 +104,6 @@ class Helper
         return ['Air', 'Sea', 'Land'];
     }
 
-    public static function get_shipping_statuses()
-    {
-        return ['New', 'Ongoing', 'Closed'];
-    }
-
     public static function get_shipping_ports()
     {
         return ['Port Beirut', 'Dubai AirPort'];

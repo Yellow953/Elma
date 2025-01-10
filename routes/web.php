@@ -4,7 +4,6 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CurrencyController;
-use App\Http\Controllers\BackupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\ItemController;
@@ -76,13 +75,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('logs')->group(function () {
         Route::get('/export', [LogController::class, 'export'])->name('logs.export');
         Route::get('/', [LogController::class, 'index'])->name('logs');
-    });
-
-    // Backup Routes
-    Route::prefix('backup')->group(function () {
-        Route::get('/export', [BackupController::class, 'export'])->name('backup.export');
-        Route::post('/import', [BackupController::class, 'import'])->name('backup.import');
-        Route::get('/', [BackupController::class, 'index'])->name('backup');
     });
 
     // Sales Orders Routes
@@ -322,6 +314,11 @@ Route::middleware(['auth'])->group(function () {
     // Settings
     Route::get('/settigns', [SettingsController::class, 'index'])->name('settings');
     Route::post('/settings/update', [SettingsController::class, 'update'])->name('settings.update');
+
+    Route::prefix('backup')->group(function () {
+        Route::get('/export', [SettingsController::class, 'export'])->name('backup.export');
+        Route::post('/import', [SettingsController::class, 'import'])->name('backup.import');
+    });
 
     // Navigation
     Route::post('/navigate', [HomeController::class, 'navigate'])->name('navigate');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Log;
 use App\Models\Client;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -20,15 +21,14 @@ class ClientController extends Controller
 
     public function index()
     {
-        $clients = Client::select('id', 'name', 'email', 'phone', 'address', 'tax_id', 'currency_id', 'account_id', 'receivable_account_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $clients = Client::select('id', 'name', 'email', 'phone', 'address', 'tax_id', 'currency_id', 'account_id')->filter()->orderBy('id', 'desc')->paginate(25);
 
         return view('clients.index', compact('clients'));
     }
 
     public function new()
     {
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        return view('clients.new', compact('accounts'));
+        return view('clients.new');
     }
 
     public function create(Request $request)
@@ -40,11 +40,10 @@ class ClientController extends Controller
             'address' => 'required|max:255',
             'tax_id' => 'required',
             'currency_id' => 'required',
-            'receivable_account_id' => 'required',
             'vat_number' => 'required|unique:clients',
         ]);
 
-        $receivable_account = Account::find($request->receivable_account_id);
+        $receivable_account = Account::find(Variable::where('title', 'receivable_account')->first()->value);
         $account = Account::create([
             'account_number' => Account::generate_account_number($receivable_account->account_number),
             'account_description' => 'Account for client ' . $request->name,
@@ -72,10 +71,7 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        $data = compact('client', 'accounts');
-
-        return view('clients.edit', $data);
+        return view('clients.edit', compact('client'));
     }
 
     public function update(Client $client, Request $request)
@@ -87,8 +83,6 @@ class ClientController extends Controller
             'address' => ['required', 'max:255'],
             'tax_id' => 'required',
             'currency_id' => 'required',
-            'account_id' => 'required',
-            'receivable_account_id' => 'required',
             'vat_number' => 'required',
         ]);
 

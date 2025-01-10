@@ -62,13 +62,33 @@ class Shipment extends Model
             $shipping_date = request('shipping_date');
             $q->where('shipping_date', $shipping_date);
         }
-        if (request('delivery_date')) {
-            $delivery_date = request('delivery_date');
-            $q->where('delivery_date', $delivery_date);
+        if (request('loading_date')) {
+            $loading_date = request('loading_date');
+            $q->where('loading_date', $loading_date);
         }
-        if (request('status')) {
-            $status = request('status');
-            $q->where('status', $status);
+        if (request('vessel_name')) {
+            $vessel_name = request('vessel_name');
+            $q->where('vessel_name', 'LIKE', "%{$vessel_name}%");
+        }
+        if (request('vessel_date')) {
+            $vessel_date = request('vessel_date');
+            $q->where('vessel_date', $vessel_date);
+        }
+        if (request('booking_number')) {
+            $booking_number = request('booking_number');
+            $q->where('booking_number', 'LIKE', "%{$booking_number}%");
+        }
+        if (request('carrier_name')) {
+            $carrier_name = request('carrier_name');
+            $q->where('carrier_name', 'LIKE', "%{$carrier_name}%");
+        }
+        if (request('consignee_name')) {
+            $consignee_name = request('consignee_name');
+            $q->where('consignee_name', 'LIKE', "%{$consignee_name}%");
+        }
+        if (request('consignee_country')) {
+            $consignee_country = request('consignee_country');
+            $q->where('consignee_country', 'LIKE', "%{$consignee_country}%");
         }
 
         return $q;

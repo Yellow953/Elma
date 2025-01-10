@@ -182,12 +182,16 @@ class SalesOrderController extends Controller
 
     public function destroy(SalesOrder $sales_order)
     {
-        $text = ucwords(auth()->user()->name) . " deleted so : " . $sales_order->name . ", datetime :   " . now();
+        if ($sales_order->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted so : " . $sales_order->name . ", datetime :   " . now();
 
-        Log::create(['text' => $text]);
-        $sales_order->delete();
+            Log::create(['text' => $text]);
+            $sales_order->delete();
 
-        return redirect()->back()->with('error', 'Sales Order deleted successfully!');
+            return redirect()->back()->with('error', 'Sales Order deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 
     public function new_invoice(SalesOrder $sales_order)

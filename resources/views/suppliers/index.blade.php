@@ -171,7 +171,6 @@
                                     </td>
                                     <td>
                                         <p>{{ $supplier->account->account_number }}</p>
-                                        <p>Payable: {{ $supplier->payable_account->account_number }}</p>
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">

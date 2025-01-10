@@ -274,11 +274,15 @@ class CashReceiptController extends Controller
 
     public function destroy(Payment $payment)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Cash Receipt : " . $payment->payment_number . ", datetime :   " . now();
+        if ($payment->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Cash Receipt : " . $payment->payment_number . ", datetime :   " . now();
 
-        Log::create(['text' => $text]);
-        $payment->delete();
+            Log::create(['text' => $text]);
+            $payment->delete();
 
-        return redirect()->back()->with('error', 'Cash Receipt deleted successfully!');
+            return redirect()->back()->with('error', 'Cash Receipt deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 }

@@ -6,11 +6,6 @@
 
 @section('content')
 <div class="inner-container">
-    <div class="d-flex justify-content-around">
-        <a href="{{ route('accounts.new') }}" class="btn btn-info px-3 py-2">
-            <i class="fa-solid fa-plus"></i> Account</a>
-    </div>
-
     <div class="card">
         <div class="card-header bg-info border-b">
             <h4 class="font-weight-bolder">New Client</h4>
@@ -125,25 +120,6 @@
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="receivable_account_id" class="col-md-5 col-form-label text-md-end">{{ __('Receivable
-                        Account *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="receivable_account_id" id="receivable_account_id" required
-                            class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $account->id == old('receivable_account_id') ?
-                                'selected' : '' }}>{{
-                                $account->account_number }} | {{ $account->account_description }}
-                            </option>
-                            @endforeach
-                        </select>
                     </div>
                 </div>
 

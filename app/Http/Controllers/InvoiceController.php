@@ -455,11 +455,15 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Invoice : " . $invoice->invoice_number . ", datetime :   " . now();
+        if ($invoice->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Invoice : " . $invoice->invoice_number . ", datetime :   " . now();
 
-        Log::create(['text' => $text]);
-        $invoice->delete();
+            Log::create(['text' => $text]);
+            $invoice->delete();
 
-        return redirect()->back()->with('error', 'Invoice deleted successfully!');
+            return redirect()->back()->with('error', 'Invoice deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 }

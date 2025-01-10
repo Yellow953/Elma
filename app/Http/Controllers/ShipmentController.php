@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Client;
 use App\Models\Item;
 use App\Models\Log;
@@ -27,10 +28,12 @@ class ShipmentController extends Controller
 
     public function index()
     {
-        $shipments = Shipment::select('id', 'shipment_number', 'mode', 'departure', 'arrival', 'commodity', 'status', 'client_id', 'shipping_date', 'delivery_date')->filter()->orderBy('id', 'desc')->paginate(25);
+        $shipments = Shipment::select('id', 'shipment_number', 'mode', 'departure', 'arrival', 'commodity', 'client_id', 'shipping_date', 'loading_date', 'vessel_name', 'vessel_date', 'booking_number', 'carrier_name', 'consignee_name', 'consignee_country')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
+        $modes = Helper::get_shipping_modes();
+        $ports = Helper::get_shipping_ports();
 
-        $data = compact('shipments', 'clients');
+        $data = compact('shipments', 'clients', 'modes', 'ports');
         return view('shipments.index', $data);
     }
 
@@ -39,8 +42,11 @@ class ShipmentController extends Controller
         $clients = Client::select('id', 'name')->get();
         $items = Item::select('id', 'name', 'type', 'unit_price')->get();
         $suppliers = Supplier::select('id', 'name')->get();
+        $modes = Helper::get_shipping_modes();
+        $ports = Helper::get_shipping_ports();
+        $countries = Helper::get_countries();
 
-        $data = compact('clients', 'items', 'suppliers');
+        $data = compact('clients', 'items', 'suppliers', 'modes', 'ports', 'countries');
         return view('shipments.new', $data);
     }
 
@@ -55,7 +61,13 @@ class ShipmentController extends Controller
             'status' => 'required',
             'client_id' => 'required',
             'shipping_date' => 'required|date',
-            'delivery_date' => 'nullable|date',
+            'loading_date' => 'nullable|date',
+            'vessel_name' => 'required|string|max:255',
+            'vessel_date' => 'required|date',
+            'booking_number' => 'required|string|max:255',
+            'carrier_name' => 'required|string|max:255',
+            'consignee_name' => 'required|string|max:255',
+            'consignee_country' => 'required',
             'notes' => 'nullable',
             'items' => 'array|required'
         ]);
@@ -69,7 +81,13 @@ class ShipmentController extends Controller
             'status' => $request->status,
             'client_id' => $request->client_id,
             'shipping_date' => $request->shipping_date,
-            'delivery_date' => $request->delivery_date,
+            'loading_date' => $request->loading_date,
+            'vessel_name' => $request->vessel_name,
+            'vessel_date' => $request->vessel_date,
+            'booking_number' => $request->booking_number,
+            'carrier_name' => $request->carrier_name,
+            'consignee_name' => $request->consignee_name,
+            'consignee_country' => $request->consignee_country,
             'notes' => $request->notes,
         ]);
 
@@ -112,7 +130,7 @@ class ShipmentController extends Controller
                 'so_number' => SalesOrder::generate_so_number(),
                 'client_id' => $request->client_id,
                 'order_date' => $request->shipping_date,
-                'due_date' => $request->delivery_date,
+                'due_date' => $request->loading_date,
                 'status' => 'new',
                 'shipment_id' => $shipment->id,
                 'notes' => $request->notes,
@@ -130,7 +148,7 @@ class ShipmentController extends Controller
                 'po_number' => PurchaseOrder::generate_po_number(),
                 'supplier_id' => $supplierId,
                 'order_date' => $request->shipping_date,
-                'due_date' => $request->delivery_date,
+                'due_date' => $request->loading_date,
                 'status' => 'new',
                 'shipment_id' => $shipment->id,
                 'notes' => $request->notes,
@@ -155,8 +173,11 @@ class ShipmentController extends Controller
         $clients = Client::select('id', 'name')->get();
         $items = Item::select('id', 'name', 'type', 'unit_price')->get();
         $suppliers = Supplier::select('id', 'name')->get();
+        $modes = Helper::get_shipping_modes();
+        $ports = Helper::get_shipping_ports();
+        $countries = Helper::get_countries();
 
-        $data = compact('shipment', 'clients', 'items', 'suppliers');
+        $data = compact('shipment', 'clients', 'items', 'suppliers', 'modes', 'ports', 'countries');
         return view('shipments.edit', $data);
     }
 
@@ -171,7 +192,15 @@ class ShipmentController extends Controller
             'status' => 'required',
             'client_id' => 'required',
             'shipping_date' => 'required|date',
-            'delivery_date' => 'nullable|date',
+            'loading_date' => 'nullable|date',
+            'shipping_date' => 'required|date',
+            'loading_date' => 'nullable|date',
+            'vessel_name' => 'required|string|max:255',
+            'vessel_date' => 'required|date',
+            'booking_number' => 'required|string|max:255',
+            'carrier_name' => 'required|string|max:255',
+            'consignee_name' => 'required|string|max:255',
+            'consignee_country' => 'required',
             'notes' => 'nullable'
         ]);
 
@@ -186,7 +215,13 @@ class ShipmentController extends Controller
             'status' => $request->status,
             'client_id' => $request->client_id,
             'shipping_date' => $request->shipping_date,
-            'delivery_date' => $request->delivery_date,
+            'loading_date' => $request->loading_date,
+            'vessel_name' => $request->vessel_name,
+            'vessel_date' => $request->vessel_date,
+            'booking_number' => $request->booking_number,
+            'carrier_name' => $request->carrier_name,
+            'consignee_name' => $request->consignee_name,
+            'consignee_country' => $request->consignee_country,
             'notes' => $request->notes,
         ]);
 
@@ -211,16 +246,20 @@ class ShipmentController extends Controller
 
     public function destroy(Shipment $shipment)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Shipment : " . $shipment->name . ", datetime :   " . now();
+        if ($shipment->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Shipment : " . $shipment->name . ", datetime :   " . now();
 
-        foreach ($shipment->items as $item) {
-            $item->delete();
+            foreach ($shipment->items as $item) {
+                $item->delete();
+            }
+
+            Log::create(['text' => $text]);
+            $shipment->delete();
+
+            return redirect()->back()->with('error', 'Shipment deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
         }
-
-        Log::create(['text' => $text]);
-        $shipment->delete();
-
-        return redirect()->back()->with('error', 'Shipment deleted successfully!');
     }
 
     public function item_destroy(ShipmentItem $shipment_item)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Log;
 use App\Models\Supplier;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
@@ -20,15 +21,14 @@ class SupplierController extends Controller
 
     public function index()
     {
-        $suppliers = Supplier::select('id', 'name', 'email', 'phone', 'contact_person', 'address', 'tax_id', 'vat_number', 'currency_id', 'account_id', 'payable_account_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $suppliers = Supplier::select('id', 'name', 'email', 'phone', 'contact_person', 'address', 'tax_id', 'vat_number', 'currency_id', 'account_id')->filter()->orderBy('id', 'desc')->paginate(25);
 
         return view('suppliers.index', compact('suppliers'));
     }
 
     public function new()
     {
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        return view('suppliers.new', compact('accounts'));
+        return view('suppliers.new');
     }
 
     public function create(Request $request)
@@ -40,10 +40,9 @@ class SupplierController extends Controller
             'vat_number' => 'required|max:255|unique:suppliers',
             'tax_id' => 'required',
             'currency_id' => 'required',
-            'payable_account_id' => 'required'
         ]);
 
-        $payable_account = Account::find($request->payable_account_id);
+        $payable_account = Account::find(Variable::where('title', 'payable_account')->first()->value);
         $account = Account::create([
             'account_number' => Account::generate_account_number($payable_account->account_number),
             'account_description' => 'Account for supplier ' . $request->name,
@@ -73,10 +72,7 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        $data = compact('accounts', 'supplier');
-
-        return view('suppliers.edit', $data);
+        return view('suppliers.edit', compact('supplier'));
     }
 
     public function update(Supplier $supplier, Request $request)
@@ -88,8 +84,6 @@ class SupplierController extends Controller
             'vat_number' => ['required', 'max:255'],
             'tax_id' => 'required',
             'currency_id' => 'required',
-            'account_id' => 'required',
-            'payable_account_id' => 'required'
         ]);
 
         if ($supplier->name != trim($request->name)) {

@@ -2,12 +2,6 @@
 
 @section('title', 'shipments')
 
-@php
-$modes = Helper::get_shipping_modes();
-$statuses = Helper::get_shipping_statuses();
-$ports = Helper::get_shipping_ports();
-@endphp
-
 @section('actions')
 @can('shipments.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('shipments.new') }}">New Shipment</a>
@@ -74,22 +68,6 @@ $ports = Helper::get_shipping_ports();
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="status">Status</label>
-                        <div>
-                            <select name="status" id="status" class="form-select select2">
-                                <option value=""></option>
-                                @foreach ($statuses as $status)
-                                <option value="{{ $status }}" {{ $status==request()->query('status') ?
-                                    'selected' : '' }}>{{ $status }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="row">
@@ -141,16 +119,15 @@ $ports = Helper::get_shipping_ports();
             <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
-                        <label for="delivery_date">Delivery Date</label>
+                        <label for="loading_date">Loading Date</label>
                         <div>
-                            <input type="date" class="form-control border" name="delivery_date"
-                                value="{{request()->query('delivery_date')}}">
+                            <input type="date" class="form-control border" name="loading_date"
+                                value="{{request()->query('loading_date')}}">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
         <div class="d-flex justify-content-around mt-3">
             <button type="reset"
@@ -201,7 +178,6 @@ $ports = Helper::get_shipping_ports();
                                         {{ ucwords($shipment->client->name) }}
                                     </td>
                                     <td>
-                                        Status: {{ $shipment->status }} <br>
                                         Commodity: {{ $shipment->commodity }}
                                     </td>
                                     <td>
@@ -210,7 +186,7 @@ $ports = Helper::get_shipping_ports();
                                     </td>
                                     <td>
                                         {{ $shipment->shipping_date }} <br>
-                                        {{ $shipment->delivery_date ? ' -> ' . $shipment->delivery_date : '' }}
+                                        {{ $shipment->loading_date ? ' -> ' . $shipment->loading_date : '' }}
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">

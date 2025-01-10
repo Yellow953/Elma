@@ -95,12 +95,16 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Expense : " . $expense->name . ", datetime :   " . now();
+        if ($expense->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Expense : " . $expense->name . ", datetime :   " . now();
 
-        Log::create(['text' => $text]);
-        $expense->delete();
+            Log::create(['text' => $text]);
+            $expense->delete();
 
-        return redirect()->back()->with('error', 'Expense deleted successfully!');
+            return redirect()->back()->with('error', 'Expense deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 
     public function show(Expense $expense)

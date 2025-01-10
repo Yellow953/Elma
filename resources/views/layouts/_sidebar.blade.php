@@ -229,16 +229,6 @@
                 </a>
             </li>
             @endcan
-
-            @can('backups.all')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('backup*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('backup') }}">
-                    <span><i class="fa-solid fa-database"></i></span>
-                    Backup
-                </a>
-            </li>
-            @endcan
         </ul>
     </div>
 </aside>

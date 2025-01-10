@@ -257,11 +257,15 @@ class CreditNoteController extends Controller
 
     public function destroy(CDNote $cdnote)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Credit Note : " . $cdnote->cdnote_number . ", datetime :   " . now();
+        if ($cdnote->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Credit Note : " . $cdnote->cdnote_number . ", datetime :   " . now();
 
-        Log::create(['text' => $text]);
-        $cdnote->delete();
+            Log::create(['text' => $text]);
+            $cdnote->delete();
 
-        return redirect()->back()->with('error', 'Credit Note deleted successfully!');
+            return redirect()->back()->with('error', 'Credit Note deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 }

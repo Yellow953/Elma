@@ -93,11 +93,15 @@ class ItemController extends Controller
 
     public function destroy(Item $item)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Item: " . $item->name . ", datetime: " . now();
-        Log::create(['text' => $text]);
+        if ($item->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Item: " . $item->name . ", datetime: " . now();
+            Log::create(['text' => $text]);
 
-        $item->delete();
+            $item->delete();
 
-        return redirect()->route('items')->with('error', 'Item deleted successfully!');
+            return redirect()->route('items')->with('error', 'Item deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 }

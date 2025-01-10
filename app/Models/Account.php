@@ -37,25 +37,10 @@ class Account extends Model
         return $this->hasOne(Tax::class);
     }
 
-    public function inventory_items()
-    {
-        return $this->hasMany(Item::class, 'inventory_account_id');
-    }
-
-    public function cost_of_sales_items()
-    {
-        return $this->hasMany(Item::class, 'cost_of_sales_account_id');
-    }
-
-    public function sales_items()
-    {
-        return $this->hasMany(Item::class, 'sales_account_id');
-    }
-
     // Permissions
     public function can_delete()
     {
-        return $this->transactions->count() == 0 && $this->client == null && $this->supplier == null && $this->tax == null && $this->inventory_items->count() == 0 && $this->cost_of_sales_items->count() == 0 && $this->sales_items->count() == 0;
+        return $this->transactions->count() == 0 && $this->client == null && $this->supplier == null && $this->tax == null;
     }
 
     // Filter

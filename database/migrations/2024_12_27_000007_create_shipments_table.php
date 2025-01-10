@@ -15,10 +15,15 @@ return new class extends Migration
             $table->string('departure');
             $table->string('arrival');
             $table->string('commodity');
-            $table->string('status')->default('new');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->date('shipping_date');
-            $table->date('delivery_date')->nullable();
+            $table->date('loading_date')->nullable();
+            $table->string('vessel_name');
+            $table->date('vessel_date');
+            $table->string('booking_number');
+            $table->string('carrier_name');
+            $table->string('consignee_name');
+            $table->string('consignee_country');
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();

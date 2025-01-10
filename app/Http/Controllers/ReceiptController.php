@@ -363,12 +363,16 @@ class ReceiptController extends Controller
 
     public function destroy(Receipt $receipt)
     {
-        $text = ucwords(auth()->user()->name) . " deleted Receipt : " . $receipt->receipt_number . ", datetime :   " . now();
+        if ($receipt->can_delete()) {
+            $text = ucwords(auth()->user()->name) . " deleted Receipt : " . $receipt->receipt_number . ", datetime :   " . now();
 
-        Log::create(['text' => $text]);
-        $receipt->delete();
+            Log::create(['text' => $text]);
+            $receipt->delete();
 
-        return redirect()->back()->with('error', 'Receipt deleted successfully!');
+            return redirect()->back()->with('error', 'Receipt deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Unable to delete...');
+        }
     }
 
     // -------------------

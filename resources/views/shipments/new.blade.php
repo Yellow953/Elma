@@ -4,12 +4,6 @@
 
 @section('sub-title', 'new')
 
-@php
-$modes = Helper::get_shipping_modes();
-$ports = Helper::get_shipping_ports();
-$statuses = Helper::get_shipping_statuses();
-@endphp
-
 @section('content')
 <div class="container">
     <div class="row">
@@ -80,7 +74,7 @@ $statuses = Helper::get_shipping_statuses();
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="mode" class="col-form-label">Mode *</label>
 
@@ -93,7 +87,7 @@ $statuses = Helper::get_shipping_statuses();
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="commodity" class="col-form-label">Commodity
                                     *</label>
@@ -107,19 +101,6 @@ $statuses = Helper::get_shipping_statuses();
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group mt-3">
-                                <label for="status" class="col-form-label">Status *</label>
-
-                                <select name="status" id="status" required class="form-select select2">
-                                    @foreach ($statuses as $status)
-                                    <option value="{{ $status }}" {{ $status==old('status') ? 'selected' : '' }}>
-                                        {{ $status }}
-                                    </option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -174,13 +155,124 @@ $statuses = Helper::get_shipping_statuses();
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mt-3">
-                                <label for="delivery_date" class="col-form-label">Delivery Date</label>
+                                <label for="loading_date" class="col-form-label">Loading Date</label>
 
-                                <input id="delivery_date" type="date"
-                                    class="form-control @error('delivery_date') is-invalid @enderror"
-                                    name="delivery_date" value="{{ old('delivery_date') }}">
+                                <input id="loading_date" type="date"
+                                    class="form-control @error('loading_date') is-invalid @enderror" name="loading_date"
+                                    value="{{ old('loading_date') }}">
 
-                                @error('delivery_date')
+                                @error('loading_date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="vessel_name" class="col-form-label">Vessel Name
+                                    *</label>
+
+                                <input id="vessel_name" type="text" placeholder="Enter Vessel Name" required
+                                    class="form-control @error('vessel_name') is-invalid @enderror" name="vessel_name"
+                                    value="{{ old('vessel_name') }}">
+
+                                @error('vessel_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="vessel_date" class="col-form-label">Vessel Date</label>
+
+                                <input id="vessel_date" type="date"
+                                    class="form-control @error('vessel_date') is-invalid @enderror" name="vessel_date"
+                                    value="{{ old('vessel_date') }}">
+
+                                @error('vessel_date')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="booking_number" class="col-form-label">Booking Number
+                                    *</label>
+
+                                <input id="booking_number" type="text" placeholder="Enter Booking Number" required
+                                    class="form-control @error('booking_number') is-invalid @enderror"
+                                    name="booking_number" value="{{ old('booking_number') }}">
+
+                                @error('booking_number')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="carrier_name" class="col-form-label">Carrier Name
+                                    *</label>
+
+                                <input id="carrier_name" type="text" placeholder="Enter Carrier Name" required
+                                    class="form-control @error('carrier_name') is-invalid @enderror" name="carrier_name"
+                                    value="{{ old('carrier_name') }}">
+
+                                @error('carrier_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="consignee_name" class="col-form-label">Consignee Name
+                                    *</label>
+
+                                <input id="consignee_name" type="text" placeholder="Enter Consignee Name" required
+                                    class="form-control @error('consignee_name') is-invalid @enderror"
+                                    name="consignee_name" value="{{ old('consignee_name') }}">
+
+                                @error('consignee_name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="consignee_country" class="col-form-label">Consignee Country
+                                    *</label>
+
+                                <select name="consignee_country" id="consignee_country" required
+                                    class="form-select select2">
+                                    <option value="">Select Consignee Country</option>
+                                    @foreach ($countries as $country)
+                                    <option value="{{ $country }}" {{ $country==old('consignee_country') ? 'selected'
+                                        : '' }}>
+                                        {{ $country }}
+                                    </option>
+                                    @endforeach
+                                </select>
+
+                                @error('consignee_country')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

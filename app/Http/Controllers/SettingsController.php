@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Variable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SettingsController extends Controller
 {
@@ -17,9 +18,11 @@ class SettingsController extends Controller
     {
         $expense_account = Variable::where('title', 'expense_account')->first();
         $revenue_account = Variable::where('title', 'revenue_account')->first();
+        $receivable_account = Variable::where('title', 'receivable_account')->first();
+        $payable_account = Variable::where('title', 'payable_account')->first();
         $accounts = Account::select('id', 'account_number', 'account_description')->get();
 
-        $data = compact('accounts', 'expense_account', 'revenue_account');
+        $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account');
         return view('settings.index', $data);
     }
 
@@ -41,6 +44,42 @@ class SettingsController extends Controller
             ]);
         }
 
+        if ($request->receivable_account_id) {
+            Variable::where('name', 'receivable_account')->first()->update([
+                'value' => $request->receivable_account_id
+            ]);
+        }
+
+        if ($request->payable_account_id) {
+            Variable::where('name', 'payable_account')->first()->update([
+                'value' => $request->payable_account_id
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Configurations updated successfully...');
+    }
+
+    public function export()
+    {
+        $filePath = public_path('backups/database_backup.sql');
+
+        exec('mysqldump -u' . env('DB_USERNAME') . ' -p' . env('DB_PASSWORD') . ' ' . env('DB_DATABASE') . ' > ' . $filePath);
+
+        return response()->download($filePath)->deleteFileAfterSend(false);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimetypes:text/plain,application/octet-stream',
+        ]);
+
+        $file = $request->file('file');
+
+        $sql = file_get_contents($file->getRealPath());
+
+        DB::unprepared($sql);
+
+        return redirect()->back()->with('success', 'Database imported successfully.');
     }
 }
