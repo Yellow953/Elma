@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Currency;
 use App\Models\Expense;
 use App\Models\Log;
@@ -24,8 +25,9 @@ class ExpenseController extends Controller
         $expenses = Expense::select('id', 'title', 'type', 'date', 'user_id', 'amount', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
         $users = User::select('id', 'name')->get();
         $currencies = Currency::select('id', 'name')->get();
+        $types = Helper::get_expense_types();
 
-        $data = compact('expenses', 'users', 'currencies');
+        $data = compact('expenses', 'users', 'currencies', 'types');
         return view('expenses.index', $data);
     }
 
@@ -33,8 +35,9 @@ class ExpenseController extends Controller
     {
         $users = User::select('id', 'name')->get();
         $currencies = Currency::select('id', 'name')->get();
+        $types = Helper::get_expense_types();
 
-        $data = compact('users', 'currencies');
+        $data = compact('users', 'currencies', 'types');
         return view('expenses.new', $data);
     }
 
@@ -65,8 +68,9 @@ class ExpenseController extends Controller
     {
         $users = User::select('id', 'name')->get();
         $currencies = Currency::select('id', 'name')->get();
+        $types = Helper::get_expense_types();
 
-        $data = compact('expense', 'users', 'currencies');
+        $data = compact('expense', 'users', 'currencies', 'types');
         return view('expenses.edit', $data);
     }
 
