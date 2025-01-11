@@ -48,8 +48,8 @@ body {
 }
 
 .receipt-main table {
+    border: 2px solid black;
     border-radius: 15px;
-    border: 1px solid #333333;
     overflow: hidden;
 }
 
@@ -138,4 +138,10 @@ body {
     position: fixed;
     bottom: 2%;
     right: 2%;
+}
+
+.border-custom {
+    border: 2px solid black;
+    border-radius: 15px;
+    overflow: hidden;
 }
