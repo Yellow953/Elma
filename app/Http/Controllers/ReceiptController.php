@@ -102,8 +102,10 @@ class ReceiptController extends Controller
         $this->createTransaction($expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
 
         // Tax Debit
-        $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-        $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
+        if($totalTax != 0){
+            $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
+            $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
+        }
 
         // Supplier Credit
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);

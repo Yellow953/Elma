@@ -92,16 +92,6 @@
             </li>
             @endcan
 
-            @can('payments.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('payments*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('payments') }}">
-                    <span><i class="fa-solid fa-money-bill"></i></span>
-                    Payments
-                </a>
-            </li>
-            @endcan
-
             @can('expenses.read')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('expenses*') ? 'active bg-gradient-info' : '' }}"

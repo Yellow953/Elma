@@ -161,6 +161,8 @@
                                 <tr>
                                     <th>Shipment Number</th>
                                     <th>Client</th>
+                                    <th>Consignee</th>
+                                    <th>Vessel</th>
                                     <th>Info</th>
                                     <th>Ports</th>
                                     <th>Dates</th>
@@ -178,15 +180,26 @@
                                         {{ ucwords($shipment->client->name) }}
                                     </td>
                                     <td>
-                                        Commodity: {{ $shipment->commodity }}
+                                        {{ ucwords($shipment->consignee_name) }} <br>
+                                        {{ $shipment->consignee_country }}
                                     </td>
                                     <td>
-                                        {{ $shipment->departure }} <br>
-                                        {{ $shipment->arrival }}
+                                        {{ $shipment->vessel_name }} <br>
+                                        {{ $shipment->vessel_date }}
+                                        
                                     </td>
                                     <td>
-                                        {{ $shipment->shipping_date }} <br>
-                                        {{ $shipment->loading_date ? ' -> ' . $shipment->loading_date : '' }}
+                                        Booking Number: {{ $shipment->booking_number }} <br>
+                                        Carrier: {{ ucwords($shipment->carrier_name) }} <br>
+                                        Commodity: {{ ucwords($shipment->commodity) }}
+                                    </td>
+                                    <td>
+                                        Departure: {{ $shipment->departure }} <br>
+                                        Arrival: {{ $shipment->arrival }}
+                                    </td>
+                                    <td>
+                                        Shipping: {{ $shipment->shipping_date }} <br>
+                                        {{ $shipment->loading_date ? ' Loading: ' . $shipment->loading_date : '' }}
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">

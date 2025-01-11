@@ -72,7 +72,7 @@ class Payment extends Model
     public static function generate_number()
     {
         $year = date('Y');
-        $lastPayment = Payment::whereYear('created_at', $year)->whereIn('type', ['payment', 'cash receipt'])->latest()->first();
+        $lastPayment = Payment::whereYear('created_at', $year)->whereIn('type', 'cash receipt')->latest()->first();
 
         if ($lastPayment) {
             $lastNumber = explode('-', $lastPayment->payment_number)[2];
@@ -85,7 +85,7 @@ class Payment extends Model
     public static function generate_return_number()
     {
         $year = date('Y');
-        $lastPayment = Payment::whereYear('created_at', $year)->whereIn('type', ['return payment', 'return cash receipt'])->latest()->first();
+        $lastPayment = Payment::whereYear('created_at', $year)->where('type', 'return cash receipt')->latest()->first();
 
         if ($lastPayment) {
             $lastNumber = explode('-', $lastPayment->payment_number)[3];
