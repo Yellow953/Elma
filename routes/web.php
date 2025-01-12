@@ -17,7 +17,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\CashReceiptController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CreditNoteController;
 use App\Http\Controllers\DebitNoteController;
 use App\Http\Controllers\ExpenseController;
@@ -196,18 +196,16 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Payment Routes
-    Route::prefix('cash_receipts')->group(function () {
-        Route::get('/export', [CashReceiptController::class, 'export'])->name('cash_receipts.export');
-        Route::get('/new', [CashReceiptController::class, 'new'])->name('cash_receipts.new');
-        Route::post('/create', [CashReceiptController::class, 'create'])->name('cash_receipts.create');
-        Route::get('/return', [CashReceiptController::class, 'Return'])->name('cash_receipts.return');
-        Route::post('/return_save', [CashReceiptController::class, 'ReturnSave'])->name('cash_receipts.return_save');
-        Route::get('/{payment}/edit', [CashReceiptController::class, 'edit'])->name('cash_receipts.edit');
-        Route::post('/{payment}/update', [CashReceiptController::class, 'update'])->name('cash_receipts.update');
-        Route::get('/{payment}/delete', [CashReceiptController::class, 'destroy'])->name('cash_receipts.destroy');
-        Route::get('/{payment}/show', [CashReceiptController::class, 'show'])->name('cash_receipts.show');
-        Route::get('/{payment}/items', [CashReceiptController::class, 'items'])->name('cash_receipts.items');
-        Route::get('/', [CashReceiptController::class, 'index'])->name('cash_receipts');
+    Route::prefix('payments')->group(function () {
+        Route::get('/export', [PaymentController::class, 'export'])->name('payments.export');
+        Route::get('/new', [PaymentController::class, 'new'])->name('payments.new');
+        Route::post('/create', [PaymentController::class, 'create'])->name('payments.create');
+        Route::get('/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
+        Route::post('/{payment}/update', [PaymentController::class, 'update'])->name('payments.update');
+        Route::get('/{payment}/delete', [PaymentController::class, 'destroy'])->name('payments.destroy');
+        Route::get('/{payment}/show', [PaymentController::class, 'show'])->name('payments.show');
+        Route::get('/{payment}/items', [PaymentController::class, 'items'])->name('payments.items');
+        Route::get('/', [PaymentController::class, 'index'])->name('payments');
     });
 
     // Invoices Routes

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'debit_notes')
+@section('title', 'payments')
 
 @section('sub-title', 'edit')
 
@@ -8,10 +8,10 @@
 <div class="inner-container">
     <div class="card">
         <div class="card-header bg-info border-b">
-            <h4 class="font-weight-bolder">Edit Debit Note</h4>
+            <h4 class="font-weight-bolder">Edit Payment</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('debit_notes.update', $cdnote->id) }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('payments.update', $payment->id) }}" enctype="multipart/form-data">
                 @csrf
 
                 <div class="input-group input-group-outline row my-3">
@@ -20,7 +20,7 @@
 
                     <div class="col-md-6">
                         <input id="date" type="date" class="form-control @error('date') is-invalid @enderror"
-                            name="date" required value="{{ $cdnote->date }}">
+                            name="date" required value="{{ $payment->date }}">
 
                         @error('date')
                         <span class="invalid-feedback" role="alert">
@@ -36,7 +36,7 @@
 
                     <div class="col-md-6">
                         <input id="description" type="text" class="form-control @error('description') is-invalid @enderror"
-                            name="description" required value="{{ $cdnote->description }}">
+                            name="description" required value="{{ $payment->description }}">
 
                         @error('description')
                         <span class="invalid-feedback" role="alert">

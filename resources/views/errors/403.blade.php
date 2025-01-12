@@ -4,7 +4,11 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    
     <title>403 Forbidden</title>
+    
+    <link rel="shortcut icon" href="{{ asset('assets/images/logo.png') }}" type="image/x-icon">
+
     <style type="text/css">
         body {
             margin-top: 150px;

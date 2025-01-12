@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'debit_notes')
+@section('title', 'payments')
 
 @section('sub-title', 'new')
 
@@ -8,37 +8,22 @@
 <div class="inner-container">
     <div class="card">
         <div class="card-header bg-info border-b">
-            <h4 class="font-weight-bolder">New Debit Note</h4>
+            <h4 class="font-weight-bolder">New Payment</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('debit_notes.create') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('payments.create') }}" enctype="multipart/form-data">
                 @csrf
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="supplier_id" class="col-md-5 col-form-label text-md-end">{{ __('Supplier *')
+                    <label for="client_id" class="col-md-5 col-form-label text-md-end">{{ __('Client *')
                         }}</label>
 
                     <div class="col-md-6">
-                        <select name="supplier_id" id="supplier_id" required class="form-select select2">
+                        <select name="client_id" id="client_id" required class="form-select select2">
                             <option value=""></option>
-                            @foreach ($suppliers as $supplier)
-                            <option value="{{ $supplier->id }}" {{ $supplier->id==old('supplier_id') ?
-                                'selected' : '' }}>{{ $supplier->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="tax_id" class="col-md-5 col-form-label text-md-end">{{ __('Tax *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="tax_id" id="tax_id" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($taxes as $tax)
-                            <option value="{{ $tax->id }}" {{ $tax->id==old('tax_id') ?
-                                'selected' : '' }}>{{ $tax->name }}</option>
+                            @foreach ($clients as $client)
+                            <option value="{{ $client->id }}" {{ $client->id==old('client_id') ?
+                                'selected' : '' }}>{{ $client->name }}</option>
                             @endforeach
                         </select>
                     </div>

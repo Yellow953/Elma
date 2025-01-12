@@ -21,17 +21,19 @@
     <form action="{{ route('credit_notes') }}" method="get" enctype="multipart/form-data">
         @csrf
 
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="cdnote_number">Number</label>
-                <div>
-                    <input type="text" class="form-control border" name="cdnote_number" placeholder="C/D Note Number"
-                        value="{{request()->query('cdnote_number')}}">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="cdnote_number">Number</label>
+                        <div>
+                            <input type="text" class="form-control border" name="cdnote_number" placeholder="C/D Note Number"
+                                value="{{request()->query('cdnote_number')}}">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
                         <label for="client_id">Client</label>
@@ -105,9 +107,9 @@
                             <thead>
                                 <tr>
                                     <th>Credit Note Number</th>
-                                    <th>Type</th>
                                     <th>Client</th>
                                     <th>Date</th>
+                                    <th>Amount</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -117,12 +119,14 @@
                                     <td>
                                         <p>{{ $cdnote->cdnote_number }}</p>
                                     </td>
-                                    <td>{{ ucwords($cdnote->type) }}</td>
                                     <td>
                                         {{ ucwords($cdnote->client->name ?? '') }}
                                     </td>
                                     <td>
                                         {{ $cdnote->date }}
+                                    </td>
+                                    <td>
+                                        {{ $cdnote->currency->symbol }}{{ number_format($cdnote->amount, 2) }}
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">

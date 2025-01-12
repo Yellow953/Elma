@@ -1,16 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'cash_receipts')
+@section('title', 'payments')
 
 @section('actions')
-@can('cash_receipts.create')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('cash_receipts.new') }}">New Cash Receipt</a>
+@can('payments.create')
+<a class="btn btn-sm btn-info mx-1" href="{{ route('payments.new') }}">New Payment</a>
 @endcan
-@can('cash_receipts.return')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('cash_receipts.return') }}">Return Cash Receipt</a>
-@endcan
-@can('cash_receipts.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('cash_receipts.export') }}">Export Cash Receipts</a>
+@can('payments.export')
+<a class="btn btn-sm btn-info mx-1" href="{{ route('payments.export') }}">Export Payments</a>
 @endcan
 @endsection
 
@@ -20,21 +17,23 @@
     Filter
 </button>
 <div class="dropdown-menu dropdown-menu-right mt-2 p-4" aria-labelledby="filterDropdown" style="width: 300px">
-    <h4 class="mb-2">Filter Cash Receipt</h4>
-    <form action="{{ route('cash_receipts') }}" method="get" enctype="multipart/form-data">
+    <h4 class="mb-2">Filter Payments</h4>
+    <form action="{{ route('payments') }}" method="get" enctype="multipart/form-data">
         @csrf
 
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="payment_number">Number</label>
-                <div>
-                    <input type="text" class="form-control border" name="payment_number" placeholder="Payment Number"
-                        value="{{request()->query('payment_number')}}">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="payment_number">Number</label>
+                        <div>
+                            <input type="text" class="form-control border" name="payment_number" placeholder="Payment Number"
+                                value="{{request()->query('payment_number')}}">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
                         <label for="client_id">Client</label>
@@ -99,7 +98,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3">
                     <div class="bg-gradient-info shadow-info border-radius-lg pt-4 pb-3">
-                        <h5 class="text-capitalize ps-3">Cash Receipts Table</h5>
+                        <h5 class="text-capitalize ps-3">Payment Table</h5>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -108,9 +107,9 @@
                             <thead>
                                 <tr>
                                     <th>Payment Number</th>
-                                    <th>Type</th>
                                     <th>Client</th>
                                     <th>Date</th>
+                                    <th>Amount</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -120,7 +119,6 @@
                                     <td>
                                         <p>{{ $payment->payment_number }}</p>
                                     </td>
-                                    <td>{{ ucwords($payment->type) }}</td>
                                     <td>
                                         {{ ucwords($payment->client->name ?? '') }}
                                     </td>
@@ -128,25 +126,28 @@
                                         {{ $payment->date }}
                                     </td>
                                     <td>
+                                        {{ $payment->currency->symbol }}{{ number_format($payment->amount, 2) }}
+                                    </td>
+                                    <td>
                                         <div class="d-flex flex-row justify-content-center">
-                                            @can('cash_receipts.read')
-                                            <a href="{{ route('cash_receipts.show', $payment->id) }}"
+                                            @can('payments.read')
+                                            <a href="{{ route('payments.show', $payment->id) }}"
                                                 class="btn btn-info btn-custom" title="Show">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                             @endcan
 
-                                            @can('cash_receipts.update')
-                                            <a href="{{ route('cash_receipts.edit', $payment->id) }}"
+                                            @can('payments.update')
+                                            <a href="{{ route('payments.edit', $payment->id) }}"
                                                 class="btn btn-warning btn-custom" title="Edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             @endcan
 
-                                            @can('cash_receipts.delete')
+                                            @can('payments.delete')
                                             @if ($cash_receipt->can_delete())
                                             <form method="GET"
-                                                action="{{ route('cash_receipts.destroy', $payment->id) }}">
+                                                action="{{ route('payments.destroy', $payment->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
                                                     data-toggle="tooltip" title='Delete'>
@@ -161,7 +162,7 @@
                                 @empty
                                 <tr>
                                     <td colspan="6">
-                                        No Cash Receipts Found ...
+                                        No Payments Found ...
                                     </td>
                                 </tr>
                                 @endforelse

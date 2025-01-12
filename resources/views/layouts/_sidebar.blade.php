@@ -136,12 +136,12 @@
             </li>
             @endcan
 
-            @can('cash_receipts.read')
+            @can('payments.read')
             <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('cash_receipts*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('cash_receipts') }}">
+                <a class="nav-link {{ request()->routeIs('payments*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('payments') }}">
                     <span><i class="fa-solid fa-money-bill"></i></span>
-                    Cash Receipts
+                    Payments
                 </a>
             </li>
             @endcan

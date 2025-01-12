@@ -24,7 +24,7 @@ class ExpenseController extends Controller
     {
         $expenses = Expense::select('id', 'title', 'type', 'date', 'user_id', 'amount', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
         $users = User::select('id', 'name')->get();
-        $currencies = Currency::select('id', 'name')->get();
+        $currencies = Currency::select('id', 'code')->get();
         $types = Helper::get_expense_types();
 
         $data = compact('expenses', 'users', 'currencies', 'types');
@@ -34,7 +34,7 @@ class ExpenseController extends Controller
     public function new()
     {
         $users = User::select('id', 'name')->get();
-        $currencies = Currency::select('id', 'name')->get();
+        $currencies = Currency::select('id', 'code')->get();
         $types = Helper::get_expense_types();
 
         $data = compact('users', 'currencies', 'types');
@@ -67,7 +67,7 @@ class ExpenseController extends Controller
     public function edit(Expense $expense)
     {
         $users = User::select('id', 'name')->get();
-        $currencies = Currency::select('id', 'name')->get();
+        $currencies = Currency::select('id', 'code')->get();
         $types = Helper::get_expense_types();
 
         $data = compact('expense', 'users', 'currencies', 'types');

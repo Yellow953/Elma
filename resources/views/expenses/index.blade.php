@@ -78,7 +78,7 @@
                                 @foreach ($currencies as $currency)
                                 <option value="{{ $currency->id }}" {{ $currency->id ==
                                     request()->query('currency_id') ?
-                                    'selected' : '' }}>{{ $currency->name }}</option>
+                                    'selected' : '' }}>{{ $currency->code }}</option>
                                 @endforeach
                             </select>
                         </div>
