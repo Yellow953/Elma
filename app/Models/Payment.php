@@ -27,11 +27,6 @@ class Payment extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function items()
-    {
-        return $this->hasMany(PaymentItem::class);
-    }
-
     // Permissions
     public function can_delete()
     {

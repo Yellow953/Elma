@@ -32,11 +32,6 @@ class CDNote extends Model
         return $this->belongsTo(Tax::class);
     }
 
-    public function items()
-    {
-        return $this->hasMany(CDNoteItem::class, 'cdnote_id');
-    }
-
     // Permissions
     public function can_delete()
     {

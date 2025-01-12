@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Client;
+use App\Models\Currency;
 use App\Models\Log;
 use App\Models\Payment;
-use App\Models\PaymentItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 
@@ -23,19 +23,20 @@ class CashReceiptController extends Controller
 
     public function index()
     {
-        $payments = Payment::select('id', 'payment_number', 'client_id', 'type', 'date')->where('type', 'LIKE', 'cash receipt')->filter()->orderBy('id', 'desc')->paginate(25);
+        $payments = Payment::select('id', 'payment_number', 'client_id', 'type', 'date', 'amount')->where('type', 'LIKE', 'cash receipt')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
-        $data = compact('payments', 'clients');
+        $currencies = Currency::select('id', 'name')->get();
 
+        $data = compact('payments', 'clients', 'currencies');
         return view('cash_receipts.index', $data);
     }
 
     public function new()
     {
         $clients = Client::select('id', 'name')->get();
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        $data = compact('clients', 'accounts');
+        $currencies = Currency::select('id', 'name')->get();
 
+        $data = compact('clients', 'currencies');
         return view('cash_receipts.new', $data);
     }
 
@@ -46,8 +47,7 @@ class CashReceiptController extends Controller
             'currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
             'date' => 'required|date',
-            'account_id.*' => 'required|exists:accounts,id',
-            'amount.*' => 'required|numeric',
+            'amount' => 'required|numeric',
         ]);
 
         $number = Payment::generate_number();
@@ -59,30 +59,18 @@ class CashReceiptController extends Controller
             'type' => 'cash receipt',
             'description' => $request->description,
             'date' => $request->date,
+            'amount' => $request->amount,
         ]);
 
-        $total = 0;
-
-        foreach ($request->input('account_id') as $key => $accountId) {
-            $amount = $request->input('amount')[$key];
-            $total += $amount;
-
-            PaymentItem::create([
-                'payment_id' => $payment->id,
-                'account_id' => $accountId,
-                'amount' => $amount,
-            ]);
-
-            // Account Debit transaction
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $accountId,
-                'currency_id' => $payment->currency_id,
-                'debit' => $amount,
-                'credit' => 0,
-                'balance' => $amount,
-            ]);
-        }
+        // Account Debit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $accountId,
+            'currency_id' => $payment->currency_id,
+            'debit' => $request->amount,
+            'credit' => 0,
+            'balance' => $request->amount,
+        ]);
 
         // Client Credit transaction
         $client = Client::find($request->client_id);
@@ -92,8 +80,8 @@ class CashReceiptController extends Controller
             'client_id' => $client->id,
             'currency_id' => $payment->currency_id,
             'debit' => 0,
-            'credit' => $total,
-            'balance' => (0 - $total),
+            'credit' => $request->amount,
+            'balance' => (0 - $request->amount),
         ]);
 
         $text = ucwords(auth()->user()->name) . " created new Cash Receipt : " . $payment->payment_number . ", datetime :   " . now();
@@ -104,14 +92,9 @@ class CashReceiptController extends Controller
 
     public function edit(Payment $payment)
     {
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
+        $currencies = Currency::select('id', 'name')->get();
 
-        $total = 0;
-        foreach ($payment->payment_items as $item) {
-            $total += $item->amount;
-        }
-
-        $data = compact('payment', 'accounts', 'total');
+        $data = compact('payment', 'currencies');
         return view('cash_receipts.edit', $data);
     }
 
@@ -121,51 +104,36 @@ class CashReceiptController extends Controller
             'currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
             'date' => 'required|date',
+            'amount' => 'required',
         ]);
 
         $payment->update([
             'currency_id' => $request->currency_id,
             'description' => $request->description,
             'date' => $request->date,
+            'amount' => $request->amount,
         ]);
 
-        $total = 0;
+        // Account Debit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $accountId,
+            'currency_id' => $payment->currency_id,
+            'debit' => $request->amount,
+            'credit' => 0,
+            'balance' => $request->amount,
+        ]);
 
-        if ($request->input('account_id')[0] != null) {
-            foreach ($request->input('account_id') as $key => $accountId) {
-                $amount = $request->input('amount')[$key];
-                $total += $amount;
-
-                PaymentItem::create([
-                    'payment_id' => $payment->id,
-                    'account_id' => $accountId,
-                    'amount' => $amount,
-                ]);
-
-                // Account Debit transaction
-                Transaction::create([
-                    'user_id' => auth()->user()->id,
-                    'account_id' => $accountId,
-                    'currency_id' => $payment->currency_id,
-                    'debit' => $amount,
-                    'credit' => 0,
-                    'balance' => $amount,
-                ]);
-            }
-        }
-
-        if ($total != 0) {
-            // Credit transaction
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $payment->client->receivable_account_id,
-                'client_id' => $payment->client_id,
-                'currency_id' => $payment->currency_id,
-                'debit' => 0,
-                'credit' => $total,
-                'balance' => 0 - $total,
-            ]);
-        }
+        // Credit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $payment->client->receivable_account_id,
+            'client_id' => $payment->client_id,
+            'currency_id' => $payment->currency_id,
+            'debit' => 0,
+            'credit' => $request->amount,
+            'balance' => 0 - $request->amount,
+        ]);
 
         $text = ucwords(auth()->user()->name) . ' updated Cash Receipt ' . $payment->payment_number . ", datetime :   " . now();
         Log::create(['text' => $text]);
@@ -175,13 +143,7 @@ class CashReceiptController extends Controller
 
     public function show(Payment $payment)
     {
-        $total = 0;
-
-        foreach ($payment->payment_items as $item) {
-            $total += $item->amount;
-        }
-
-        $data = compact('payment', 'total');
+        $data = compact('payment');
         return view('cash_receipts.show', $data);
     }
 

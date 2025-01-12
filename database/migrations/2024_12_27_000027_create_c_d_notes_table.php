@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('date');
             $table->unsignedBigInteger('currency_id');
             $table->string('type');
+            $table->double('amount')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
 

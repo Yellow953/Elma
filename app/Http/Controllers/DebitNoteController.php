@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\CDNote;
 use App\Models\CDNoteItem;
+use App\Models\Currency;
 use App\Models\Supplier;
 use App\Models\Log;
 use App\Models\Tax;
@@ -24,20 +25,20 @@ class DebitNoteController extends Controller
 
     public function index()
     {
-        $cdnotes = CDNote::select('id', 'cdnote_number', 'supplier_id', 'type', 'date')->where('type', 'debit note')->filter()->orderBy('id', 'desc')->paginate(25);
+        $cdnotes = CDNote::select('id', 'cdnote_number', 'supplier_id', 'type', 'date', 'amount')->where('type', 'debit note')->filter()->orderBy('id', 'desc')->paginate(25);
         $suppliers = Supplier::select('id', 'name')->get();
-        $data = compact('cdnotes', 'suppliers');
+        $currencies = Currency::select('id', 'name')->get();
 
+        $data = compact('cdnotes', 'suppliers', 'currencies');
         return view('debit_notes.index', $data);
     }
 
     public function new()
     {
         $suppliers = Supplier::select('id', 'name', 'tax_id')->get();
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
+        $currencies = Currency::select('id', 'name')->get();
 
-        $data = compact('suppliers', 'accounts');
-
+        $data = compact('suppliers', 'accounts', 'currencies');
         return view('debit_notes.new', $data);
     }
 
@@ -49,8 +50,7 @@ class DebitNoteController extends Controller
             'description' => 'required|string',
             'date' => 'required|date',
             'tax_id' => 'required',
-            'account_id.*' => 'required|exists:accounts,id',
-            'amount.*' => 'required|numeric',
+            'amount' => 'required|numeric',
         ]);
 
         $number = CDNote::generate_number('debit note');
@@ -63,48 +63,27 @@ class DebitNoteController extends Controller
             'description' => $request->description,
             'date' => $request->date,
             'tax_id' => $request->tax_id,
+            'amount' => $request->amount,
         ]);
 
-        $total = 0;
-        $total_tax = 0;
-
-        $tax = Tax::find($request->tax_id);
-
-        foreach ($request->input('account_id') as $key => $accountId) {
-            $amount = $request->input('amount')[$key];
-            $total += $amount;
-
-            CDNoteItem::create([
-                'cdnote_id' => $cdnote->id,
-                'account_id' => $accountId,
-                'amount' => $amount,
-                'tax' => $amount * $tax->rate / 100,
-            ]);
-
-            $total_tax += $amount * $tax->rate / 100;
-
-            // Account Credit transaction
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $accountId,
-                'currency_id' => $cdnote->currency_id,
-                'debit' => 0,
-                'credit' => $amount,
-                'balance' => 0 - $amount,
-            ]);
-        }
-
-        if ($total_tax != 0) {
-            // Tax Credit transaction
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $tax->account_id,
-                'currency_id' => $cdnote->currency_id,
-                'debit' => 0,
-                'credit' => $total_tax,
-                'balance' => 0 - $total_tax,
-            ]);
-        }
+        // Account Credit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $accountId,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => 0,
+            'credit' => $amount,
+            'balance' => 0 - $amount,
+        ]);
+        // Tax Credit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $tax->account_id,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => 0,
+            'credit' => $total_tax,
+            'balance' => 0 - $total_tax,
+        ]);
 
         // Supplier Debit transaction
         $supplier = Supplier::find($request->supplier_id);
@@ -126,19 +105,7 @@ class DebitNoteController extends Controller
 
     public function edit(CDNote $cdnote)
     {
-        $accounts = Account::select('id', 'account_number', 'account_description')->get();
-
-        $total = 0;
-        $total_tax = 0;
-        $total_after_tax = 0;
-        foreach ($cdnote->cdnote_items as $item) {
-            $total += $item->amount;
-            $total_tax += $item->tax;
-            $total_after_tax += $item->tax;
-        }
-
-        $data = compact('cdnote', 'accounts', 'total', 'total_tax', 'total_after_tax');
-
+        $data = compact('cdnote');
         return view('debit_notes.edit', $data);
     }
 
@@ -149,6 +116,7 @@ class DebitNoteController extends Controller
             'description' => 'required|string',
             'date' => 'required|date',
             'tax_id' => 'required',
+            'amount' => 'required|numeric',
         ]);
 
         $cdnote->update([
@@ -156,63 +124,40 @@ class DebitNoteController extends Controller
             'description' => $request->description,
             'date' => $request->date,
             'tax_id' => $request->tax_id,
+            'amount' => $request->amount,
         ]);
 
         $total = 0;
         $total_tax = 0;
 
-        $tax = $cdnote->tax;
-
-        if ($request->input('account_id')[0] != null) {
-            foreach ($request->input('account_id') as $key => $accountId) {
-                $amount = $request->input('amount')[$key];
-                $total += $amount;
-
-                CDNoteItem::create([
-                    'cdnote_id' => $cdnote->id,
-                    'account_id' => $accountId,
-                    'amount' => $amount,
-                    'tax' => $amount * $tax->rate / 100,
-                ]);
-
-                $total_tax += $amount * $tax->rate / 100;
-
-                // Account Credit transaction
-                Transaction::create([
-                    'user_id' => auth()->user()->id,
-                    'account_id' => $accountId,
-                    'currency_id' => $cdnote->currency_id,
-                    'debit' => 0,
-                    'credit' => $amount,
-                    'balance' => 0 - $amount,
-                ]);
-            }
-        }
-
-        if ($total_tax != 0) {
-            // Tax Credit transaction
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $tax->account_id,
-                'currency_id' => $cdnote->currency_id,
-                'debit' => 0,
-                'credit' => $total_tax,
-                'balance' => 0 - $total_tax,
-            ]);
-        }
-
-        if ($total != 0) {
-            // Supplier Debit transaction
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $cdnote->supplier->payable_account_id,
-                'supplier_id' => $cdnote->supplier_id,
-                'currency_id' => $cdnote->currency_id,
-                'debit' => ($total + $total_tax),
-                'credit' => 0,
-                'balance' => ($total + $total_tax),
-            ]);
-        }
+        // Account Credit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $accountId,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => 0,
+            'credit' => $amount,
+            'balance' => 0 - $amount,
+        ]);
+        // Tax Credit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $tax->account_id,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => 0,
+            'credit' => $total_tax,
+            'balance' => 0 - $total_tax,
+        ]);
+        // Supplier Debit transaction
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $cdnote->supplier->payable_account_id,
+            'supplier_id' => $cdnote->supplier_id,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => ($total + $total_tax),
+            'credit' => 0,
+            'balance' => ($total + $total_tax),
+        ]);
 
         $text = ucwords(auth()->user()->name) . ' updated Debit Note ' . $cdnote->cdnote_number . ", datetime :   " . now();
         Log::create(['text' => $text]);
@@ -222,37 +167,8 @@ class DebitNoteController extends Controller
 
     public function show(CDNote $cdnote)
     {
-        $total = 0;
-        $total_tax = 0;
-        $total_after_tax = 0;
-
-        foreach ($cdnote->cdnote_items as $item) {
-            $total += $item->amount;
-            $total_tax += $item->tax;
-        }
-        $total_after_tax = $total + $total_tax;
-
-        $data = compact('cdnote', 'total', 'total_tax', 'total_after_tax');
+        $data = compact('cdnote');
         return view('debit_notes.show', $data);
-    }
-
-    public function items(CDNote $cdnote)
-    {
-        $items = $cdnote->cdnote_items;
-
-        $customizedItems = [];
-        $index = 0;
-        foreach ($items as $item) {
-            $customizedItem = [
-                'id' => $item->id,
-                'name' => $item->account->account_number,
-                'quantity' => $item->amount,
-            ];
-            $customizedItems[] = $customizedItem;
-            $index++;
-        }
-
-        return response()->json($customizedItems);
     }
 
     public function destroy(CDNote $cdnote)
