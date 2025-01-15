@@ -8,6 +8,7 @@ use App\Models\Currency;
 use App\Models\Log;
 use App\Models\Payment;
 use App\Models\Transaction;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -23,7 +24,7 @@ class PaymentController extends Controller
 
     public function index()
     {
-        $payments = Payment::select('id', 'payment_number', 'client_id', 'type', 'date', 'amount')->where('type', 'LIKE', 'payment')->filter()->orderBy('id', 'desc')->paginate(25);
+        $payments = Payment::select('id', 'payment_number', 'client_id', 'type', 'date', 'amount', 'currency_id')->where('type', 'LIKE', 'payment')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
         $currencies = Currency::select('id', 'code')->get();
 
@@ -51,6 +52,7 @@ class PaymentController extends Controller
         ]);
 
         $number = Payment::generate_number();
+        $client = Client::find($request->client_id);
 
         $payment = Payment::create([
             'payment_number' => $number,
@@ -62,29 +64,30 @@ class PaymentController extends Controller
             'amount' => $request->amount,
         ]);
 
-        // Account Debit transaction
+        // Debit: Receivable Account
+        $receivable_account = Account::findOrFail(Variable::where('title', 'receivable_account')->first()->value);
         Transaction::create([
-            'user_id' => auth()->user()->id,
-            'account_id' => $accountId,
-            'currency_id' => $payment->currency_id,
+            'user_id' => auth()->id(),
+            'account_id' => $receivable_account->id,
+            'client_id' => $client->id,
+            'currency_id' => $request->currency_id,
             'debit' => $request->amount,
             'credit' => 0,
+            'balance' => 0 - $request->amount,
+        ]);
+
+        // Credit: Cash Account
+        $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
+        Transaction::create([
+            'user_id' => auth()->id(),
+            'account_id' => $cash_account->id,
+            'currency_id' => $request->currency_id,
+            'debit' => 0,
+            'credit' => $request->amount,
             'balance' => $request->amount,
         ]);
 
-        // Client Credit transaction
-        $client = Client::find($request->client_id);
-        Transaction::create([
-            'user_id' => auth()->user()->id,
-            'account_id' => $client->receivable_account_id,
-            'client_id' => $client->id,
-            'currency_id' => $payment->currency_id,
-            'debit' => 0,
-            'credit' => $request->amount,
-            'balance' => (0 - $request->amount),
-        ]);
-
-        $text = ucwords(auth()->user()->name) . " created new payment : " . $payment->payment_number . ", datetime :   " . now();
+        $text = ucwords(auth()->user()->name) . " created new Payment : " . $payment->payment_number . ", datetime :   " . now();
         Log::create(['text' => $text]);
 
         return redirect()->route('payments')->with('success', 'payment created successfully!');

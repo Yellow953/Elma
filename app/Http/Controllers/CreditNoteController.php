@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\CDNote;
-use App\Models\CDNoteItem;
 use App\Models\Client;
 use App\Models\Currency;
 use App\Models\Log;
 use App\Models\Tax;
 use App\Models\Transaction;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class CreditNoteController extends Controller
@@ -25,7 +25,7 @@ class CreditNoteController extends Controller
 
     public function index()
     {
-        $cdnotes = CDNote::select('id', 'cdnote_number', 'client_id', 'type', 'date', 'amount')->where('type', 'credit note')->filter()->orderBy('id', 'desc')->paginate(25);
+        $cdnotes = CDNote::select('id', 'cdnote_number', 'client_id', 'type', 'date', 'amount', 'currency_id')->where('type', 'credit note')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
         $currencies = Currency::select('id', 'code')->get();
 
@@ -53,40 +53,40 @@ class CreditNoteController extends Controller
             'tax_id' => 'required|exists:taxes,id',
             'amount' => 'required|numeric|min:0',
         ]);
-    
+
         $number = CDNote::generate_number('credit note');
-    
-        DB::transaction(function () use ($request, $number) {
-            // Create the credit note
-            $cdnote = CDNote::create([
-                'cdnote_number' => $number,
-                'client_id' => $request->client_id,
-                'currency_id' => $request->currency_id,
-                'type' => 'credit note',
-                'description' => $request->description,
-                'date' => $request->date,
-                'tax_id' => $request->tax_id,
-                'amount' => $request->amount,
-            ]);
-    
-            // Calculate tax and total
-            $tax = Tax::findOrFail($request->tax_id);
-            $tax_rate = $tax->rate / 100;
-            $amount = $request->amount;
-            $total_tax = $amount * $tax_rate;
-            $total = $amount; // Net amount before tax
-    
-            // Expense Debit Transaction
-            $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $expense_account->id,
-                'currency_id' => $cdnote->currency_id,
-                'debit' => $amount,
-                'credit' => 0,
-                'balance' => $amount,
-            ]);
-    
+
+        // Create the credit note
+        $cdnote = CDNote::create([
+            'cdnote_number' => $number,
+            'client_id' => $request->client_id,
+            'currency_id' => $request->currency_id,
+            'type' => 'credit note',
+            'description' => $request->description,
+            'date' => $request->date,
+            'tax_id' => $request->tax_id,
+            'amount' => $request->amount,
+        ]);
+
+        // Calculate tax and total
+        $tax = Tax::findOrFail($request->tax_id);
+        $tax_rate = $tax->rate / 100;
+        $amount = $request->amount;
+        $total_tax = $amount * $tax_rate;
+        $total = $amount; // Net amount before tax
+
+        // Expense Debit Transaction
+        $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $expense_account->id,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => $amount,
+            'credit' => 0,
+            'balance' => $amount,
+        ]);
+
+        if ($total_tax != 0) {
             // Tax Debit Transaction
             Transaction::create([
                 'user_id' => auth()->user()->id,
@@ -96,27 +96,27 @@ class CreditNoteController extends Controller
                 'credit' => 0,
                 'balance' => $total_tax,
             ]);
-    
-            // Client Credit Transaction
-            $client = Client::findOrFail($request->client_id);
-            $receivable_account = Account::findOrFail(Variable::where('title','receivable_account')->first()->value);
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $receivable_account->id,
-                'client_id' => $client->id,
-                'currency_id' => $cdnote->currency_id,
-                'debit' => 0,
-                'credit' => ($amount + $total_tax),
-                'balance' => 0 - ($amount + $total_tax),
-            ]);
-    
-            // Log creation
-            $text = ucwords(auth()->user()->name) . " created new Credit Note: " . $cdnote->cdnote_number . ", datetime: " . now();
-            Log::create(['text' => $text]);
-        });
-    
+        }
+
+        // Client Credit Transaction
+        $client = Client::findOrFail($request->client_id);
+        $receivable_account = Account::findOrFail(Variable::where('title', 'receivable_account')->first()->value);
+        Transaction::create([
+            'user_id' => auth()->user()->id,
+            'account_id' => $receivable_account->id,
+            'client_id' => $client->id,
+            'currency_id' => $cdnote->currency_id,
+            'debit' => 0,
+            'credit' => ($amount + $total_tax),
+            'balance' => 0 - ($amount + $total_tax),
+        ]);
+
+        // Log creation
+        $text = ucwords(auth()->user()->name) . " created new Credit Note: " . $cdnote->cdnote_number . ", datetime: " . now();
+        Log::create(['text' => $text]);
+
         return redirect()->route('credit_notes')->with('success', 'Credit Note created successfully!');
-    }    
+    }
 
     public function edit(CDNote $cdnote)
     {
@@ -135,7 +135,7 @@ class CreditNoteController extends Controller
             'description' => $request->description,
             'date' => $request->date,
         ]);
-    
+
         $text = ucwords(auth()->user()->name) . ' updated Credit Note ' . $cdnote->cdnote_number . ", datetime :   " . now();
         Log::create(['text' => $text]);
 

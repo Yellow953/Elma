@@ -27,8 +27,8 @@
                     <div class="w-100">
                         <label for="cdnote_number">Number</label>
                         <div>
-                            <input type="text" class="form-control border" name="cdnote_number" placeholder="C/D Note Number"
-                                value="{{request()->query('cdnote_number')}}">
+                            <input type="text" class="form-control border" name="cdnote_number"
+                                placeholder="C/D Note Number" value="{{request()->query('cdnote_number')}}">
                         </div>
                     </div>
                 </div>
@@ -145,7 +145,7 @@
                                             @endcan
 
                                             @can('debit_notes.delete')
-                                            @if ($debit_note->can_delete())
+                                            @if ($cdnote->can_delete())
                                             <form method="GET" action="{{ route('debit_notes.destroy', $cdnote->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"

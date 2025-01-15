@@ -20,9 +20,10 @@ class SettingsController extends Controller
         $revenue_account = Variable::where('title', 'revenue_account')->first();
         $receivable_account = Variable::where('title', 'receivable_account')->first();
         $payable_account = Variable::where('title', 'payable_account')->first();
+        $cash_account = Variable::where('title', 'cash_account')->first();
         $accounts = Account::select('id', 'account_number', 'account_description')->get();
 
-        $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account');
+        $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account', 'cash_account');
         return view('settings.index', $data);
     }
 
@@ -30,6 +31,10 @@ class SettingsController extends Controller
     {
         $request->validate([
             'expense_account_id' => 'required',
+            'revenue_account_id' => 'required',
+            'receivable_account_id' => 'required',
+            'payable_account_id' => 'required',
+            'cash_account_id' => 'required',
         ]);
 
         if ($request->expense_account_id) {
@@ -53,6 +58,12 @@ class SettingsController extends Controller
         if ($request->payable_account_id) {
             Variable::where('name', 'payable_account')->first()->update([
                 'value' => $request->payable_account_id
+            ]);
+        }
+
+        if ($request->cash_account_id) {
+            Variable::where('name', 'cash_account')->first()->update([
+                'value' => $request->cash_account_id
             ]);
         }
 

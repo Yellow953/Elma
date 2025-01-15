@@ -20,8 +20,7 @@
 
                     <div class="col-md-6">
                         <input id="date" type="date" class="form-control @error('date') is-invalid @enderror"
-                            name="date" required value="{{ $cd
-                            note->date }}">
+                            name="date" required value="{{ $cdnote->date }}">
 
                         @error('date')
                         <span class="invalid-feedback" role="alert">
@@ -36,9 +35,9 @@
                         }}</label>
 
                     <div class="col-md-6">
-                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror"
-                            name="description" required value="{{ $cd
-                            note->description }}">
+                        <input id="description" type="text"
+                            class="form-control @error('description') is-invalid @enderror" name="description" required
+                            value="{{ $cdnote->description }}">
 
                         @error('description')
                         <span class="invalid-feedback" role="alert">
@@ -47,7 +46,7 @@
                         @enderror
                     </div>
                 </div>
-                
+
                 <div class="d-flex align-items-center justify-content-around mt-3">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
                     <button type="submit" class="btn btn-info">Submit</button>

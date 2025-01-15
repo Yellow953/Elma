@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\CDNote;
-use App\Models\CDNoteItem;
 use App\Models\Currency;
 use App\Models\Supplier;
 use App\Models\Log;
 use App\Models\Tax;
 use App\Models\Transaction;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class DebitNoteController extends Controller
@@ -25,7 +25,7 @@ class DebitNoteController extends Controller
 
     public function index()
     {
-        $cdnotes = CDNote::select('id', 'cdnote_number', 'supplier_id', 'type', 'date', 'amount')->where('type', 'debit note')->filter()->orderBy('id', 'desc')->paginate(25);
+        $cdnotes = CDNote::select('id', 'cdnote_number', 'supplier_id', 'type', 'date', 'amount', 'currency_id')->where('type', 'debit note')->filter()->orderBy('id', 'desc')->paginate(25);
         $suppliers = Supplier::select('id', 'name')->get();
         $currencies = Currency::select('id', 'code')->get();
 
@@ -74,9 +74,9 @@ class DebitNoteController extends Controller
         ]);
 
         $supplier = Supplier::findOrFail($request->supplier_id);
-        
+
         // Supplier Payable Account (Credit)
-        $payable_account = Account::findOrFail(Variable::where('title','payable_account')->first()->value);
+        $payable_account = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->user()->id,
             'account_id' => $payable_account->id,
@@ -91,22 +91,24 @@ class DebitNoteController extends Controller
         $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->user()->id,
-            'account_id' => $expenseAccountId,
+            'account_id' => $expense_account->id,
             'currency_id' => $cdnote->currency_id,
             'debit' => $amount,
             'credit' => 0,
             'balance' => $amount,
         ]);
 
-        // Tax Account (Debit)
-        Transaction::create([
-            'user_id' => auth()->user()->id,
-            'account_id' => $tax->account_id,
-            'currency_id' => $cdnote->currency_id,
-            'debit' => $total_tax,
-            'credit' => 0,
-            'balance' => $total_tax,
-        ]);
+        if ($total_tax != 0) {
+            // Tax Account (Debit)
+            Transaction::create([
+                'user_id' => auth()->user()->id,
+                'account_id' => $tax->account_id,
+                'currency_id' => $cdnote->currency_id,
+                'debit' => $total_tax,
+                'credit' => 0,
+                'balance' => $total_tax,
+            ]);
+        }
 
         // Log the creation of the Debit Note
         $text = ucwords(auth()->user()->name) . " created new Debit Note: " . $cdnote->cdnote_number . ", datetime: " . now();

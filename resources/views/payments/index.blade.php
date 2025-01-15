@@ -27,8 +27,8 @@
                     <div class="w-100">
                         <label for="payment_number">Number</label>
                         <div>
-                            <input type="text" class="form-control border" name="payment_number" placeholder="Payment Number"
-                                value="{{request()->query('payment_number')}}">
+                            <input type="text" class="form-control border" name="payment_number"
+                                placeholder="Payment Number" value="{{request()->query('payment_number')}}">
                         </div>
                     </div>
                 </div>
@@ -145,9 +145,8 @@
                                             @endcan
 
                                             @can('payments.delete')
-                                            @if ($cash_receipt->can_delete())
-                                            <form method="GET"
-                                                action="{{ route('payments.destroy', $payment->id) }}">
+                                            @if ($payment->can_delete())
+                                            <form method="GET" action="{{ route('payments.destroy', $payment->id) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger show_confirm btn-custom"
                                                     data-toggle="tooltip" title='Delete'>
