@@ -97,22 +97,23 @@ class ReceiptController extends Controller
 
         $totalCostAfterVAT = $totalItemCost + $totalTax;
 
-        // Expense Debit
-        $expenseAccount = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-        $this->createTransaction($expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
+        // Cash Credit
+        $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
+        $this->createTransaction($cashAccount->id, 0, $totalCostAfterVAT - $totalTax, $receipt);
 
-        // Tax Debit
+        // Tax Credit
         if($totalTax != 0){
             $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-            $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
+            $this->createTransaction($taxAccount->id, 0, $totalTax, $receipt);
         }
 
-        // Supplier Credit
+        // Supplier Debit
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);
+        $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
         $this->createTransaction(
-            $supplier->payable_account_id,
-            0,
+            $payableAccount->id,
             $totalCostAfterVAT,
+            0,
             $receipt,
             $supplier->id
         );
@@ -128,18 +129,7 @@ class ReceiptController extends Controller
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
 
-        $total = 0;
-        $total_after_tax = 0;
-        $total_tax = 0;
-
-        foreach ($receipt->receipt_items as $item) {
-            $total += $item->total_cost;
-            $total_tax += $item->vat;
-            $total_after_tax += $item->total_cost_after_vat;
-        }
-
-        $data = compact('receipt', 'items', 'taxes', 'suppliers', 'total', 'total_after_tax', 'total_tax');
-
+        $data = compact('receipt', 'items', 'taxes', 'suppliers');
         return view('receipts.edit', $data);
     }
 
@@ -190,18 +180,21 @@ class ReceiptController extends Controller
 
         $totalCostAfterVAT = $totalItemCost + $totalTax;
 
-        // Expense Debit
-        $expenseAccount = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-        $this->createTransaction($expenseAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
+        // Cash Debit
+        $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
+        $this->createTransaction($cashAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
 
         // Tax Debit
-        $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-        $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
+        if($totalTax != 0){
+            $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
+            $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
+        }
 
         // Supplier Credit
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);
+        $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
         $this->createTransaction(
-            $supplier->payable_account_id,
+            $payableAccount->id,
             0,
             $totalCostAfterVAT,
             $receipt,
@@ -216,17 +209,7 @@ class ReceiptController extends Controller
 
     public function show(Receipt $receipt)
     {
-        $total = 0;
-        $total_tax = 0;
-        $total_after_tax = 0;
-
-        foreach ($receipt->receipt_items as $item) {
-            $total += $item->total_cost;
-            $total_tax += $item->vat;
-            $total_after_tax += $item->total_cost_after_vat;
-        }
-
-        $data = compact('receipt', 'total', 'total_tax', 'total_after_tax');
+        $data = compact('receipt');
         return view('receipts.show', $data);
     }
 

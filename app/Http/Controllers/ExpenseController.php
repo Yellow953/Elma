@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
+use App\Models\Account;
 use App\Models\Currency;
 use App\Models\Expense;
 use App\Models\Log;
 use App\Models\User;
+use App\Models\Transaction;
+use App\Models\Variable;
 use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
@@ -56,6 +59,28 @@ class ExpenseController extends Controller
         $expense = Expense::create(
             $request->all()
         );
+
+        // Expense Transaction
+        $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+        Transaction::create([
+            'user_id' => auth()->id(),
+            'account_id' => $expense_account->id,
+            'currency_id' => $request->currency_id,
+            'debit' => $request->amount,
+            'credit' => 0,
+            'balance' => $request->amount,
+        ]);
+
+        // Cash Transaction
+        $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
+        Transaction::create([
+            'user_id' => auth()->id(),
+            'account_id' => $cash_account->id,
+            'currency_id' => $request->currency_id,
+            'debit' => 0,
+            'credit' => $request->amount,
+            'balance' => -$request->amount,
+        ]);
 
         // Log the creation
         $text = ucwords(auth()->user()->name) . " created new Expense: " . $expense->title . ", datetime: " . now();

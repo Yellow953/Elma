@@ -75,11 +75,11 @@ class CreditNoteController extends Controller
         $total_tax = $amount * $tax_rate;
         $total = $amount; // Net amount before tax
 
-        // Expense Debit Transaction
-        $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+        // Revenue Debit Transaction
+        $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->user()->id,
-            'account_id' => $expense_account->id,
+            'account_id' => $revenue_account->id,
             'currency_id' => $cdnote->currency_id,
             'debit' => $amount,
             'credit' => 0,

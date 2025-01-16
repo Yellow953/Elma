@@ -114,6 +114,17 @@ class InvoiceController extends Controller
                     'account_id' => $supplier_account->id,
                     'supplier_id' => $supplier_id,
                     'currency_id' => $invoice->currency_id,
+                    'debit' => 0,
+                    'credit' => $line_total_after_tax,
+                    'balance' => -$line_total_after_tax,
+                ]);
+
+                // Expense Transaction
+                $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+                Transaction::create([
+                    'user_id' => auth()->id(),
+                    'account_id' => $expense_account->id,
+                    'currency_id' => $invoice->currency_id,
                     'debit' => $line_total_after_tax,
                     'credit' => 0,
                     'balance' => $line_total_after_tax,
@@ -138,20 +149,20 @@ class InvoiceController extends Controller
             'account_id' => $receivable_account->id,
             'client_id' => $invoice->client_id,
             'currency_id' => $invoice->currency_id,
-            'debit' => 0,
-            'credit' => $total_after_tax,
-            'balance' => -$total_after_tax,
+            'debit' => $total_after_tax,
+            'credit' => 0,
+            'balance' => $total_after_tax,
         ]);
 
-        // Expense Transaction
-        $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+        // Revenue Transaction
+        $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
-            'account_id' => $expense_account->id,
+            'account_id' => $revenue_account->id,
             'currency_id' => $invoice->currency_id,
-            'debit' => $total_after_tax + $total_tax,
-            'credit' => 0,
-            'balance' => $total_after_tax + $total_tax,
+            'debit' => 0,
+            'credit' => $total_after_tax + $total_tax,
+            'balance' => -$total_after_tax + $total_tax,
         ]);
 
         Log::create([

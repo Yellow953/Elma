@@ -64,26 +64,26 @@ class PaymentController extends Controller
             'amount' => $request->amount,
         ]);
 
-        // Debit: Receivable Account
+        // Receivable Account
         $receivable_account = Account::findOrFail(Variable::where('title', 'receivable_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $receivable_account->id,
             'client_id' => $client->id,
             'currency_id' => $request->currency_id,
-            'debit' => $request->amount,
-            'credit' => 0,
-            'balance' => $request->amount,
+            'debit' => 0,
+            'credit' => $request->amount,
+            'balance' => -$request->amount,
         ]);
 
-        // Credit: Cash Account
+        // Cash Account
         $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $cash_account->id,
             'currency_id' => $request->currency_id,
-            'debit' => 0,
-            'credit' => $request->amount,
+            'debit' => $request->amount,
+            'credit' => 0,
             'balance' => $request->amount,
         ]);
 

@@ -69,50 +69,6 @@
             @endcan
 
             <li class="nav-item mt-3">
-                <h6 class="title-sub-nav">Purchase</h6>
-            </li>
-
-            @can('purchase_orders.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('purchase_orders*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('purchase_orders') }}">
-                    <span><i class="fa-solid fa-folder"></i></span>
-                    Purchase Orders
-                </a>
-            </li>
-            @endcan
-
-            @can('receipts.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('receipts*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('receipts') }}">
-                    <span><i class="fa-solid fa-receipt"></i></span>
-                    Receipts
-                </a>
-            </li>
-            @endcan
-
-            @can('expenses.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('expenses*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('expenses') }}">
-                    <span><i class="fa-solid fa-money-bill"></i></span>
-                    Expenses
-                </a>
-            </li>
-            @endcan
-
-            @can('debit_notes.read')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('debit_notes*') ? 'active bg-gradient-info' : '' }}"
-                    href="{{ route('debit_notes') }}">
-                    <span><i class="fa-solid fa-percent"></i></span>
-                    Debit Notes
-                </a>
-            </li>
-            @endcan
-
-            <li class="nav-item mt-3">
                 <h6 class="title-sub-nav">Sales</h6>
             </li>
 
@@ -152,6 +108,50 @@
                     href="{{ route('credit_notes') }}">
                     <span><i class="fa-solid fa-percent"></i></span>
                     Credit Notes
+                </a>
+            </li>
+            @endcan
+
+            <li class="nav-item mt-3">
+                <h6 class="title-sub-nav">Purchase</h6>
+            </li>
+
+            @can('purchase_orders.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('purchase_orders*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('purchase_orders') }}">
+                    <span><i class="fa-solid fa-folder"></i></span>
+                    Purchase Orders
+                </a>
+            </li>
+            @endcan
+
+            @can('receipts.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('receipts*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('receipts') }}">
+                    <span><i class="fa-solid fa-receipt"></i></span>
+                    Receipts
+                </a>
+            </li>
+            @endcan
+
+            @can('expenses.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('expenses*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('expenses') }}">
+                    <span><i class="fa-solid fa-money-bill"></i></span>
+                    Expenses
+                </a>
+            </li>
+            @endcan
+
+            @can('debit_notes.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('debit_notes*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('debit_notes') }}">
+                    <span><i class="fa-solid fa-percent"></i></span>
+                    Debit Notes
                 </a>
             </li>
             @endcan

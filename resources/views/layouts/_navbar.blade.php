@@ -5,8 +5,7 @@
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fa fa-dashboard"></i>
                         Dashboard</a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route(View::yieldContent('title')) }}">{{
-                        Helper::format_text(View::yieldContent('title')) }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route(View::yieldContent('title')) }}">{{ Helper::format_text(View::yieldContent('title')) }}</a></li>
                 @if (!empty(View::yieldContent('sub-title')))
                 <li class="breadcrumb-item">{{ Helper::format_text(View::yieldContent('sub-title')) }}</li>
                 @endif

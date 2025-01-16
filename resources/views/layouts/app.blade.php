@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Elma | @yield('title')</title>
+    <title>Elma | {{ Helper::format_text(View::yieldContent('title')) }}</title>
 
     <link rel="shortcut icon" href="{{ asset('assets/images/logo.png') }}" type="image/x-icon">
 
@@ -69,8 +69,6 @@
 
         @yield('content')
     </main>
-
-    @include('layouts._sidedrawer')
 
     <!--   Core JS Files   -->
     <script src="{{asset('assets/js/material-dashboard.js')}}"></script>
