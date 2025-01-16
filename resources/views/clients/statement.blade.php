@@ -34,6 +34,7 @@
                         <table class="table table-striped">
                             <thead class="text-center">
                                 <tr style="font-size: 0.9rem">
+                                    <th>Description</th>
                                     <th>Date</th>
                                     <th>Currency</th>
                                     <th>Debit</th>
@@ -44,6 +45,7 @@
                             <tbody class="text-center">
                                 @forelse ($client->transactions as $transaction)
                                 <tr>
+                                    <td></td>    
                                     <td>{{ $transaction->created_at->format('Y/m/d') }}</td>
                                     <td>{{ $transaction->currency->code }}</td>
                                     <td>{{ number_format($transaction->debit, 2) }}</td>
@@ -53,13 +55,13 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="5">No Transactions Yet</td>
+                                    <td colspan="6">No Transactions Yet</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                             <tfoot class="text-center">
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2">Total</th>
+                                    <th colspan="3">Total</th>
                                     <th>{{ number_format($total_debit, 2) }}</th>
                                     <th>{{ number_format($total_credit, 2) }}</th>
                                     <th>{{ number_format($total_balance, 2) }}</th>

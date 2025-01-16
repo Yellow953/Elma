@@ -73,7 +73,7 @@ class PaymentController extends Controller
             'currency_id' => $request->currency_id,
             'debit' => $request->amount,
             'credit' => 0,
-            'balance' => 0 - $request->amount,
+            'balance' => $request->amount,
         ]);
 
         // Credit: Cash Account

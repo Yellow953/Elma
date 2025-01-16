@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Client;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItem;
@@ -200,8 +201,9 @@ class SalesOrderController extends Controller
         $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
+        $currencies = Helper::get_currencies();
 
-        $data = compact('clients', 'items', 'taxes', 'sales_order', 'suppliers');
+        $data = compact('clients', 'items', 'taxes', 'sales_order', 'suppliers', 'currencies');
         return view('invoices.new', $data);
     }
 

@@ -90,7 +90,7 @@ class ShipmentController extends Controller
         ]);
 
         $salesOrderItems = [];
-        $groupedPurchaseOrderItems = []; // Group by supplier_id
+        $groupedPurchaseOrderItems = [];
 
         foreach ($request['items'] as $item) {
             $shipmentItem = ShipmentItem::create([
@@ -122,7 +122,6 @@ class ShipmentController extends Controller
             }
         }
 
-        // Create Sales Order
         if (!empty($salesOrderItems)) {
             $salesOrder = SalesOrder::create([
                 'so_number' => SalesOrder::generate_so_number(),
@@ -140,7 +139,6 @@ class ShipmentController extends Controller
             }
         }
 
-        // Create Purchase Orders for each supplier
         foreach ($groupedPurchaseOrderItems as $supplierId => $items) {
             $purchaseOrder = PurchaseOrder::create([
                 'po_number' => PurchaseOrder::generate_po_number(),
@@ -158,7 +156,6 @@ class ShipmentController extends Controller
             }
         }
 
-        // Log the creation
         $text = ucwords(auth()->user()->name) . " created new Shipment: " . $shipment->shipment_number . ", datetime: " . now();
         Log::create(['text' => $text]);
 

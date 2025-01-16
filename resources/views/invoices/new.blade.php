@@ -5,21 +5,9 @@
 @section('sub-title', 'new')
 
 @section('content')
-
-@php
-$currencies = Helper::get_currencies();
-@endphp
-
 <link rel="stylesheet" href="{{ asset('assets/css/stepper.css') }}">
 
 <div class="inner-container w-100 m-0">
-    <div class="d-flex justify-content-around">
-        <a href="{{ route('items.new') }}" class="btn btn-info px-3 py-2 mx-1">
-            <i class="fa-solid fa-plus"></i> Item</a>
-        <a href="{{ route('clients.new') }}" class="btn btn-info px-3 py-2 mx-1">
-            <i class="fa-solid fa-plus"></i> Client</a>
-    </div>
-
     <div class="inner-container w-100 m-0 px-4 px-md-5 pt-3">
         <div class="card">
             <div class="card-header bg-info border-b">
@@ -344,8 +332,7 @@ $currencies = Helper::get_currencies();
 
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
             var total_price = parseFloat(row.querySelector('input[name^="total_price"]').value) || 0;
-            var rate = parseFloat(document.querySelector('#rate').value) || 0;
-
+            
             total += total_price;
             total_tax += total_price * tax_rate;
             total_after_tax += total_price + (total_price * tax_rate);
@@ -360,6 +347,12 @@ $currencies = Helper::get_currencies();
         var itemId = data.item_id;
         var selectElement = $(row).find('select[name^="item_id"]');
         selectElement.val(itemId).trigger('change');
+
+        if(data.supplier_id != 0){
+            var supplierId = data.supplier_id;
+            var selectElement1 = $(row).find('select[name^="supplier_id"]');
+            selectElement1.val(supplierId).trigger('change');
+        }
 
         row.querySelector('input[name^="quantity"]').value = data.quantity;
         // row.querySelector('input[name^="unit_cost"]').value = ;
@@ -486,6 +479,7 @@ $currencies = Helper::get_currencies();
     @foreach($sales_order->shipment->items as $sales_order_item)
         addSOItems({
             item_id: {{ $sales_order_item->item_id }},
+            supplier_id: {{ $sales_order_item->supplier_id ?? 0 }},
             quantity: {{ $sales_order_item->quantity }},
             // unit_cost: {{ $sales_order_item->item->unit_cost }},
             unit_price: {{ $sales_order_item->item->unit_price }},

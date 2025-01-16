@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Account;
 use App\Models\Client;
 use App\Models\Invoice;
@@ -40,8 +41,9 @@ class InvoiceController extends Controller
         $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
+        $currencies = Helper::get_currencies();
 
-        $data = compact('clients', 'items', 'taxes', 'suppliers');
+        $data = compact('clients', 'items', 'taxes', 'suppliers', 'currencies');
         return view('invoices.new', $data);
     }
 
@@ -105,29 +107,16 @@ class InvoiceController extends Controller
             $total_after_tax += $line_total_after_tax;
 
             if ($supplier_id) {
-                $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-
-                // Expense Transaction
-                Transaction::create([
-                    'user_id' => auth()->id(),
-                    'account_id' => $expense_account->id,
-                    'currency_id' => $invoice->currency_id,
-                    'debit' => $line_total_after_tax,
-                    'credit' => 0,
-                    'balance' => $line_total_after_tax,
-                ]);
-
                 // Supplier Payable Transaction
                 $supplier_account = Supplier::find($supplier_id)->payable_account;
-
                 Transaction::create([
                     'user_id' => auth()->id(),
                     'account_id' => $supplier_account->id,
                     'supplier_id' => $supplier_id,
                     'currency_id' => $invoice->currency_id,
-                    'debit' => 0,
-                    'credit' => $line_total_after_tax,
-                    'balance' => -$line_total_after_tax,
+                    'debit' => $line_total_after_tax,
+                    'credit' => 0,
+                    'balance' => $line_total_after_tax,
                 ]);
             }
         }
@@ -144,27 +133,25 @@ class InvoiceController extends Controller
 
         // Client Receivable Transaction
         $receivable_account = $invoice->client->receivable_account;
-
         Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $receivable_account->id,
             'client_id' => $invoice->client_id,
             'currency_id' => $invoice->currency_id,
-            'debit' => $total_after_tax,
-            'credit' => 0,
-            'balance' => $total_after_tax,
+            'debit' => 0,
+            'credit' => $total_after_tax,
+            'balance' => -$total_after_tax,
         ]);
 
-        // Revenue Transaction
-        $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
-
+        // Expense Transaction
+        $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
-            'account_id' => $revenue_account->id,
+            'account_id' => $expense_account->id,
             'currency_id' => $invoice->currency_id,
-            'debit' => 0,
-            'credit' => $total_price,
-            'balance' => -$total_price,
+            'debit' => $total_after_tax + $total_tax,
+            'credit' => 0,
+            'balance' => $total_after_tax + $total_tax,
         ]);
 
         Log::create([
@@ -309,7 +296,7 @@ class InvoiceController extends Controller
         $total_tax = 0;
         $total_after_tax = 0;
 
-        foreach ($invoice->invoice_items as $item) {
+        foreach ($invoice->items as $item) {
             $total_cost += $item->total_cost;
             $total_price += $item->total_price;
             $total_tax += $item->vat;

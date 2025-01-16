@@ -37,7 +37,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                @forelse ($invoice->invoice_items as $item)
+                                @forelse ($invoice->items as $item)
                                 <tr>
                                     <td class="col-4">
                                         {{ $item->item->name }} <br>

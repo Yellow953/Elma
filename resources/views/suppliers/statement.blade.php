@@ -34,8 +34,8 @@
                         <table class="table table-striped">
                             <thead class="text-center">
                                 <tr style="font-size: 0.9rem">
+                                    <th>Description</th>
                                     <th>Date</th>
-                                    <th>Ref</th>
                                     <th>Currency</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
@@ -45,6 +45,7 @@
                             <tbody class="text-center">
                                 @forelse ($supplier->transactions as $transaction)
                                 <tr>
+                                    <td></td>
                                     <td>{{ $transaction->created_at->format('Y/m/d') }}</td>
                                     <td>{{ $transaction->currency->code }}</td>
                                     <td>{{ number_format($transaction->debit, 2) }}</td>
