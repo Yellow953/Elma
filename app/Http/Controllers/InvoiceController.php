@@ -117,6 +117,8 @@ class InvoiceController extends Controller
                     'debit' => 0,
                     'credit' => $line_total_after_tax,
                     'balance' => -$line_total_after_tax,
+                    'title' => 'Supplier Payable',
+                    'description' => "Payable recorded for supplier on Invoice {$invoice->invoice_number}",
                 ]);
 
                 // Expense Transaction
@@ -128,6 +130,8 @@ class InvoiceController extends Controller
                     'debit' => $line_total_after_tax,
                     'credit' => 0,
                     'balance' => $line_total_after_tax,
+                    'title' => 'Expense Recorded',
+                    'description' => "Expense recorded for supplier on Invoice {$invoice->invoice_number}",
                 ]);
             }
         }
@@ -140,6 +144,8 @@ class InvoiceController extends Controller
             'debit' => 0,
             'credit' => $total_tax,
             'balance' => -$total_tax,
+            'title' => 'Tax Payable',
+            'description' => "Tax payable recorded for Invoice {$invoice->invoice_number}",
         ]);
 
         // Client Receivable Transaction
@@ -152,6 +158,8 @@ class InvoiceController extends Controller
             'debit' => $total_after_tax,
             'credit' => 0,
             'balance' => $total_after_tax,
+            'title' => 'Client Receivable',
+            'description' => "Receivable recorded for client on Invoice {$invoice->invoice_number}",
         ]);
 
         // Revenue Transaction
@@ -163,6 +171,8 @@ class InvoiceController extends Controller
             'debit' => 0,
             'credit' => $total_after_tax + $total_tax,
             'balance' => -$total_after_tax + $total_tax,
+            'title' => 'Revenue Recorded',
+            'description' => "Revenue recorded for Invoice {$invoice->invoice_number}",
         ]);
 
         Log::create([

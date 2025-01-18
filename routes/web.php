@@ -34,6 +34,9 @@ Route::prefix('password')->group(function () {
     Route::post('/reset', 'App\Http\Controllers\Auth\ResetPasswordController@reset')->name('password.update');
 });
 
+// Currency
+Route::get('/currencies/switch/{currency}', [CurrencyController::class, 'switch'])->name('currencies.switch');
+
 // Auth
 Route::middleware(['auth'])->group(function () {
     // Users Routes
@@ -145,7 +148,6 @@ Route::middleware(['auth'])->group(function () {
     // Currency Routes
     Route::prefix('currencies')->group(function () {
         Route::get('/export', [CurrencyController::class, 'export'])->name('currencies.export');
-        Route::post('/switch', [CurrencyController::class, 'switch'])->name('currencies.switch');
         Route::get('/{currency}/edit', [CurrencyController::class, 'edit'])->name('currencies.edit');
         Route::post('/{currency}/update', [CurrencyController::class, 'update'])->name('currencies.update');
         Route::get('/', [CurrencyController::class, 'index'])->name('currencies');
@@ -172,7 +174,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/trial_balance', [AccountController::class, 'get_trial_balance'])->name('accounts.get_trial_balance');
         Route::post('/trial_balance', [AccountController::class, 'trial_balance'])->name('accounts.trial_balance');
         Route::post('/trial_balance/export', [AccountController::class, 'export_trial_balance'])->name('accounts.export_trial_balance');
-        Route::post('/closing', [AccountController::class, 'closing'])->name('accounts.closing');
         Route::get('/{account}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::post('/{account}/update', [AccountController::class, 'update'])->name('accounts.update');
         Route::get('/{account}/delete', [AccountController::class, 'destroy'])->name('accounts.destroy');

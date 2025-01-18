@@ -36,7 +36,7 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                @forelse ($account->transactions as $transaction)
+                                @forelse ($transactions as $transaction)
                                 <tr>
                                     <td></td>
                                     <td>{{ $transaction->created_at->format('Y/m/d') }}</td>
@@ -55,9 +55,9 @@
                             <tfoot class="text-center">
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="3">Total</th>
-                                    <th>{{ number_format($total_debit, 2) }}</th>
-                                    <th>{{ number_format($total_credit, 2) }}</th>
-                                    <th>{{ number_format($total_balance, 2) }}</th>
+                                    <th>{{ number_format($transactions->sum('debit'), 2) }}</th>
+                                    <th>{{ number_format($transactions->sum('credit'), 2) }}</th>
+                                    <th>{{ number_format($transactions->sum('balance'), 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('hidden')->default(false);
             $table->unsignedBigInteger('client_id')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->string('title');
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

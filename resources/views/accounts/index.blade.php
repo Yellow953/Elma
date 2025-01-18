@@ -6,11 +6,6 @@
 
 @include('accounts._trial_balance_modal')
 @include('accounts._statement_modal')
-
-@can('accounts.update')
-@include('accounts._closing_modal')
-@endcan
-
 <div class="container">
     <div class="row">
         <div class="col-6 col-md-10 d-flex justify-content-end">
@@ -28,10 +23,6 @@
                     Account</a>
                 <a class="dropdown-item text-dark" href="#" onclick="openModal('trial_balance_modal')">Trial
                     Balance</a>
-                @endcan
-
-                @can('accounts.update')
-                <a class="dropdown-item text-dark" href="#" onclick="openModal('closing_modal')">Closing</a>
                 @endcan
 
                 @can('accounts.export')

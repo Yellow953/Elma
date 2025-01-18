@@ -97,17 +97,33 @@ class ReceiptController extends Controller
 
         $totalCostAfterVAT = $totalItemCost + $totalTax;
 
-        // Cash Credit
+        // Cash Credit Transaction
         $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
-        $this->createTransaction($cashAccount->id, 0, $totalCostAfterVAT - $totalTax, $receipt);
+        $this->createTransaction(
+            $cashAccount->id,
+            0,
+            $totalCostAfterVAT - $totalTax,
+            $receipt,
+            null,
+            'Cash Payment for Receipt',
+            "Cash payment for receipt {$receipt->receipt_number}."
+        );
 
-        // Tax Credit
-        if($totalTax != 0){
+        // Tax Credit Transaction
+        if ($totalTax != 0) {
             $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-            $this->createTransaction($taxAccount->id, 0, $totalTax, $receipt);
+            $this->createTransaction(
+                $taxAccount->id,
+                0,
+                $totalTax,
+                $receipt,
+                null,
+                'Tax Payment for Receipt',
+                "Tax payment for receipt {$receipt->receipt_number}."
+            );
         }
 
-        // Supplier Debit
+        // Supplier Debit Transaction
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);
         $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
         $this->createTransaction(
@@ -115,7 +131,9 @@ class ReceiptController extends Controller
             $totalCostAfterVAT,
             0,
             $receipt,
-            $supplier->id
+            $supplier->id,
+            'Supplier Payment for Receipt',
+            "Payment to supplier {$supplier->name} for receipt {$receipt->receipt_number}."
         );
 
         Log::create(['text' => ucwords(auth()->user()->name) . " created new Receipt: " . $receipt->receipt_number . ", datetime: " . now()]);
@@ -363,7 +381,7 @@ class ReceiptController extends Controller
     // -------------------
     // Private
     // -------------------
-    private function createTransaction($accountId, $debit, $credit, $receipt, $supplierId = null)
+    private function createTransaction($accountId, $debit, $credit, $receipt, $supplierId = null,  $title = null, $description = null)
     {
         Transaction::create([
             'user_id' => auth()->id(),
@@ -373,6 +391,8 @@ class ReceiptController extends Controller
             'debit' => $debit,
             'credit' => $credit,
             'balance' => $debit - $credit,
+            'title' => $title,
+            'description' => $description,
         ]);
     }
 }

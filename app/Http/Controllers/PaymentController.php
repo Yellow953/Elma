@@ -64,7 +64,7 @@ class PaymentController extends Controller
             'amount' => $request->amount,
         ]);
 
-        // Receivable Account
+        // Receivable Account Transaction
         $receivable_account = Account::findOrFail(Variable::where('title', 'receivable_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
@@ -74,9 +74,11 @@ class PaymentController extends Controller
             'debit' => 0,
             'credit' => $request->amount,
             'balance' => -$request->amount,
+            'title' => 'Client Receivable Payment',
+            'description' => "Payment received from client {$client->name}, Payment No: {$payment->payment_number}",
         ]);
 
-        // Cash Account
+        // Cash Account Transaction
         $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
@@ -85,13 +87,17 @@ class PaymentController extends Controller
             'debit' => $request->amount,
             'credit' => 0,
             'balance' => $request->amount,
+            'title' => 'Cash Payment Received',
+            'description' => "Payment of {$request->amount} received in cash for Payment No: {$payment->payment_number}",
         ]);
 
-        $text = ucwords(auth()->user()->name) . " created new Payment : " . $payment->payment_number . ", datetime :   " . now();
+        // Log the payment creation
+        $text = ucwords(auth()->user()->name) . " created new Payment : " . $payment->payment_number . ", datetime : " . now();
         Log::create(['text' => $text]);
 
-        return redirect()->route('payments')->with('success', 'payment created successfully!');
+        return redirect()->route('payments')->with('success', 'Payment created successfully!');
     }
+
 
     public function edit(Payment $payment)
     {

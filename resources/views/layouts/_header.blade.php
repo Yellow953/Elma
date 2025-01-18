@@ -1,5 +1,6 @@
 @php
-$user = auth()->user()
+$user = auth()->user();
+$currencies = Helper::get_currencies();
 @endphp
 
 <!-- header area start -->
@@ -23,6 +24,26 @@ $user = auth()->user()
                 <div class="dropdown-menu dropdown-menu-right mt-4">
                     <a href="{{ route('profile') }}" class="dropdown-item text-dark">{{ ucwords($user->name)
                         }}</a>
+                    
+                    <a href="#" class="dropdown-item text-dark" id="currencyDropdown" role="button" 
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="d-flex justify-content-between px-2">
+                            Currency
+                            <span>{{ $user->currency->code }}</span>
+                        </span>
+                    </a>
+                    <!-- Begin: Menu sub -->
+                    <div class="dropdown-menu w-100" aria-labelledby="currencyDropdown">
+                        @foreach ($currencies as $currency)
+                            <!-- Begin: Menu item -->
+                            <a class="dropdown-item" href="{{ route('currencies.switch', $currency->id) }}">
+                                {{ $currency->code }}
+                            </a>
+                            <!-- End: Menu item -->
+                        @endforeach
+                    </div>
+                    <!-- End: Menu sub -->
+
                     <a class="dropdown-item text-dark" href="{{ route('logout') }}"
                         onclick="event.preventDefault();document.getElementById('logout-form').submit();"> {{
                         __('Logout') }}

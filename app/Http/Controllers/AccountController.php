@@ -100,18 +100,15 @@ class AccountController extends Controller
 
     public function statement(Account $account)
     {
-        $total_debit = 0;
-        $total_credit = 0;
-        $total_balance = 0;
-
-        foreach ($account->transactions as $transaction) {
-            $total_debit += $transaction->debit;
-            $total_credit += $transaction->credit;
-            $total_balance += $transaction->balance;
+        if ($account->client) {
+            $transactions = $account->client->transactions;
+        }else if ($account->supplier) {
+            $transactions = $account->supplier->transactions;
+        }else{
+            $transactions = $account->transactions;
         }
 
-        $data = compact('account', 'total_debit', 'total_credit', 'total_balance');
-
+        $data = compact('account', 'transactions');
         return view('accounts.statement', $data);
     }
 
@@ -310,77 +307,5 @@ class AccountController extends Controller
         $data = collect($trialBalance);
 
         return Excel::download(new TrialBalanceExport($data), 'trial_balance.xlsx');
-    }
-
-    public function closing(Request $request)
-    {
-        $request->validate([
-            'from_account' => 'required',
-            'to_account' => 'required',
-            'from_date' => 'required|date',
-            'to_date' => 'required|date',
-            'profit_account' => 'required',
-            'loss_account' => 'required',
-            'closing_datetime' => 'required',
-        ]);
-
-        $accounts = Account::whereBetween('account_number', [$request->from_account, $request->to_account])->whereBetween('created_at', [$request->from_date, $request->to_date])->where('type', 'P/L')->get();
-        $profit_account = Account::find($request->profit_account);
-        $loss_account = Account::find($request->loss_account);
-        $usd = Currency::where('code', 'USD')->first();
-        $lbp = Currency::where('code', 'LBP')->first();
-        $total = 0;
-
-        $datetime = Carbon::create(
-            $request->closing_datetime
-        )->format('Y-m-d H:i:s');
-
-        // calculate amounts and reset accounts
-        foreach ($accounts as $account) {
-            foreach ($account->transactions as $transaction) {
-                Transaction::create([
-                    'user_id' => auth()->user()->id,
-                    'account_id' => $account->id,
-                    'currency_id' => $usd->id,
-                    'debit' => $transaction->credit,
-                    'credit' => $transaction->debit,
-                    'balance' => -$transaction->balance,
-                    'hidden' => true,
-                    'created_at' => $datetime,
-                    'updated_at' => $datetime,
-                ]);
-                $total += $transaction->balance;
-            }
-        }
-
-        // update profit and loss account
-        if ($total > 0) {
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $loss_account->id,
-                'currency_id' => $usd->id,
-                'debit' =>  abs($total),
-                'credit' => 0,
-                'balance' => $total,
-                'created_at' => $datetime,
-                'updated_at' => $datetime,
-            ]);
-        } else if ($total < 0) {
-            Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $profit_account->id,
-                'currency_id' => $usd->id,
-                'debit' => 0,
-                'credit' => abs($total),
-                'balance' => $total,
-                'created_at' => $datetime,
-                'updated_at' => $datetime,
-            ]);
-        }
-
-        $text = ucwords(auth()->user()->name) . " initiated closing for accounts: " . $request->from_account . " to " . $request->to_account . " from date: " . $request->from_date . " to " . $request->to_date . ", datetime :   " . now();
-        Log::create(['text' => $text]);
-
-        return redirect()->back()->with('success', 'Closing Succeeded...');
     }
 }

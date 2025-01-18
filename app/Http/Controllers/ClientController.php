@@ -118,19 +118,9 @@ class ClientController extends Controller
     public function statement(Client $client)
     {
         $account = $client->account;
+        $transactions = $client->transactions;
 
-        $total_debit = 0;
-        $total_credit = 0;
-        $total_balance = 0;
-
-        foreach ($client->transactions as $transaction) {
-            $total_debit += $transaction->debit;
-            $total_credit += $transaction->credit;
-            $total_balance += $transaction->balance;
-        }
-
-        $data = compact('client', 'account', 'total_debit', 'total_credit', 'total_balance');
-
+        $data = compact('client', 'account', 'transactions');
         return view('clients.statement', $data);
     }
 }

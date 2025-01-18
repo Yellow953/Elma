@@ -47,16 +47,9 @@ class CurrencyController extends Controller
         return redirect()->route('currencies')->with('success', 'Currency successfully updated...');
     }
 
-    public function switch(Request $request)
+    public function switch(Currency $currency)
     {
-        $request->validate([
-            'currency_id' => 'required|exists:currencies,id',
-        ]);
-
-        $currency = Currency::find($request->input('currency_id'));
-
-        $user = User::find(auth()->user()->id);
-        $user->update([
+        auth()->user()->update([
             'currency_id' => $currency->id,
         ]);
 

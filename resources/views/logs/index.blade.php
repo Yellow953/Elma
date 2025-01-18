@@ -67,10 +67,10 @@
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
             <div class="card mt-4" id="logs">
-                <div class="card-header p-3">
+                <div class="card-header p-4">
                     <h5 class="mb-0">Logs</h5>
                 </div>
-                <div class="card-body p-3 py-0">
+                <div class="card-body p-5 py-0">
                     <div class="timeline">
                         @forelse ($logs as $l)
                         <div class="timeline-item">

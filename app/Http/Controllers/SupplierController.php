@@ -118,19 +118,9 @@ class SupplierController extends Controller
     public function statement(Supplier $supplier)
     {
         $account = $supplier->account;
+        $transactions = $supplier->transactions;
 
-        $total_debit = 0;
-        $total_credit = 0;
-        $total_balance = 0;
-
-        foreach ($supplier->transactions as $transaction) {
-            $total_debit += $transaction->debit;
-            $total_credit += $transaction->credit;
-            $total_balance += $transaction->balance;
-        }
-
-        $data = compact('supplier', 'account', 'total_debit', 'total_credit', 'total_balance');
-
+        $data = compact('supplier', 'account', 'transactions');
         return view('suppliers.statement', $data);
     }
 }

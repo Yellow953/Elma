@@ -56,11 +56,10 @@ class ExpenseController extends Controller
             'description' => 'nullable',
         ]);
 
-        $expense = Expense::create(
-            $request->all()
-        );
+        // Create the expense record
+        $expense = Expense::create($request->all());
 
-        // Expense Transaction
+        // Expense Account (Debit)
         $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
@@ -69,9 +68,11 @@ class ExpenseController extends Controller
             'debit' => $request->amount,
             'credit' => 0,
             'balance' => $request->amount,
+            'title' => 'Expense Recorded',
+            'description' => "Expense recorded for '{$expense->title}' on {$expense->date}",
         ]);
 
-        // Cash Transaction
+        // Cash Account (Credit)
         $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
         Transaction::create([
             'user_id' => auth()->id(),
@@ -80,6 +81,8 @@ class ExpenseController extends Controller
             'debit' => 0,
             'credit' => $request->amount,
             'balance' => -$request->amount,
+            'title' => 'Cash Outflow for Expense',
+            'description' => "Cash outflow for expense '{$expense->title}' on {$expense->date}",
         ]);
 
         // Log the creation

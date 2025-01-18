@@ -73,7 +73,7 @@ class CreditNoteController extends Controller
         $tax_rate = $tax->rate / 100;
         $amount = $request->amount;
         $total_tax = $amount * $tax_rate;
-        $total = $amount; // Net amount before tax
+        $total = $amount;
 
         // Revenue Debit Transaction
         $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
@@ -84,6 +84,8 @@ class CreditNoteController extends Controller
             'debit' => $amount,
             'credit' => 0,
             'balance' => $amount,
+            'title' => 'Credit Note Revenue Adjustment',
+            'description' => "Debit revenue for credit note #{$cdnote->cdnote_number}",
         ]);
 
         if ($total_tax != 0) {
@@ -95,6 +97,8 @@ class CreditNoteController extends Controller
                 'debit' => $total_tax,
                 'credit' => 0,
                 'balance' => $total_tax,
+                'title' => 'Credit Note Tax Adjustment',
+                'description' => "Debit tax for credit note #{$cdnote->cdnote_number}",
             ]);
         }
 
@@ -109,6 +113,8 @@ class CreditNoteController extends Controller
             'debit' => 0,
             'credit' => ($amount + $total_tax),
             'balance' => 0 - ($amount + $total_tax),
+            'title' => 'Client Receivable Adjustment',
+            'description' => "Credit client receivable for credit note #{$cdnote->cdnote_number}",
         ]);
 
         // Log creation
@@ -117,6 +123,7 @@ class CreditNoteController extends Controller
 
         return redirect()->route('credit_notes')->with('success', 'Credit Note created successfully!');
     }
+
 
     public function edit(CDNote $cdnote)
     {

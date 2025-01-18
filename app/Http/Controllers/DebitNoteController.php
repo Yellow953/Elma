@@ -85,6 +85,8 @@ class DebitNoteController extends Controller
             'debit' => 0,
             'credit' => $total,
             'balance' => 0 - $total,
+            'title' => 'Supplier Payable Adjustment',
+            'description' => "Credit supplier payable for debit note #{$cdnote->cdnote_number}",
         ]);
 
         // Expense Account (Debit)
@@ -96,6 +98,8 @@ class DebitNoteController extends Controller
             'debit' => $amount,
             'credit' => 0,
             'balance' => $amount,
+            'title' => 'Expense Adjustment',
+            'description' => "Debit expense for debit note #{$cdnote->cdnote_number}",
         ]);
 
         if ($total_tax != 0) {
@@ -107,6 +111,8 @@ class DebitNoteController extends Controller
                 'debit' => $total_tax,
                 'credit' => 0,
                 'balance' => $total_tax,
+                'title' => 'Tax Adjustment',
+                'description' => "Debit tax for debit note #{$cdnote->cdnote_number}",
             ]);
         }
 
@@ -116,6 +122,7 @@ class DebitNoteController extends Controller
 
         return redirect()->route('debit_notes')->with('success', 'Debit Note created successfully!');
     }
+
 
     public function edit(CDNote $cdnote)
     {
