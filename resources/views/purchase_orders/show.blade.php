@@ -14,6 +14,94 @@
 
         <div class="container">
             <div>
+                <div class="row my-5 px-3">
+                    <div class="col-5 border-custom py-3 px-4">
+                        <div class="row">
+                            <div class="col-3">
+                                Mode
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->mode }}
+                            </div>
+                            <div class="col-3">
+                                Client
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->client->name }}
+                            </div>
+                            <div class="col-3">
+                                Consignee
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->consignee_name }}
+                            </div>
+                            <div class="col-3">
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->consignee_country }}
+                            </div>
+                            <div class="col-3">
+                                Commodity
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->commodity }}
+                            </div>
+                            <div class="col-3">
+                                Carrier
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->carrier_name }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-5 border-custom py-3 px-4">
+                        <div class="row">
+                            <div class="col-3">
+                                Arrival
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->arrival }}
+                            </div>
+                            <div class="col-3">
+                                Departure
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->departure }}
+                            </div>
+                            <div class="col-3">
+                                Shipping
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->shipping_date }}
+                            </div>
+                            <div class="col-3">
+                                Loading
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->loading_date }}
+                            </div>
+                            <div class="col-3">
+                                Vessel
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->vessel_name }}
+                            </div>
+                            <div class="col-3">
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->vessel_date }}
+                            </div>
+                            <div class="col-3">
+                                Booking Number
+                            </div>
+                            <div class="col-9">
+                                {{ $shipment->booking_number }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
                 <div class="row mb-5">
                     <div class="col-md-6">
                         <strong>SO Number:</strong> {{ $purchase_order->po_number }} <br>

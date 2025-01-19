@@ -10,8 +10,6 @@
         <i class="fa-solid fa-chevron-left"></i> Back </a>
 
     <div class="receipt-main">
-
-
         @include('layouts._invoice_header')
 
         <div class="container">

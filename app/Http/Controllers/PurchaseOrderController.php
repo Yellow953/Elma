@@ -88,18 +88,15 @@ class PurchaseOrderController extends Controller
     public function edit(PurchaseOrder $purchase_order)
     {
         $suppliers = Supplier::select('id', 'name')->get();
-        $shipments = Shipment::select('id', 'shipment_number')->get();
         $items = Item::select('id', 'name')->where('type', 'expense')->get();
 
-        $data = compact('purchase_order', 'suppliers', 'shipments', 'items');
+        $data = compact('purchase_order', 'suppliers', 'items');
         return view('purchase_orders.edit', $data);
     }
 
     public function update(PurchaseOrder $purchase_order, Request $request)
     {
         $request->validate([
-            'supplier_id' => 'required',
-            'shipment_id' => 'required',
             'order_date' => 'required|date',
             'due_date' => 'nullable|date',
             'status' => 'required',
@@ -108,8 +105,6 @@ class PurchaseOrderController extends Controller
         ]);
 
         $purchase_order->update([
-            'supplier_id' => $request->supplier_id,
-            'shipment_id' => $request->shipment_id,
             'status' => $request->status,
             'order_date' => $request->order_date,
             'due_date' => $request->due_date,
@@ -138,7 +133,10 @@ class PurchaseOrderController extends Controller
 
     public function show(PurchaseOrder $purchase_order)
     {
-        return view('purchase_orders.show', compact('purchase_order'));
+        $shipment = $purchase_order->shipment;
+
+        $data = compact('purchase_order', 'shipment');
+        return view('purchase_orders.show', $data);
     }
 
     public function search(Request $request)
@@ -181,6 +179,10 @@ class PurchaseOrderController extends Controller
     {
         if ($purchase_order->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted purchase_order : " . $purchase_order->name . ", datetime :   " . now();
+
+            foreach ($purchase_order->items as $item) {
+                $item->delete();
+            }
 
             Log::create(['text' => $text]);
             $purchase_order->delete();

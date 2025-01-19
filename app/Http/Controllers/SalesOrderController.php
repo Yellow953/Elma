@@ -41,7 +41,7 @@ class SalesOrderController extends Controller
     {
         $clients = Client::select('id', 'name')->get();
         $shipments = Shipment::select('id', 'shipment_number')->get();
-        $items = Item::select('id', 'name', 'unit_price', 'type')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'type')->where('type', 'item')->get();
         $suppliers = Supplier::select('id', 'name')->get();
 
         $data = compact('clients', 'shipments', 'items', 'suppliers');
@@ -90,25 +90,24 @@ class SalesOrderController extends Controller
 
     public function show(SalesOrder $sales_order)
     {
-        return view('sales_orders.show', compact('sales_order'));
+        $shipment = $sales_order->shipment;
+        
+        $data = compact('sales_order', 'shipment');
+        return view('sales_orders.show', $data);
     }
 
     public function edit(SalesOrder $sales_order)
     {
-        $clients = Client::select('id', 'name')->get();
-        $shipments = Shipment::select('id', 'shipment_number')->get();
-        $items = Item::select('id', 'name', 'unit_price', 'type')->get();
+        $items = Item::select('id', 'name', 'unit_price', 'type')->where('type', 'item')->get();
         $suppliers = Supplier::select('id', 'name')->get();
 
-        $data = compact('sales_order', 'clients', 'shipments', 'items', 'suppliers');
+        $data = compact('sales_order', 'items', 'suppliers');
         return view('sales_orders.edit', $data);
     }
 
     public function update(SalesOrder $sales_order, Request $request)
     {
         $request->validate([
-            'client_id' => 'required',
-            'shipment_id' => 'required',
             'order_date' => 'required|date',
             'due_date' => 'nullable|date',
             'status' => 'required',
@@ -117,8 +116,6 @@ class SalesOrderController extends Controller
         ]);
 
         $sales_order->update([
-            'client_id' => $request->client_id,
-            'shipment_id' => $request->shipment_id,
             'status' => $request->status,
             'order_date' => $request->order_date,
             'due_date' => $request->due_date,
@@ -185,6 +182,10 @@ class SalesOrderController extends Controller
     {
         if ($sales_order->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted so : " . $sales_order->name . ", datetime :   " . now();
+
+            foreach ($sales_order->items as $item) {
+                $item->delete();
+            }
 
             Log::create(['text' => $text]);
             $sales_order->delete();

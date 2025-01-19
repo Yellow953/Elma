@@ -45,40 +45,6 @@ $statuses = Helper::get_order_statuses();
                     <h2 class="text-center text-info">Edit Purchase Order</h2>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mt-3">
-                                <label for="supplier_id" class="col-form-label">Supplier *</label>
-
-                                <select name="supplier_id" id="supplier_id" required class="form-select select2">
-                                    <option value="">Select Supplier</option>
-                                    @foreach ($suppliers as $supplier)
-                                    <option value="{{ $supplier->id }}" {{ $supplier->id==$purchase_order->supplier_id ?
-                                        'selected' : ''
-                                        }}>
-                                        {{ $supplier->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mt-3">
-                                <label for="shipment_id" class="col-form-label">Shipment *</label>
-
-                                <select name="shipment_id" id="shipment_id" required class="form-select select2">
-                                    <option value="">Select Shipment</option>
-                                    @foreach ($shipments as $shipment)
-                                    <option value="{{ $shipment->id }}" {{ $shipment->id==$purchase_order->shipment_id ?
-                                        'selected' : '' }}>
-                                        {{ $shipment->shipment_number }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-4">
                             <div class="form-group mt-3">
                                 <label for="status" class="col-form-label">Status *</label>
