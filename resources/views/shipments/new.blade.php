@@ -155,9 +155,9 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mt-3">
-                                <label for="loading_date" class="col-form-label">Loading Date</label>
+                                <label for="loading_date" class="col-form-label">Loading Date *</label>
 
-                                <input id="loading_date" type="date"
+                                <input id="loading_date" type="date" required
                                     class="form-control @error('loading_date') is-invalid @enderror" name="loading_date"
                                     value="{{ old('loading_date') }}">
 
@@ -189,9 +189,9 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mt-3">
-                                <label for="vessel_date" class="col-form-label">Vessel Date</label>
+                                <label for="vessel_date" class="col-form-label">Vessel Date *</label>
 
-                                <input id="vessel_date" type="date"
+                                <input id="vessel_date" type="date" required
                                     class="form-control @error('vessel_date') is-invalid @enderror" name="vessel_date"
                                     value="{{ old('vessel_date') }}">
 

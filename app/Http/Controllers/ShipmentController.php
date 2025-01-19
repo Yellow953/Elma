@@ -60,7 +60,7 @@ class ShipmentController extends Controller
             'commodity' => 'required',
             'client_id' => 'required',
             'shipping_date' => 'required|date',
-            'loading_date' => 'nullable|date',
+            'loading_date' => 'required|date',
             'vessel_name' => 'required|string|max:255',
             'vessel_date' => 'required|date',
             'booking_number' => 'required|string|max:255',
@@ -183,19 +183,18 @@ class ShipmentController extends Controller
             'mode' => 'required',
             'departure' => 'required',
             'arrival' => 'required',
-            'commodity'  => 'required',
+            'commodity' => 'required',
             'client_id' => 'required',
             'shipping_date' => 'required|date',
-            'loading_date' => 'nullable|date',
-            'shipping_date' => 'required|date',
-            'loading_date' => 'nullable|date',
+            'loading_date' => 'required|date',
             'vessel_name' => 'required|string|max:255',
             'vessel_date' => 'required|date',
             'booking_number' => 'required|string|max:255',
             'carrier_name' => 'required|string|max:255',
             'consignee_name' => 'required|string|max:255',
             'consignee_country' => 'required',
-            'notes' => 'nullable'
+            'notes' => 'nullable',
+            'items' => 'nullable|array'
         ]);
 
         $text = ucwords(auth()->user()->name) . ' updated Shipment ' . $shipment->name . ", datetime :   " . now();
@@ -219,8 +218,11 @@ class ShipmentController extends Controller
         ]);
 
         if (isset($request['items'])) {
+            $salesOrderItems = [];
+            $groupedPurchaseOrderItems = [];
+
             foreach ($request['items'] as $item) {
-                ShipmentItem::create([
+                $shipmentItem = ShipmentItem::create([
                     'shipment_id' => $shipment->id,
                     'item_id' => $item['item_id'],
                     'supplier_id' => $item['supplier_id'] ?? null,
@@ -229,6 +231,50 @@ class ShipmentController extends Controller
                     'quantity' => $item['quantity'] ?? 1,
                     'total_price' => $item['price'] * ($item['quantity'] ?? 1)
                 ]);
+
+                if ($shipmentItem->type === 'item') {
+                    $salesOrderItems[] = [
+                        'type' => 'item',
+                        'item_id' => $shipmentItem->item_id,
+                        'quantity' => $shipmentItem->quantity,
+                        'unit_price' => $shipmentItem->unit_price,
+                        'total_price' => $shipmentItem->total_price,
+                    ];
+                } elseif ($shipmentItem->type === 'expense' && $shipmentItem->supplier_id) {
+                    $groupedPurchaseOrderItems[$shipmentItem->supplier_id][] = [
+                        'type' => 'expense',
+                        'item_id' => $shipmentItem->item_id,
+                        'quantity' => $shipmentItem->quantity,
+                        'unit_price' => $shipmentItem->unit_price,
+                        'total_price' => $shipmentItem->total_price,
+                    ];
+                }
+            }
+
+            if (!empty($salesOrderItems)) {
+                $salesOrder = $shipment->sales_order;
+
+                foreach ($salesOrderItems as $item) {
+                    $item['sales_order_id'] = $salesOrder->id;
+                    SalesOrderItem::create($item);
+                }
+            }
+
+            foreach ($groupedPurchaseOrderItems as $supplierId => $items) {
+                $purchaseOrder = PurchaseOrder::create([
+                    'po_number' => PurchaseOrder::generate_po_number(),
+                    'supplier_id' => $supplierId,
+                    'order_date' => $request->shipping_date,
+                    'due_date' => $request->loading_date,
+                    'status' => 'new',
+                    'shipment_id' => $shipment->id,
+                    'notes' => $request->notes,
+                ]);
+
+                foreach ($items as $item) {
+                    $item['purchase_order_id'] = $purchaseOrder->id;
+                    PurchaseOrderItem::create($item);
+                }
             }
         }
 
@@ -244,6 +290,22 @@ class ShipmentController extends Controller
 
             foreach ($shipment->items as $item) {
                 $item->delete();
+            }
+
+            if($shipment->sales_order){
+                foreach ($shipment->sales_order->items as $so_item) {
+                    $so_item->delete();
+                }
+                $shipment->sales_order->delete();
+            }
+
+            if($shipment->purchase_orders){
+                foreach ($shipment->purchase_orders as $po) {
+                    foreach ($po->items as $po_item) {
+                        $po_item->delete();
+                    }
+                    $po->delete();
+                }
             }
 
             Log::create(['text' => $text]);

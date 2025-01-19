@@ -141,7 +141,7 @@ body {
 }
 
 .border-custom {
-    border: 2px solid black;
+    border: 2px solid rgb(117, 117, 117);
     border-radius: 15px;
     overflow: hidden;
 }

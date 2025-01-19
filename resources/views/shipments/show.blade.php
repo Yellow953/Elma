@@ -20,7 +20,7 @@
                     Shipment Number: {{ $shipment->shipment_number }}
                 </h2>
 
-                <div class="row my-5">
+                <div class="row my-5 px-3">
                     <div class="col-5 border-custom py-3 px-4">
                         <div class="row">
                             <div class="col-3">

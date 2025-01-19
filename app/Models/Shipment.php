@@ -21,10 +21,18 @@ class Shipment extends Model
         return $this->hasMany(ShipmentItem::class);
     }
 
+    public function sales_order(){
+        return $this->hasOne(SalesOrder::class);
+    }
+
+    public function purchase_orders(){
+        return $this->hasMany(PurchaseOrder::class);
+    }
+
     // Permissions
     public function can_delete()
     {
-        return true;
+        return $this->sales_order == null && $this->purchase_orders == null;
     }
 
     // Filter
