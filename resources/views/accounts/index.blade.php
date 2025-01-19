@@ -5,7 +5,6 @@
 @section('content')
 
 @include('accounts._trial_balance_modal')
-@include('accounts._statement_modal')
 <div class="container">
     <div class="row">
         <div class="col-6 col-md-10 d-flex justify-content-end">
@@ -19,8 +18,6 @@
                 @endcan
 
                 @can('accounts.read')
-                <a class="dropdown-item text-dark" href="#" onclick="openModal('statement_modal')">Statement Of
-                    Account</a>
                 <a class="dropdown-item text-dark" href="#" onclick="openModal('trial_balance_modal')">Trial
                     Balance</a>
                 @endcan

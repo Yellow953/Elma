@@ -121,7 +121,6 @@
 @endsection
 
 @section('content')
-@include('accounts._statement_modal')
 <div class="container-fluid py-2">
     <div class="d-flex align-items-center justify-content-end">
         @yield('actions')

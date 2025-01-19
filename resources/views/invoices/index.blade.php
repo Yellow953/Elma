@@ -6,9 +6,6 @@
 @can('invoices.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('invoices.new') }}">New Invoice</a>
 @endcan
-@can('invoices.return')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('invoices.return') }}">Return Invoice</a>
-@endcan
 @can('invoices.export')
 <a class=" btn btn-sm btn-info mx-1" href="{{ route('invoices.export') }}">Export Invoices</a>
 @endcan

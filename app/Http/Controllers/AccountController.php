@@ -112,81 +112,10 @@ class AccountController extends Controller
         return view('accounts.statement', $data);
     }
 
-    public function get_statement_of_accounts()
-    {
-        return view('accounts.get_statement_of_accounts');
-    }
-
-    public function statement_of_accounts(Request $request)
-    {
-        $from_date = $request->from_date;
-        $to_date = $request->to_date;
-        $from_account = $request->from_account;
-        $to_account = $request->to_account;
-        $mvt = $request->has('mvt');
-        $bbf = $request->has('bbf');
-
-        $accountsQuery = Account::when($from_date && $to_date, function ($query) use ($from_date, $to_date) {
-            $query->with(['transactions' => function ($query) use ($from_date, $to_date) {
-                $query->whereBetween('created_at', [$from_date, $to_date]);
-            }]);
-        })
-            ->when($from_account && $to_account, function ($query) use ($from_account, $to_account) {
-                $query->whereBetween('account_number', [$from_account, $to_account]);
-            })
-            ->when($from_account && !$to_account, function ($query) use ($from_account) {
-                $query->where('account_number', $from_account);
-            });
-
-        $accounts = $accountsQuery->get();
-
-        $statements = [];
-
-        foreach ($accounts as $account) {
-            $total_debit = 0;
-            $total_credit = 0;
-            $total_balance = 0;
-
-            if ($bbf && $from_date) {
-                $previousTransactions = $account->transactions()
-                    ->where('created_at', '<', $from_date)
-                    ->get();
-
-                foreach ($previousTransactions as $prevTransaction) {
-                    $total_debit += $prevTransaction->debit;
-                    $total_credit += $prevTransaction->credit;
-                    $total_balance += $prevTransaction->balance;
-                }
-            }
-
-            if ($mvt) {
-                foreach ($account->transactions as $transaction) {
-                    $total_debit += $transaction->debit;
-                    $total_credit += $transaction->credit;
-                    $total_balance += $transaction->balance;
-                }
-            } else {
-                $total_debit += $account->transactions->sum('debit');
-                $total_credit += $account->transactions->sum('credit');
-                $total_balance += $account->transactions->sum('balance');
-            }
-
-            $statements[] = (object)[
-                'account' => $account,
-                'total_debit' => $total_debit,
-                'total_credit' => $total_credit,
-                'total_balance' => $total_balance,
-            ];
-        }
-
-        return view('accounts.statement_of_accounts', compact('statements'));
-    }
-
     public function get_trial_balance()
     {
         return view('accounts.get_trial_balance');
     }
-
 
     public function trial_balance(Request $request)
     {

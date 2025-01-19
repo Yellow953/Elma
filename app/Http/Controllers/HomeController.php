@@ -12,6 +12,8 @@ use App\Models\PurchaseOrder;
 use App\Models\Receipt;
 use App\Models\SearchRoute;
 use App\Models\Shipment;
+use App\Models\Payment;
+use App\Models\Expense;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -30,8 +32,10 @@ class HomeController extends Controller
         $total_items = Item::count();
         $total_receipts = Receipt::count();
         $total_invoices = Invoice::count();
+        $total_payments = Payment::count();
+        $total_expenses = Expense::count();
 
-        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_shipments', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_receipts', 'total_invoices');
+        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_shipments', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_receipts', 'total_invoices', 'total_payments', 'total_expenses');
         return view('dashboard', $data);
     }
 

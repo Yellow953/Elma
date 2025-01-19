@@ -94,11 +94,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{sales_order}/new_invoice', [SalesOrderController::class, 'new_invoice'])->name('sales_orders.new_invoice');
         Route::get('/', [SalesOrderController::class, 'index'])->name('sales_orders');
     });
-    Route::prefix('sales_order_items')->group(function () {
-        Route::get('/{sales_order_item}/return', [SalesOrderController::class, 'Return'])->name('sales_orders.return');
-        Route::get('/{sales_order}/returnall', [SalesOrderController::class, 'return_all'])->name('sales_orders.return_all');
-        Route::get('/export', [SalesOrderController::class, 'export_so_items'])->name('sales_order_items.export');
-    });
 
     // Purchase Orders Routes
     Route::prefix('purchase_orders')->group(function () {
@@ -114,11 +109,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{purchase_order}/delete', [PurchaseOrderController::class, 'destroy'])->name('purchase_orders.destroy');
         Route::get('/{purchase_order}/new_receipt', [PurchaseOrderController::class, 'new_receipt'])->name('purchase_orders.new_receipt');
         Route::get('/', [PurchaseOrderController::class, 'index'])->name('purchase_orders');
-    });
-    Route::prefix('purchase_order_items')->group(function () {
-        Route::get('/{purchase_order_item}/return', [PurchaseOrderController::class, 'Return'])->name('purchase_orders.return');
-        Route::get('/{purchase_order}/returnall', [PurchaseOrderController::class, 'return_all'])->name('purchase_orders.return_all');
-        Route::get('/export', [PurchaseOrderController::class, 'export_po_items'])->name('purchase_order_items.export');
     });
 
     // Clients Routes
@@ -169,8 +159,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [AccountController::class, 'export'])->name('accounts.export');
         Route::get('/new', [AccountController::class, 'new'])->name('accounts.new');
         Route::post('/create', [AccountController::class, 'create'])->name('accounts.create');
-        Route::get('/statement_of_accounts', [AccountController::class, 'get_statement_of_accounts'])->name('accounts.get_statement_of_accounts');
-        Route::post('/statement_of_accounts', [AccountController::class, 'statement_of_accounts'])->name('accounts.statement_of_accounts');
         Route::get('/trial_balance', [AccountController::class, 'get_trial_balance'])->name('accounts.get_trial_balance');
         Route::post('/trial_balance', [AccountController::class, 'trial_balance'])->name('accounts.trial_balance');
         Route::post('/trial_balance/export', [AccountController::class, 'export_trial_balance'])->name('accounts.export_trial_balance');
@@ -186,8 +174,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [ReceiptController::class, 'export'])->name('receipts.export');
         Route::get('/new', [ReceiptController::class, 'new'])->name('receipts.new');
         Route::post('/create', [ReceiptController::class, 'create'])->name('receipts.create');
-        Route::get('/return', [ReceiptController::class, 'Return'])->name('receipts.return');
-        Route::post('/return_save', [ReceiptController::class, 'ReturnSave'])->name('receipts.return_save');
         Route::get('/{receipt}/edit', [ReceiptController::class, 'edit'])->name('receipts.edit');
         Route::post('/{receipt}/update', [ReceiptController::class, 'update'])->name('receipts.update');
         Route::get('/{receipt}/delete', [ReceiptController::class, 'destroy'])->name('receipts.destroy');
@@ -214,8 +200,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [InvoiceController::class, 'export'])->name('invoices.export');
         Route::get('/new', [InvoiceController::class, 'new'])->name('invoices.new');
         Route::post('/create', [InvoiceController::class, 'create'])->name('invoices.create');
-        Route::get('/return', [InvoiceController::class, 'Return'])->name('invoices.return');
-        Route::post('/return_save', [InvoiceController::class, 'ReturnSave'])->name('invoices.return_save');
         Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
         Route::post('/{invoice}/update', [InvoiceController::class, 'update'])->name('invoices.update');
         Route::get('/{invoice}/delete', [InvoiceController::class, 'destroy'])->name('invoices.destroy');

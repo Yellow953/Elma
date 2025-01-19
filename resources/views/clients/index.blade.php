@@ -6,9 +6,6 @@
 @can('clients.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('clients.new') }}">New Client</a>
 @endcan
-@can('clients.read')
-<a class="btn btn-sm btn-info mx-1" href="#" onclick="openModal('statement_modal')">Statement Of Account</a>
-@endcan
 @can('clients.export')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('clients.export') }}">Export Clients</a>
 @endcan
@@ -120,7 +117,6 @@
 @endsection
 
 @section('content')
-@include('accounts._statement_modal')
 <div class="container-fluid py-2">
     <div class="d-flex align-items-center justify-content-end">
         @yield('actions')

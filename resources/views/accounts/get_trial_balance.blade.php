@@ -2,7 +2,7 @@
 
 @section('title', 'accounts')
 
-@section('sub-title', 'Statement Of Account')
+@section('sub-title', 'Trial Balance')
 
 @section('content')
 <div class="container pt-5">
