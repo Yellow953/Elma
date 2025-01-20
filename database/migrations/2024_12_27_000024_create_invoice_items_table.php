@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('total_price')->unsigned();
             $table->double('vat')->unsigned();
             $table->double('total_price_after_vat')->unsigned();
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

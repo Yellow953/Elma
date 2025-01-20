@@ -116,7 +116,7 @@
                         <table class="table table-striped">
                             <thead class="text-center">
                                 <tr style="font-size: 0.9rem">
-                                    <th>Item</th>
+                                    <th>Description</th>
                                     <th>Quantity</th>
                                     <th>Unit Price</th>
                                     <th>Total Price</th>
@@ -126,8 +126,7 @@
                                 @forelse ($items as $item)
                                 <tr>
                                     <td class="col-4">
-                                        {{ $item->item->name }} <br>
-                                        {{ $item->item->description }}
+                                        {{ $item->description }}
                                     </td>
                                     <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
                                     <td class="col-2">{{ $invoice->currency->symbol }}{{

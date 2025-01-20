@@ -149,6 +149,7 @@
                                             <th></th>
                                             <th class="text-sm">Item</th>
                                             <th class="text-sm">Supplier</th>
+                                            <th class="text-sm">Description</th>
                                             <th class="text-sm">Quantity</th>
                                             <th class="text-sm">Unit Price</th>
                                             <th class="text-sm">Total Price</th>
@@ -180,8 +181,12 @@
                                                 </select>
                                             </td>
                                             <td>
+                                                <input type="text" name="description[]" class="form-control border"
+                                                    required>
+                                            </td>
+                                            <td>
                                                 <input type="number" name="quantity[]" class="form-control border"
-                                                    required min="0" value="0" step="any">
+                                                    min="1" value="1" step="any" required>
                                             </td>
                                             <td>
                                                 <input type="number" name="unit_price[]" class="form-control border"
@@ -249,7 +254,6 @@
         if (selectedItem) {
             newRow.querySelector('input[name^="unit_price"]').value = selectedItem.unit_price;
 
-            // Show/hide supplier select based on item type
             if (selectedItem.type === 'expense') {
                 $(supplierSelect).show();
                 supplierSelect2Container.show();
@@ -258,14 +262,12 @@
                 $(supplierSelect).hide();
                 supplierSelect2Container.hide();
                 supplierSelect.required = false;
-                // Reset the select2 value
                 $(supplierSelect).val(null).trigger('change');
             }
         }
 
         updateInvoiceItemRow(newRow);
     }
-
 
     function attachSelect2Event() {
         document.querySelectorAll('select[name="item_id[]"]').forEach(function (selectElement) {
@@ -284,10 +286,8 @@
 
         newRow.firstElementChild.innerHTML = '<button type="button" class="btn btn-danger py-2 px-3" onclick="removeRow(this)"><i class="fa fa-minus"></i></button>';
 
-        // Update item select
         newRow.cells[1].innerHTML = "<select name='item_id[]' class='form-control select2' required><option value=''></option>@foreach ($items as $item)<option value='{{ $item->id }}' data-unit-price='{{ $item->unit_price }}' data-type='{{ $item->type }}'>{{ $item->name }}</option>@endforeach</select>";
 
-        // Update supplier select
         newRow.cells[2].innerHTML = "<select name='supplier_id[]' class='form-control select2 supplier-select' style='display: none;'><option value=''></option>@foreach ($suppliers as $supplier)<option value='{{ $supplier->id }}'>{{ $supplier->name }}</option>@endforeach</select>";
 
         newRow.querySelectorAll('input').forEach(function(input) {
@@ -297,16 +297,13 @@
             });
         });
 
-        // Initialize both selects with Select2
         $(newRow).find('.select2').each(function() {
             $(this).select2();
-            // Hide supplier select2 container by default for new rows
             if ($(this).attr('name') === 'supplier_id[]') {
                 $(this).next('.select2-container').hide();
             }
         });
 
-        // Add change event for item select
         $(newRow).find('select[name="item_id[]"]').on('change', function(event) {
             updateFields(event.target);
         });
