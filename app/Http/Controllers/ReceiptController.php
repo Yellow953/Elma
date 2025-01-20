@@ -144,80 +144,90 @@ class ReceiptController extends Controller
     public function edit(Receipt $receipt)
     {
         $items = Item::select('id', 'name')->where('type', 'expense')->get();
-        $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
 
-        $data = compact('receipt', 'items', 'taxes', 'suppliers');
+        $data = compact('receipt', 'items', 'suppliers');
         return view('receipts.edit', $data);
     }
 
     public function update(Receipt $receipt, Request $request)
     {
         $validatedData = $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
             'supplier_invoice' => 'required|string|max:255|unique:receipts,supplier_invoice,' . $receipt->id,
-            'tax_id' => 'required|exists:taxes,id',
-            'currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
-            'item_id.*' => 'required|exists:items,id',
-            'quantity.*' => 'required|numeric|min:1',
-            'unit_cost.*' => 'required|numeric|min:0',
         ]);
 
         $receipt->update([
             'supplier_invoice' => $request->input('supplier_invoice'),
-            'tax_id' => $request->input('tax_id'),
-            'currency_id' => $request->input('currency_id'),
             'date' => $request->input('date'),
         ]);
 
-        $totalItemCost = 0;
-        $totalTax = 0;
-        $taxRate = Tax::findOrFail($validatedData['tax_id'])->rate / 100;
+        if ($request->item_id) {
+            $taxRate = $receipt->tax->rate / 100;
+            $totalItemCost = 0;
+            $totalTax = 0;
 
-        // Create new receipt items
-        foreach ($validatedData['item_id'] as $key => $itemId) {
-            $quantity = $validatedData['quantity'][$key];
-            $unitCost = $validatedData['unit_cost'][$key];
-            $totalCost = $unitCost * $quantity;
-            $vat = $totalCost * $taxRate;
+            foreach ($validatedData['item_id'] as $key => $itemId) {
+                $quantity = $validatedData['quantity'][$key];
+                $unitCost = $validatedData['unit_cost'][$key];
+                $totalCost = $unitCost * $quantity;
+                $vat = $totalCost * $taxRate;
 
-            ReceiptItem::create([
-                'receipt_id' => $receipt->id,
-                'item_id' => $itemId,
-                'quantity' => $quantity,
-                'unit_cost' => $unitCost,
-                'total_cost' => $totalCost,
-                'vat' => $vat,
-                'total_cost_after_vat' => $totalCost + $vat,
-            ]);
+                ReceiptItem::create([
+                    'receipt_id' => $receipt->id,
+                    'item_id' => $itemId,
+                    'quantity' => $quantity,
+                    'unit_cost' => $unitCost,
+                    'total_cost' => $totalCost,
+                    'vat' => $vat,
+                    'total_cost_after_vat' => $totalCost + $vat,
+                ]);
 
-            $totalItemCost += $totalCost;
-            $totalTax += $vat;
+                $totalItemCost += $totalCost;
+                $totalTax += $vat;
+            }
+
+            $totalCostAfterVAT = $totalItemCost + $totalTax;
+
+            // Cash Credit Transaction
+            $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
+            $this->createTransaction(
+                $cashAccount->id,
+                0,
+                $totalCostAfterVAT - $totalTax,
+                $receipt,
+                null,
+                'Cash Payment for Receipt',
+                "Cash payment for receipt {$receipt->receipt_number}."
+            );
+
+            // Tax Credit Transaction
+            if ($totalTax != 0) {
+                $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
+                $this->createTransaction(
+                    $taxAccount->id,
+                    0,
+                    $totalTax,
+                    $receipt,
+                    null,
+                    'Tax Payment for Receipt',
+                    "Tax payment for receipt {$receipt->receipt_number}."
+                );
+            }
+
+            // Supplier Debit Transaction
+            $supplier = Supplier::findOrFail($validatedData['supplier_id']);
+            $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
+            $this->createTransaction(
+                $payableAccount->id,
+                $totalCostAfterVAT,
+                0,
+                $receipt,
+                $supplier->id,
+                'Supplier Payment for Receipt',
+                "Payment to supplier {$supplier->name} for receipt {$receipt->receipt_number}."
+            );
         }
-
-        $totalCostAfterVAT = $totalItemCost + $totalTax;
-
-        // Cash Debit
-        $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
-        $this->createTransaction($cashAccount->id, $totalCostAfterVAT - $totalTax, 0, $receipt);
-
-        // Tax Debit
-        if($totalTax != 0){
-            $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-            $this->createTransaction($taxAccount->id, $totalTax, 0, $receipt);
-        }
-
-        // Supplier Credit
-        $supplier = Supplier::findOrFail($validatedData['supplier_id']);
-        $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
-        $this->createTransaction(
-            $payableAccount->id,
-            0,
-            $totalCostAfterVAT,
-            $receipt,
-            $supplier->id
-        );
 
         $text = ucwords(auth()->user()->name) . ' updated Receipt ' . $receipt->receipt_number . ", datetime :   " . now();
         Log::create(['text' => $text]);
@@ -227,13 +237,15 @@ class ReceiptController extends Controller
 
     public function show(Receipt $receipt)
     {
-        $data = compact('receipt');
+        $items = $receipt->items;
+
+        $data = compact('receipt', 'items');
         return view('receipts.show', $data);
     }
 
     public function items(Receipt $receipt)
     {
-        $items = $receipt->receipt_items;
+        $items = $receipt->items;
 
         $customizedItems = [];
         $index = 0;
@@ -254,6 +266,10 @@ class ReceiptController extends Controller
     {
         if ($receipt->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted Receipt : " . $receipt->receipt_number . ", datetime :   " . now();
+
+            foreach ($receipt->items as $item) {
+                $item->delete();
+            }
 
             Log::create(['text' => $text]);
             $receipt->delete();

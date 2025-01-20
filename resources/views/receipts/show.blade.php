@@ -40,14 +40,16 @@
                                 </tr>
                             </thead>
                             <tbody class="text-center">
-                                @forelse ($receipt->receipt_items as $item)
+                                @forelse ($items as $item)
                                 <tr>
                                     <td class="col-4">{{ $item->item->name }}
                                         <br>{{ $item->item->description }}
                                     </td>
                                     <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
-                                    <td class="col-2">{{ number_format($item->unit_cost, 2) }}</td>
-                                    <td class="col-2">{{ number_format($item->total_cost, 2) }}</td>
+                                    <td class="col-2">{{ $receipt->currency->symbol }}{{ number_format($item->unit_cost,
+                                        2) }}</td>
+                                    <td class="col-2">{{ $receipt->currency->symbol }}{{
+                                        number_format($item->total_cost, 2) }}</td>
                                 </tr>
                                 @empty
                                 <tr>
@@ -59,17 +61,19 @@
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>
                                     <th>Total</th>
-                                    <th>{{ number_format($total, 2) }}</th>
+                                    <th>{{ $receipt->currency->symbol }}{{ number_format($items->sum('total_cost'), 2)
+                                        }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>
                                     <th>Tax</th>
-                                    <th>{{ number_format($total_tax, 2) }}</th>
+                                    <th>{{ $receipt->currency->symbol }}{{ number_format($items->sum('vat'), 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>
                                     <th>Total After TAX</th>
-                                    <th>{{ number_format($total_after_tax, 2) }}</th>
+                                    <th>{{ $receipt->currency->symbol }}{{
+                                        number_format($items->sum('total_cost_after_vat'), 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>

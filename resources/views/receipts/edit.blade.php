@@ -5,11 +5,6 @@
 @section('sub-title', 'edit')
 
 @section('content')
-
-@php
-$currencies = Helper::get_currencies();
-@endphp
-
 <div class="inner-container w-100 m-0 p-5">
     <div class="d-flex justify-content-around">
         <a href="{{ route('suppliers.new') }}" class="btn btn-info px-3 py-2 mx-1">
@@ -45,36 +40,6 @@ $currencies = Helper::get_currencies();
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="tax_id" class="col-md-5 col-form-label text-md-end">{{ __('Tax
-                        *') }}</label>
-
-                    <div class="col-md-6">
-                        <select name="tax_id" id="tax_id" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($taxes as $tax)
-                            <option value="{{ $tax->id }}" {{ $tax->id == $receipt->tax_id ?
-                                'selected':'' }} data-rate="{{ $tax->rate }}">{{ $tax->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Currency
-                        *') }}</label>
-
-                    <div class="col-md-6">
-                        <select name="currency_id" id="currency_id" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($currencies as $currency)
-                            <option value="{{ $currency->id }}" {{ $currency->id == $receipt->currency_id ?
-                                'selected':'' }} data-rate="{{ $currency->rate }}">{{ $currency->code }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="date" class="col-md-5 col-form-label text-md-end">{{
                         __('Date *') }}</label>
 
@@ -102,7 +67,7 @@ $currencies = Helper::get_currencies();
                                 <th class="text-sm">Total Cost</th>
                             </tr>
 
-                            @foreach ($receipt->receipt_items as $item)
+                            @foreach ($receipt->items as $item)
                             <tr>
                                 <td></td>
                                 <td>{{ $item->item->name }}</td>
@@ -145,17 +110,20 @@ $currencies = Helper::get_currencies();
                 <div class="text-center">
                     <div class="row">
                         <div class="col-6">Total</div>
-                        <div class="col-6"><span id="receipt_items_total">{{ number_format($total, 2)
+                        <div class="col-6"><span id="receipt_items_total">{{
+                                number_format($receipt->items->sum('total_cost'), 2)
                                 }}</span></div>
                     </div>
                     <div class="row">
                         <div class="col-6">Tax</div>
-                        <div class="col-6"><span id="receipt_items_total_tax">{{ number_format($total_tax, 2)
+                        <div class="col-6"><span id="receipt_items_total_tax">{{
+                                number_format($receipt->items->sum('vat'), 2)
                                 }}</span></div>
                     </div>
                     <div class="row">
                         <div class="col-6">Total After Tax</div>
-                        <div class="col-6"><span id="receipt_items_total_after_tax">{{ number_format($total_after_tax,
+                        <div class="col-6"><span id="receipt_items_total_after_tax">{{
+                                number_format($receipt->items->sum('total_cost_after_vat'),
                                 2)
                                 }}</span></div>
                     </div>
@@ -172,9 +140,9 @@ $currencies = Helper::get_currencies();
 
 <script>
     let tax_rate = {{ $receipt->tax->rate / 100 }};
-    let receipt_items_total = parseFloat({{ $total }});
-    let receipt_items_total_tax = parseFloat({{ $total_tax }});
-    let receipt_items_total_after_tax = parseFloat({{ $total_after_tax }});
+    let receipt_items_total = parseFloat({{ $receipt->items->sum('total_cost') }});
+    let receipt_items_total_tax = parseFloat({{ $receipt->items->sum('vat') }});
+    let receipt_items_total_after_tax = parseFloat({{ $receipt->items->sum('total_cost_after_vat') }});
 
     function addReceiptItemRow() {
         var table = document.getElementById("receiptItemsTable").getElementsByTagName('tbody')[0];
