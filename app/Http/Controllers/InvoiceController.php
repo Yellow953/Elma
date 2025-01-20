@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Item;
 use App\Models\Log;
+use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\Tax;
 use App\Models\Transaction;
@@ -19,19 +20,20 @@ class InvoiceController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:invoices.read')->only('index');
+        $this->middleware('permission:invoices.read')->only(['index', 'show']);
         $this->middleware('permission:invoices.create')->only(['new', 'create']);
         $this->middleware('permission:invoices.update')->only(['edit', 'update']);
-        $this->middleware('permission:invoices.delete')->only('destroy');
+        $this->middleware('permission:invoices.delete')->only(['destroy', 'item_destroy']);
         $this->middleware('permission:invoices.export')->only('export');
     }
 
     public function index()
     {
-        $invoices = Invoice::select('id', 'invoice_number', 'date', 'client_id', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $invoices = Invoice::select('id', 'invoice_number', 'date', 'client_id', 'currency_id', 'shipment_id')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
 
-        $data = compact('invoices', 'clients');
+        $data = compact('invoices', 'clients', 'shipments');
         return view('invoices.index', $data);
     }
 
@@ -42,8 +44,9 @@ class InvoiceController extends Controller
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
         $currencies = Helper::get_currencies();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
 
-        $data = compact('clients', 'items', 'taxes', 'suppliers', 'currencies');
+        $data = compact('clients', 'items', 'taxes', 'suppliers', 'currencies', 'shipments');
         return view('invoices.new', $data);
     }
 
@@ -51,6 +54,7 @@ class InvoiceController extends Controller
     {
         $request->validate([
             'client_id' => 'required|exists:clients,id',
+            'shipment_id' => 'required|exists:shipments,id',
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
@@ -66,10 +70,12 @@ class InvoiceController extends Controller
         $invoice = Invoice::create([
             'invoice_number' => $number,
             'client_id' => $request->client_id,
+            'shipment_id' => $request->shipment_id,
             'tax_id' => $request->tax_id,
             'currency_id' => $request->currency_id,
             'date' => $request->date,
             'type' => 'invoice',
+            'sales_order_id' => $request->sales_order_id ?? null,
         ]);
 
         $total_price = 0;
@@ -79,7 +85,6 @@ class InvoiceController extends Controller
         $tax_rate = $invoice->tax->rate / 100;
 
         foreach ($request->item_id as $key => $itemId) {
-            $item = Item::findOrFail($itemId);
             $quantity = $request->quantity[$key];
             $unit_price = $request->unit_price[$key];
             $supplier_id = $request->supplier_id[$key] ?? null;
@@ -94,9 +99,7 @@ class InvoiceController extends Controller
                 'supplier_id' => $supplier_id,
                 'type' => $supplier_id ? 'expense' : 'item',
                 'quantity' => $quantity,
-                'unit_cost' => 0,
                 'unit_price' => $unit_price,
-                'total_cost' => 0,
                 'total_price' => $line_total,
                 'vat' => $line_tax,
                 'total_price_after_vat' => $line_total_after_tax,
@@ -187,122 +190,131 @@ class InvoiceController extends Controller
     public function edit(Invoice $invoice)
     {
         $items = Item::select('id', 'name', 'unit_price', 'type')->get();
-        $taxes = Tax::select('id', 'name', 'rate')->get();
 
         $total = 0;
         $total_tax = 0;
         $total_after_tax = 0;
 
-        foreach ($invoice->invoice_items as $item) {
+        foreach ($invoice->items as $item) {
             $total += $item->total_price;
             $total_tax += $item->vat;
             $total_after_tax += $item->total_price_after_vat;
         }
 
-        $data = compact('invoice', 'items', 'taxes', 'total', 'total_tax', 'total_after_tax');
+        $data = compact('invoice', 'items', 'total', 'total_tax', 'total_after_tax');
         return view('invoices.edit', $data);
     }
 
     public function update(Invoice $invoice, Request $request)
     {
         $request->validate([
-            'tax_id' => 'required|exists:taxes,id',
-            'currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
         ]);
 
         $invoice->update([
-            'tax_id' => $request->input('tax_id'),
-            'currency_id' => $request->input('currency_id'),
-            'date' => $request->input('date'),
+            'date' => $request->date,
         ]);
 
-        $taxes = 0;
-        $total_after_tax = 0;
+        if ($request->item_id) {
+            $total_price = 0;
+            $total_tax = 0;
+            $total_after_tax = 0;
+            $tax_rate = $invoice->tax->rate / 100;
 
-        $tax_rate = Tax::find($request->input('tax_id'))->rate / 100;
-        if ($request->input('item_id')[0] != null) {
-            foreach ($request->input('item_id') as $key => $itemId) {
-                $item = Item::find($itemId);
-                $quantity = $request->input('quantity')[$key];
-                $unit_cost =  $item->unit_cost;
-                $unit_price =  $request->input('unit_price')[$key];
-                $tc = $quantity * $unit_cost;
-                $tp = $quantity * $unit_price;
+            foreach ($request->item_id as $key => $itemId) {
+                $quantity = $request->quantity[$key];
+                $unit_price = $request->unit_price[$key];
+                $supplier_id = $request->supplier_id[$key] ?? null;
+
+                $line_total = $quantity * $unit_price;
+                $line_tax = $line_total * $tax_rate;
+                $line_total_after_tax = $line_total + $line_tax;
 
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'item_id' => $itemId,
+                    'supplier_id' => $supplier_id,
+                    'type' => $supplier_id ? 'expense' : 'item',
                     'quantity' => $quantity,
-                    'unit_cost' => $unit_cost,
-                    'total_cost' => $tc,
                     'unit_price' => $unit_price,
-                    'total_price' => $tp,
-                    'vat' => ($tp * $tax_rate),
-                    'total_price_after_vat' =>  $tp + ($tp * $tax_rate),
+                    'total_price' => $line_total,
+                    'vat' => $line_tax,
+                    'total_price_after_vat' => $line_total_after_tax,
                 ]);
-                $taxes += ($tp * $tax_rate);
-                $total_after_tax += $tp + ($tp * $tax_rate);
 
-                // create inventory credit transaction
-                $inventory_account = $item->inventory_account;
+                $total_price += $line_total;
+                $total_tax += $line_tax;
+                $total_after_tax += $line_total_after_tax;
+
+                if ($supplier_id) {
+                    // Supplier Payable Transaction
+                    $supplier_account = Supplier::find($supplier_id)->payable_account;
+                    Transaction::create([
+                        'user_id' => auth()->id(),
+                        'account_id' => $supplier_account->id,
+                        'supplier_id' => $supplier_id,
+                        'currency_id' => $invoice->currency_id,
+                        'debit' => 0,
+                        'credit' => $line_total_after_tax,
+                        'balance' => -$line_total_after_tax,
+                        'title' => 'Supplier Payable',
+                        'description' => "Payable recorded for supplier on Invoice {$invoice->invoice_number}",
+                    ]);
+
+                    // Expense Transaction
+                    $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+                    Transaction::create([
+                        'user_id' => auth()->id(),
+                        'account_id' => $expense_account->id,
+                        'currency_id' => $invoice->currency_id,
+                        'debit' => $line_total_after_tax,
+                        'credit' => 0,
+                        'balance' => $line_total_after_tax,
+                        'title' => 'Expense Recorded',
+                        'description' => "Expense recorded for supplier on Invoice {$invoice->invoice_number}",
+                    ]);
+                }
+            }
+
+            if ($total_tax != 0) {
+                // Tax Payable Transaction
                 Transaction::create([
-                    'user_id' => auth()->user()->id,
-                    'account_id' => $inventory_account->id,
+                    'user_id' => auth()->id(),
+                    'account_id' => $invoice->tax->account->id,
                     'currency_id' => $invoice->currency_id,
                     'debit' => 0,
-                    'credit' => $tc,
-                    'balance' => 0 - $tc,
-                ]);
-
-                // create cost of sales debit transaction
-                $cost_of_sales_account = Item::find($itemId)->cost_of_sales_account;
-                Transaction::create([
-                    'user_id' => auth()->user()->id,
-                    'account_id' => $cost_of_sales_account->id,
-                    'currency_id' => $invoice->currency_id,
-                    'debit' => $tc,
-                    'credit' => 0,
-                    'balance' => $tc,
-                ]);
-
-                // create sales credit transaction
-                $sales_account = Item::find($itemId)->sales_account;
-                Transaction::create([
-                    'user_id' => auth()->user()->id,
-                    'account_id' => $sales_account->id,
-                    'currency_id' => $invoice->currency_id,
-                    'debit' => 0,
-                    'credit' => $tp,
-                    'balance' => 0 - $tp,
+                    'credit' => $total_tax,
+                    'balance' => -$total_tax,
+                    'title' => 'Tax Payable',
+                    'description' => "Tax payable recorded for Invoice {$invoice->invoice_number}",
                 ]);
             }
-        }
 
-        // create taxes credit transaction
-        $tax_account = $invoice->tax->account;
-        if ($taxes != 0) {
+            // Client Receivable Transaction
+            $receivable_account = $invoice->client->receivable_account;
             Transaction::create([
-                'user_id' => auth()->user()->id,
-                'account_id' => $tax_account->id,
-                'currency_id' => $invoice->currency_id,
-                'debit' => 0,
-                'credit' => $taxes,
-                'balance' => 0 - $taxes,
-            ]);
-        }
-
-        // create client debit transaction
-        $receivable_account = $invoice->client->receivable_account;
-        if ($total_after_tax != 0) {
-            Transaction::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => auth()->id(),
                 'account_id' => $receivable_account->id,
                 'client_id' => $invoice->client_id,
                 'currency_id' => $invoice->currency_id,
                 'debit' => $total_after_tax,
                 'credit' => 0,
                 'balance' => $total_after_tax,
+                'title' => 'Client Receivable',
+                'description' => "Receivable recorded for client on Invoice {$invoice->invoice_number}",
+            ]);
+
+            // Revenue Transaction
+            $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
+            Transaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $revenue_account->id,
+                'currency_id' => $invoice->currency_id,
+                'debit' => 0,
+                'credit' => $total_after_tax + $total_tax,
+                'balance' => -$total_after_tax + $total_tax,
+                'title' => 'Revenue Recorded',
+                'description' => "Revenue recorded for Invoice {$invoice->invoice_number}",
             ]);
         }
 
@@ -314,25 +326,16 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $total_cost = 0;
-        $total_price = 0;
-        $total_tax = 0;
-        $total_after_tax = 0;
+        $items = $invoice->items;
+        $shipment = $invoice->shipment;
 
-        foreach ($invoice->items as $item) {
-            $total_cost += $item->total_cost;
-            $total_price += $item->total_price;
-            $total_tax += $item->vat;
-            $total_after_tax += $item->total_price_after_vat;
-        }
-
-        $data = compact('invoice', 'total_cost', 'total_price', 'total_tax', 'total_after_tax');
+        $data = compact('invoice', 'items', 'shipment');
         return view('invoices.show', $data);
     }
 
     public function items(Invoice $invoice)
     {
-        $items = $invoice->invoice_items;
+        $items = $invoice->items;
 
         $customizedItems = [];
         $index = 0;
@@ -354,6 +357,10 @@ class InvoiceController extends Controller
         if ($invoice->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted Invoice : " . $invoice->invoice_number . ", datetime :   " . now();
 
+            foreach ($invoice->items as $item) {
+                $item->delete();
+            }
+
             Log::create(['text' => $text]);
             $invoice->delete();
 
@@ -361,5 +368,12 @@ class InvoiceController extends Controller
         } else {
             return redirect()->back()->with('error', 'Unable to delete...');
         }
+    }
+
+    public function item_destroy(InvoiceItem $invoice_item)
+    {
+        $invoice_item->delete();
+
+        return redirect()->back()->with('success', 'Invoice Item deleted successfully!');
     }
 }

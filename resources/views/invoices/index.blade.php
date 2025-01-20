@@ -21,35 +21,63 @@
     <form action="{{ route('invoices') }}" method="get" enctype="multipart/form-data">
         @csrf
 
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="invoice_number">Number</label>
-                <div>
-                    <input type="text" class="form-control border" name="invoice_number" placeholder="Invoice Number"
-                        value="{{request()->query('invoice_number')}}">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="invoice_number">Number</label>
+                        <div>
+                            <input type="text" class="form-control border" name="invoice_number"
+                                placeholder="Invoice Number" value="{{request()->query('invoice_number')}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="date">Date</label>
+                        <div>
+                            <input type="date" class="form-control border" name="date"
+                                value="{{request()->query('date')}}">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="client_id">Client</label>
-                <div>
-                    <select name="client_id" id="client_id" class="form-select select2">
-                        <option value=""></option>
-                        @foreach ($clients as $client)
-                        <option value="{{ $client->id }}" {{ $client->id ==
-                            request()->query('client_id') ?
-                            'selected' : '' }}>{{ $client->name }}</option>
-                        @endforeach
-                    </select>
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="client_id">Client</label>
+                        <div>
+                            <select name="client_id" id="client_id" class="form-select select2">
+                                <option value=""></option>
+                                @foreach ($clients as $client)
+                                <option value="{{ $client->id }}" {{ $client->id ==
+                                    request()->query('client_id') ?
+                                    'selected' : '' }}>{{ $client->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="date">Date</label>
-                <div>
-                    <input type="date" class="form-control border" name="date" value="{{request()->query('date')}}">
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="shipment_id">Shipment</label>
+                        <div>
+                            <select name="shipment_id" id="shipment_id" class="form-select select2">
+                                <option value=""></option>
+                                @foreach ($shipments as $shipment)
+                                <option value="{{ $shipment->id }}" {{ $shipment->id ==
+                                    request()->query('shipment_id') ?
+                                    'selected' : '' }}>{{ $shipment->shipment_number }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -85,6 +113,7 @@
                             <thead>
                                 <tr>
                                     <th>Invoice Number</th>
+                                    <th>Shipment</th>
                                     <th>Client</th>
                                     <th>Currency</th>
                                     <th>Date</th>
@@ -96,6 +125,9 @@
                                 <tr class="rounded">
                                     <td>
                                         <p>{{ $invoice->invoice_number }}</p>
+                                    </td>
+                                    <td>
+                                        <p>{{ $invoice->shipment->shipment_number }}</p>
                                     </td>
                                     <td>
                                         <p>{{ ucwords($invoice->client->name) }}</p>

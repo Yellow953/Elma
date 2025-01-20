@@ -200,6 +200,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export', [InvoiceController::class, 'export'])->name('invoices.export');
         Route::get('/new', [InvoiceController::class, 'new'])->name('invoices.new');
         Route::post('/create', [InvoiceController::class, 'create'])->name('invoices.create');
+        Route::get('/items/{invoice_item}/delete', [InvoiceController::class, 'item_destroy'])->name('invoices.items.destroy');
         Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
         Route::post('/{invoice}/update', [InvoiceController::class, 'update'])->name('invoices.update');
         Route::get('/{invoice}/delete', [InvoiceController::class, 'destroy'])->name('invoices.destroy');

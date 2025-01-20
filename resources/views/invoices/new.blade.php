@@ -62,20 +62,19 @@
 
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline row mb-3">
-                                    <label for="date" class="col-md-4 col-form-label text-md-end">{{
-                                        __('Date *') }}</label>
+                                    <label for="shipment_id" class="col-md-4 col-form-label text-md-end">{{ __('Shipment
+                                        *') }}</label>
 
                                     <div class="col-md-8">
-                                        <input id="date" type="date"
-                                            class="form-control date-input @error('date') is-invalid @enderror"
-                                            name="date" required autocomplete="date"
-                                            value="{{ old('date') ?? date('Y-m-d') }}">
-
-                                        @error('date')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
+                                        <select name="shipment_id" id="shipment_id" required
+                                            class="form-select select2">
+                                            <option value=""></option>
+                                            @foreach ($shipments as $shipment)
+                                            <option value="{{ $shipment->id }}" {{ $shipment->id == old('shipment_id') ?
+                                                'selected':'' }}>{{ $shipment->shipment_number }}
+                                            </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -118,6 +117,26 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-6">
+                                <div class="input-group input-group-outline row mb-3">
+                                    <label for="date" class="col-md-4 col-form-label text-md-end">{{
+                                        __('Date *') }}</label>
+
+                                    <div class="col-md-8">
+                                        <input id="date" type="date"
+                                            class="form-control date-input @error('date') is-invalid @enderror"
+                                            name="date" required autocomplete="date"
+                                            value="{{ old('date') ?? date('Y-m-d') }}">
+
+                                        @error('date')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-end mt-4">
                                 <button class="btn btn-info nextBtn ignore-confirm" type="button">Next</button>
                             </div>
@@ -131,9 +150,7 @@
                                             <th class="text-sm">Item</th>
                                             <th class="text-sm">Supplier</th>
                                             <th class="text-sm">Quantity</th>
-                                            <th class="text-sm">Unit Cost</th>
                                             <th class="text-sm">Unit Price</th>
-                                            <th class="text-sm">Total Cost</th>
                                             <th class="text-sm">Total Price</th>
                                         </tr>
                                     </thead>
@@ -167,16 +184,8 @@
                                                     required min="0" value="0" step="any">
                                             </td>
                                             <td>
-                                                <input type="number" name="unit_cost[]" class="form-control border"
-                                                    required min="0" value="0" step="any">
-                                            </td>
-                                            <td>
                                                 <input type="number" name="unit_price[]" class="form-control border"
                                                     required min="0" value="0" step="any">
-                                            </td>
-                                            <td>
-                                                <input type="number" name="total_cost[]" class="form-control border"
-                                                    required min="0" value="0" step="any" disabled>
                                             </td>
                                             <td>
                                                 <input type="number" name="total_price[]" class="form-control border"
@@ -238,7 +247,6 @@
         const supplierSelect2Container = $(supplierSelect).next('.select2-container');
 
         if (selectedItem) {
-            newRow.querySelector('input[name^="unit_cost"]').value = selectedItem.unit_cost;
             newRow.querySelector('input[name^="unit_price"]').value = selectedItem.unit_price;
 
             // Show/hide supplier select based on item type
@@ -312,13 +320,10 @@
 
     function updateInvoiceItemRow(row) {
         var quantity = parseFloat(row.querySelector('input[name^="quantity"]').value) || 0;
-        var unitCost = parseFloat(row.querySelector('input[name^="unit_cost"]').value) || 0;
         var unitPrice = parseFloat(row.querySelector('input[name^="unit_price"]').value) || 0;
 
-        var totalCost = quantity * unitCost;
         var totalPrice = quantity * unitPrice;
 
-        row.querySelector('input[name^="total_cost"]').value = totalCost.toFixed(2);
         row.querySelector('input[name^="total_price"]').value = totalPrice.toFixed(2);
 
         updateInvoiceTotal();
@@ -332,7 +337,7 @@
 
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
             var total_price = parseFloat(row.querySelector('input[name^="total_price"]').value) || 0;
-            
+
             total += total_price;
             total_tax += total_price * tax_rate;
             total_after_tax += total_price + (total_price * tax_rate);
@@ -355,7 +360,6 @@
         }
 
         row.querySelector('input[name^="quantity"]').value = data.quantity;
-        // row.querySelector('input[name^="unit_cost"]').value = ;
         row.querySelector('input[name^="unit_price"]').value = data.unit_price;
         row.querySelector('input[name^="total_price"]').value = data.unit_price * data.quantity;
     }
@@ -366,14 +370,12 @@
         var selectedItem = items.find(item => item.id == itemId);
 
         if (selectedItem) {
-            // row.querySelector('input[name^="unit_cost"]').value = ;
             row.querySelector('input[name^="unit_price"]').value = selectedItem.unit_price;
         }
     }
 
     function updateItemFields(row, selectedItem) {
         if (selectedItem) {
-            row.querySelector('input[name^="unit_cost"]').value = selectedItem.unit_cost;
             row.querySelector('input[name^="unit_price"]').value = selectedItem.unit_price;
         }
     }
@@ -475,13 +477,18 @@
         document.getElementById('tax_id').dispatchEvent(new Event('input'));
     @endif
 
+    // Fill Client Field
+    @if($sales_order->shipment_id)
+        document.getElementById('shipment_id').value = {{ $sales_order->shipment_id }};
+        document.getElementById('shipment_id').dispatchEvent(new Event('input'));
+    @endif
+
     // Fill Receipt Items from SO Items
     @foreach($sales_order->shipment->items as $sales_order_item)
         addSOItems({
             item_id: {{ $sales_order_item->item_id }},
             supplier_id: {{ $sales_order_item->supplier_id ?? 0 }},
             quantity: {{ $sales_order_item->quantity }},
-            // unit_cost: {{ $sales_order_item->item->unit_cost }},
             unit_price: {{ $sales_order_item->item->unit_price }},
         });
     @endforeach

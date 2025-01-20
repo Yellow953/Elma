@@ -15,8 +15,6 @@ return new class extends Migration
             $table->string('type')->default('item');
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->double('quantity')->unsigned();
-            $table->double('unit_cost')->unsigned();
-            $table->double('total_cost')->unsigned();
             $table->double('unit_price')->unsigned();
             $table->double('total_price')->unsigned();
             $table->double('vat')->unsigned();

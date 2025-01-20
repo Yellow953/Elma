@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <div class="row mb-5">
                     <div class="col-md-6">
                         <strong>SO Number:</strong> {{ $purchase_order->po_number }} <br>

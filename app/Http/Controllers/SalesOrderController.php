@@ -196,12 +196,13 @@ class SalesOrderController extends Controller
     public function new_invoice(SalesOrder $sales_order)
     {
         $clients = Client::select('id', 'name', 'tax_id')->get();
+        $shipments = Shipment::select('id', 'shipment_number')->get();
         $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
         $currencies = Helper::get_currencies();
 
-        $data = compact('clients', 'items', 'taxes', 'sales_order', 'suppliers', 'currencies');
+        $data = compact('clients', 'items', 'taxes', 'sales_order', 'suppliers', 'currencies', 'shipments');
         return view('invoices.new', $data);
     }
 

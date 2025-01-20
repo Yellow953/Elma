@@ -22,6 +22,11 @@ class Invoice extends Model
         return $this->belongsTo(Client::class);
     }
 
+    public function shipment()
+    {
+        return $this->belongsTo(Shipment::class);
+    }
+
     public function tax()
     {
         return $this->belongsTo(Tax::class);
@@ -53,6 +58,10 @@ class Invoice extends Model
         if (request('client_id')) {
             $client_id = request('client_id');
             $q->where('client_id', $client_id);
+        }
+        if (request('shipment_id')) {
+            $shipment_id = request('shipment_id');
+            $q->where('shipment_id', $shipment_id);
         }
         if (request('currency_id')) {
             $currency_id = request('currency_id');
