@@ -65,7 +65,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="card mt-4" id="logs">
                 <div class="card-header p-4">
                     <h5 class="mb-0">Logs</h5>
@@ -74,8 +74,7 @@
                     <div class="timeline">
                         @forelse ($logs as $l)
                         <div class="timeline-item">
-                            <div
-                                class="alert alert-secondary alert-{{Str::contains($l->text, 'edited') ? 'warning' : ''}} alert-dismissible text-white mx-0">
+                            <div class="alert alert-secondary alert-dismissible text-white mx-0 py-2 px-3">
                                 <span class="text-sm">{{$l->text}}</span>
                             </div>
                         </div>
