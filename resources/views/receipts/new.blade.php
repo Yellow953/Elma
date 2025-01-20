@@ -5,21 +5,9 @@
 @section('sub-title', 'new')
 
 @section('content')
-
-@php
-$currencies = Helper::get_currencies();
-@endphp
-
 <link rel="stylesheet" href="{{ asset('assets/css/stepper.css') }}">
 
 <div class="inner-container w-100 m-0">
-    <div class="d-flex justify-content-around">
-        <a href="{{ route('suppliers.new') }}" class="btn btn-info px-3 py-2 mx-1">
-            <i class="fa-solid fa-plus"></i> Supplier</a>
-        <a href="{{ route('items.new') }}" class="btn btn-info px-3 py-2 mx-1">
-            <i class="fa-solid fa-plus"></i> Item</a>
-    </div>
-
     <div class="inner-container w-100 m-0 px-4 px-md-5 pt-3">
         <div class="card">
             <div class="card-header bg-info border-b">
@@ -51,7 +39,9 @@ $currencies = Helper::get_currencies();
                         enctype="multipart/form-data">
                         @csrf
 
-                        <input type="hidden" name="purchase_order_id" value="{{ $purchase_order->id ?? '' }}">
+                        @if (isset($purchase_order))
+                        <input type="hidden" name="purchase_order_id" value="{{ $purchase_order->id }}">
+                        @endif
 
                         <div class="row setup-content" id="step-1">
                             <div class="col-md-6">
@@ -242,7 +232,12 @@ $currencies = Helper::get_currencies();
 
 <script src="{{ asset('assets/js/stepper.js') }}"></script>
 <script>
-    let tax_rate = {{ $purchase_order->supplier->tax->rate/100 ?? 0 }};
+    @if (isset($purchase_order))
+        let tax_rate = {{ $purchase_order->supplier->tax->rate/100 ?? 0 }};
+    @else
+        let tax_rate = 0;
+    @endif
+
 
     function addReceiptItemRow() {
         var table = document.getElementById("receiptItemsTable").getElementsByTagName('tbody')[0];

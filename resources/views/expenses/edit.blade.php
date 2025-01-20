@@ -46,53 +46,6 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="user_id" class="col-md-5 col-form-label text-md-end">{{ __('User *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="user_id" id="user_id" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($users as $user)
-                            <option value="{{ $user->id }}" {{ $user->id==$expense->user_id ?
-                                'selected' : '' }}>{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Currency *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="currency_id" id="currency_id" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach (Helper::get_currencies() as $currency)
-                            <option value="{{ $currency->id }}" {{ $currency->id==$expense->currency_id ?
-                                'selected' : '' }}>{{ $currency->code }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="amount" class="col-md-5 col-form-label text-md-end">{{ __('Amount *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <input id="amount" type="number" placeholder="Amount"
-                            class="form-control @error('amount') is-invalid @enderror" name="amount" required min="0"
-                            step="any" autocomplete="amount" value="{{ $expense->amount }}">
-
-                        @error('amount')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="description" class="col-md-5 col-form-label text-md-end">{{ __('Description *')
                         }}</label>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Account;
 use App\Models\Item;
 use App\Models\Log;
@@ -39,8 +40,9 @@ class ReceiptController extends Controller
         $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->where('type', 'expense')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
-        $data = compact('suppliers', 'items', 'taxes');
+        $currencies = Helper::get_currencies();
 
+        $data = compact('suppliers', 'items', 'taxes', 'currencies');
         return view('receipts.new', $data);
     }
 

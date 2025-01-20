@@ -45,21 +45,6 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="user_id" class="col-md-5 col-form-label text-md-end">{{ __('User *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="user_id" id="user_id" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach ($users as $user)
-                            <option value="{{ $user->id }}" {{ $user->id==old('user_id') ?
-                                'selected' : '' }}>{{ $user->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="currency_id" class="col-md-5 col-form-label text-md-end">{{ __('Currency *')
                         }}</label>
 
@@ -114,7 +99,7 @@
 
                     <div class="col-md-6">
                         <input id="date" type="date" class="form-control @error('date') is-invalid @enderror"
-                            name="date" required value="{{ old('date') }}">
+                            name="date" required value="{{ old('date') ?? date('Y-m-d') }}">
 
                         @error('date')
                         <span class="invalid-feedback" role="alert">

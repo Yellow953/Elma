@@ -6,13 +6,6 @@
 
 @section('content')
 <div class="inner-container w-100 m-0 p-5">
-    <div class="d-flex justify-content-around">
-        <a href="{{ route('suppliers.new') }}" class="btn btn-info px-3 py-2 mx-1">
-            <i class="fa-solid fa-plus"></i> Supplier</a>
-        <a href="{{ route('items.new') }}" class="btn btn-info px-3 py-2 mx-1">
-            <i class="fa-solid fa-plus"></i> Item</a>
-    </div>
-
     <div class="card">
         <div class="card-header bg-info border-b">
             <h4 class="font-weight-bolder">Edit Receipt</h4>

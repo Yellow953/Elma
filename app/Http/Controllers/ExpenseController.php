@@ -36,11 +36,10 @@ class ExpenseController extends Controller
 
     public function new()
     {
-        $users = User::select('id', 'name')->get();
         $currencies = Currency::select('id', 'code')->get();
         $types = Helper::get_expense_types();
 
-        $data = compact('users', 'currencies', 'types');
+        $data = compact('currencies', 'types');
         return view('expenses.new', $data);
     }
 
@@ -50,14 +49,21 @@ class ExpenseController extends Controller
             'title' => 'required|string|max:255',
             'type' => 'required',
             'date' => 'required|date',
-            'user_id' => 'required',
             'amount' => 'required|numeric|min:0',
             'currency_id' => 'required',
             'description' => 'nullable',
         ]);
 
         // Create the expense record
-        $expense = Expense::create($request->all());
+        $expense = Expense::create([
+            'title' => $request->title,
+            'type' => $request->type,
+            'currency_id' => $request->currency_id,
+            'amount' => $request->amount,
+            'date' => $request->date,
+            'description' => $request->description,
+            'user_id' => auth()->id(),
+        ]);
 
         // Expense Account (Debit)
         $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
@@ -94,11 +100,9 @@ class ExpenseController extends Controller
 
     public function edit(Expense $expense)
     {
-        $users = User::select('id', 'name')->get();
-        $currencies = Currency::select('id', 'code')->get();
         $types = Helper::get_expense_types();
 
-        $data = compact('expense', 'users', 'currencies', 'types');
+        $data = compact('expense', 'types');
         return view('expenses.edit', $data);
     }
 
@@ -108,9 +112,6 @@ class ExpenseController extends Controller
             'title' => 'required|string|max:255',
             'type' => 'required',
             'date' => 'required|date',
-            'user_id' => 'required',
-            'amount' => 'required|numeric|min:0',
-            'currency_id' => 'required',
             'description' => 'nullable',
         ]);
 
