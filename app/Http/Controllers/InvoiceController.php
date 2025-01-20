@@ -136,17 +136,19 @@ class InvoiceController extends Controller
             }
         }
 
-        // Tax Payable Transaction
-        Transaction::create([
-            'user_id' => auth()->id(),
-            'account_id' => $invoice->tax->account->id,
-            'currency_id' => $invoice->currency_id,
-            'debit' => 0,
-            'credit' => $total_tax,
-            'balance' => -$total_tax,
-            'title' => 'Tax Payable',
-            'description' => "Tax payable recorded for Invoice {$invoice->invoice_number}",
-        ]);
+        if ($total_tax != 0) {
+            // Tax Payable Transaction
+            Transaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $invoice->tax->account->id,
+                'currency_id' => $invoice->currency_id,
+                'debit' => 0,
+                'credit' => $total_tax,
+                'balance' => -$total_tax,
+                'title' => 'Tax Payable',
+                'description' => "Tax payable recorded for Invoice {$invoice->invoice_number}",
+            ]);
+        }
 
         // Client Receivable Transaction
         $receivable_account = $invoice->client->receivable_account;

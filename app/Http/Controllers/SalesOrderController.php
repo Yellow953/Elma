@@ -12,9 +12,6 @@ use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\Tax;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 class SalesOrderController extends Controller
 {
@@ -91,7 +88,7 @@ class SalesOrderController extends Controller
     public function show(SalesOrder $sales_order)
     {
         $shipment = $sales_order->shipment;
-        
+
         $data = compact('sales_order', 'shipment');
         return view('sales_orders.show', $data);
     }

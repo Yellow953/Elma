@@ -9,10 +9,7 @@ use App\Models\PurchaseOrderItem;
 use App\Models\Shipment;
 use App\Models\Supplier;
 use App\Models\Tax;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 class PurchaseOrderController extends Controller
 {

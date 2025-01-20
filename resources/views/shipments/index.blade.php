@@ -186,7 +186,7 @@
                                     <td>
                                         {{ $shipment->vessel_name }} <br>
                                         {{ $shipment->vessel_date }}
-                                        
+
                                     </td>
                                     <td>
                                         Booking Number: {{ $shipment->booking_number }} <br>
@@ -233,13 +233,13 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6">
+                                    <td colspan="8">
                                         No Shipments Found ...
                                     </td>
                                 </tr>
                                 @endforelse
                                 <tr>
-                                    <td colspan="6">{{ $shipments->appends(request()->all())->links() }}</td>
+                                    <td colspan="8">{{ $shipments->appends(request()->all())->links() }}</td>
                                 </tr>
                             </tbody>
                         </table>
