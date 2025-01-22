@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Account;
 use App\Models\Log;
 use App\Models\Supplier;
@@ -28,16 +29,20 @@ class SupplierController extends Controller
 
     public function new()
     {
-        return view('suppliers.new');
+        $currencies = Helper::get_currencies();
+        $taxes = Helper::get_taxes();
+
+        $data = compact('currencies', 'taxes');
+        return view('suppliers.new', $data);
     }
 
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|max:255|unique:suppliers',
-            'email' => 'required|email|max:255|unique:suppliers',
-            'phone' => 'required|max:255',
-            'vat_number' => 'required|max:255|unique:suppliers',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|max:255',
+            'vat_number' => 'nullable|max:255',
             'tax_id' => 'required',
             'currency_id' => 'required',
         ]);
@@ -72,16 +77,20 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
-        return view('suppliers.edit', compact('supplier'));
+        $currencies = Helper::get_currencies();
+        $taxes = Helper::get_taxes();
+
+        $data = compact('currencies', 'taxes', 'supplier');
+        return view('suppliers.edit', $data);
     }
 
     public function update(Supplier $supplier, Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone' => ['required', 'max:255'],
-            'vat_number' => ['required', 'max:255'],
+            'name' => 'required|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|max:255',
+            'vat_number' => 'nullable|max:255',
             'tax_id' => 'required',
             'currency_id' => 'required',
         ]);

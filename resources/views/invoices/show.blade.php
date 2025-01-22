@@ -124,6 +124,7 @@
                             </thead>
                             <tbody class="text-center">
                                 @forelse ($items as $item)
+                                @if ($item->type == 'item')
                                 <tr>
                                     <td class="col-4">
                                         {{ $item->description }}
@@ -134,6 +135,7 @@
                                     <td class="col-2">{{ $invoice->currency->symbol }}{{
                                         number_format($item->total_price, 2) }}</td>
                                 </tr>
+                                @endif
                                 @empty
                                 <tr>
                                     <td colspan="4">No Invoice Items Yet</td>
@@ -144,19 +146,19 @@
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>
                                     <th>Total</th>
-                                    <th>{{ $invoice->currency->symbol }}{{ number_format($items->sum('total_price'), 2)
+                                    <th>{{ $invoice->currency->symbol }}{{ number_format($total, 2)
                                         }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>
                                     <th>Tax</th>
-                                    <th>{{ $invoice->currency->symbol }}{{ number_format($items->sum('vat'), 2) }}</th>
+                                    <th>{{ $invoice->currency->symbol }}{{ number_format($vat, 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
                                     <th colspan="2"></th>
                                     <th>Total Price After VAT</th>
                                     <th>{{ $invoice->currency->symbol }}{{
-                                        number_format($items->sum('total_price_after_vat'), 2) }}</th>
+                                        number_format($total_price_after_vat, 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>

@@ -107,10 +107,6 @@ class InvoiceController extends Controller
                 'total_price_after_vat' => $line_total_after_tax,
             ]);
 
-            $total_price += $line_total;
-            $total_tax += $line_tax;
-            $total_after_tax += $line_total_after_tax;
-
             if ($supplier_id) {
                 // Supplier Payable Transaction
                 $supplier_account = Supplier::find($supplier_id)->payable_account;
@@ -138,6 +134,10 @@ class InvoiceController extends Controller
                     'title' => 'Expense Recorded',
                     'description' => "Expense recorded for supplier on Invoice {$invoice->invoice_number}",
                 ]);
+            } else {
+                $total_price += $line_total;
+                $total_tax += $line_tax;
+                $total_after_tax += $line_total_after_tax;
             }
         }
 
@@ -220,7 +220,19 @@ class InvoiceController extends Controller
         $items = $invoice->items;
         $shipment = $invoice->shipment;
 
-        $data = compact('invoice', 'items', 'shipment');
+        $total = 0;
+        $vat = 0;
+        $total_price_after_vat = 0;
+
+        foreach ($items as $item) {
+            if ($item->type == 'item') {
+                $total += $item->total_price;
+                $vat += $item->vat;
+                $total_price_after_vat += $item->total_price_after_vat;
+            }
+        }
+
+        $data = compact('invoice', 'items', 'shipment', 'total', 'vat', 'total_price_after_vat');
         return view('invoices.show', $data);
     }
 

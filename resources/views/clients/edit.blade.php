@@ -30,11 +30,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email *') }}</label>
+                    <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email') }}</label>
 
                     <div class="col-md-6">
                         <input id="email" type="email" class=" form-control @error('email') is-invalid @enderror"
-                            name="email" required value="{{$client->email}}">
+                            name="email" value="{{$client->email}}">
 
                         @error('email')
                         <span class="invalid-feedback" role="alert">
@@ -45,12 +45,12 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="phone" class="col-md-5 col-form-label text-md-end">{{ __('Phone Number *')
+                    <label for="phone" class="col-md-5 col-form-label text-md-end">{{ __('Phone Number')
                         }}</label>
 
                     <div class="col-md-6">
                         <input id="phone" type="tel" class=" form-control @error('phone') is-invalid @enderror"
-                            name="phone" required value="{{$client->phone}}">
+                            name="phone" value="{{$client->phone}}">
 
                         @error('phone')
                         <span class="invalid-feedback" role="alert">
@@ -83,7 +83,7 @@
                     <div class="col-md-6">
                         <select name="currency_id" id="currency_id" required class="form-select select2">
                             <option value=""></option>
-                            @foreach (Helper::get_currencies() as $currency)
+                            @foreach ($currencies as $currency)
                             <option value="{{ $currency->id }}" {{ $currency->id == $client->currency_id ?
                                 'selected' : '' }}>{{ $currency->code }}</option>
                             @endforeach
@@ -98,7 +98,7 @@
                     <div class="col-md-6">
                         <select name="tax_id" id="tax_id" required class="form-select select2">
                             <option value=""></option>
-                            @foreach (Helper::get_taxes() as $tax)
+                            @foreach ($taxes as $tax)
                             <option value="{{ $tax->id }}" {{ $tax->id == $client->tax_id ?
                                 'selected' : '' }}>{{ $tax->name }}</option>
                             @endforeach
@@ -107,12 +107,12 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="vat_number" class="col-md-5 col-form-label text-md-end">{{ __('Vat Number *')
+                    <label for="vat_number" class="col-md-5 col-form-label text-md-end">{{ __('Vat Number')
                         }}</label>
 
                     <div class="col-md-6">
                         <input id="vat_number" type="text"
-                            class=" form-control @error('vat_number') is-invalid @enderror" name="vat_number" required
+                            class=" form-control @error('vat_number') is-invalid @enderror" name="vat_number"
                             autocomplete="vat_number" value="{{ $client->vat_number }}">
 
                         @error('vat_number')

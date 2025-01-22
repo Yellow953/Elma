@@ -28,7 +28,7 @@
                         <label for="name">Name</label>
                         <div>
                             <input type="text" class="form-control border" name="name" placeholder="Name"
-                                value="{{request()->query('name')}}">
+                                value="{{ request()->query('name') }}">
                         </div>
                     </div>
                 </div>

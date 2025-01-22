@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Item;
 use App\Models\Log;
 use App\Models\PurchaseOrder;
@@ -195,7 +196,8 @@ class PurchaseOrderController extends Controller
         $items = Item::select('id', 'name', 'unit_price', 'unit', 'type')->where('type', 'expense')->get();
         $taxes = Tax::select('id', 'name', 'rate')->get();
         $suppliers = Supplier::select('id', 'name')->get();
-        $data = compact('suppliers', 'items', 'taxes', 'purchase_order');
+        $currencies = Helper::get_currencies();
+        $data = compact('suppliers', 'items', 'taxes', 'purchase_order', 'currencies');
 
         return view('receipts.new', $data);
     }

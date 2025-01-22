@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Account;
 use App\Models\Log;
 use App\Models\Client;
@@ -28,19 +29,23 @@ class ClientController extends Controller
 
     public function new()
     {
-        return view('clients.new');
+        $currencies = Helper::get_currencies();
+        $taxes = Helper::get_taxes();
+
+        $data = compact('currencies', 'taxes');
+        return view('clients.new', $data);
     }
 
     public function create(Request $request)
     {
-        $data = $request->validate([
+        $request->validate([
             'name' => 'required|max:255|unique:clients',
-            'email' => 'required|email|max:255|unique:clients',
-            'phone' => 'required|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|max:255',
             'address' => 'required|max:255',
             'tax_id' => 'required',
             'currency_id' => 'required',
-            'vat_number' => 'required|unique:clients',
+            'vat_number' => 'nullable|string',
         ]);
 
         $receivable_account = Account::find(Variable::where('title', 'receivable_account')->first()->value);
@@ -71,19 +76,23 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
-        return view('clients.edit', compact('client'));
+        $currencies = Helper::get_currencies();
+        $taxes = Helper::get_taxes();
+
+        $data = compact('client', 'currencies', 'taxes');
+        return view('clients.edit', $data);
     }
 
     public function update(Client $client, Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone' => ['required', 'max:255'],
-            'address' => ['required', 'max:255'],
+            'name' => 'required|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|max:255',
+            'address' => 'required|max:255',
             'tax_id' => 'required',
             'currency_id' => 'required',
-            'vat_number' => 'required',
+            'vat_number' => 'nullable|string',
         ]);
 
         if ($client->name != trim($request->name)) {

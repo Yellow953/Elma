@@ -47,12 +47,12 @@
 
                 <div class="input-group input-group-outline row my-3">
                     <label for="contact_person" class="col-md-5 col-form-label text-md-end">{{ __('Contact
-                        Person *') }}</label>
+                        Person') }}</label>
 
                     <div class="col-md-6">
                         <input id="contact_person" type="text"
-                            class=" form-control @error('contact_person') is-invalid @enderror" name="contact_person"
-                            required autocomplete="contact_person" value="{{ $supplier->contact_person }}">
+                            class="form-control @error('contact_person') is-invalid @enderror" name="contact_person"
+                            autocomplete="contact_person" value="{{ $supplier->contact_person }}">
 
                         @error('contact_person')
                         <span class="invalid-feedback" role="alert">
@@ -63,11 +63,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email *') }}</label>
+                    <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email') }}</label>
 
                     <div class="col-md-6">
                         <input id="email" type="email" class=" form-control @error('email') is-invalid @enderror"
-                            name="email" required autocomplete="email" value="{{ $supplier->email }}">
+                            name="email" autocomplete="email" value="{{ $supplier->email }}">
 
                         @error('email')
                         <span class="invalid-feedback" role="alert">
@@ -93,13 +93,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="phone" class="col-md-5 col-form-label text-md-end">{{ __('Phone Number
-                        *')
-                        }}</label>
+                    <label for="phone" class="col-md-5 col-form-label text-md-end">{{ __('Phone Number') }}</label>
 
                     <div class="col-md-6">
                         <input id="phone" type="tel" class=" form-control @error('phone') is-invalid @enderror"
-                            name="phone" required autocomplete="phone" value="{{ $supplier->phone }}">
+                            name="phone" autocomplete="phone" value="{{ $supplier->phone }}">
 
                         @error('phone')
                         <span class="invalid-feedback" role="alert">
@@ -140,13 +138,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="vat_number" class="col-md-5 col-form-label text-md-end">{{ __('Vat Number
-                        *')
-                        }}</label>
+                    <label for="vat_number" class="col-md-5 col-form-label text-md-end">{{ __('Vat Number') }}</label>
 
                     <div class="col-md-6">
                         <input id="vat_number" type="number" min="0"
-                            class=" form-control @error('vat_number') is-invalid @enderror" name="vat_number" required
+                            class=" form-control @error('vat_number') is-invalid @enderror" name="vat_number"
                             autocomplete="vat_number" value="{{ $supplier->vat_number }}">
 
                         @error('vat_number')
