@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
 use App\Models\Account;
+use App\Models\Log;
 use App\Models\Variable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,8 +23,7 @@ class SettingsController extends Controller
         $payable_account = Variable::where('title', 'payable_account')->first();
         $cash_account = Variable::where('title', 'cash_account')->first();
         $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        $ports = Helper::get_shipping_ports();
-        dd($ports);
+        $ports = Variable::select('id', 'title')->where('type', 'ports')->get();
 
         $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account', 'cash_account', 'ports');
         return view('settings.index', $data);
@@ -71,6 +70,37 @@ class SettingsController extends Controller
         }
 
         return redirect()->back()->with('success', 'Configurations updated successfully...');
+    }
+
+    public function port_create(Request $request)
+    {
+        $request->validate([
+            'port' => 'required|string|max:255',
+        ]);
+
+        Variable::create([
+            'type' => 'ports',
+            'title' => $request->port,
+            'value' => $request->port,
+        ]);
+
+        $text = ucwords(auth()->user()->name) . " created Port : " . $request->port . ", datetime :   " . now();
+
+        Log::create(['text' => $text]);
+
+        return redirect()->back()->with('success', 'Port created successfully!');
+    }
+
+    public function port_destroy($id)
+    {
+        $port = Variable::findOrFail($id);
+
+        $text = ucwords(auth()->user()->name) . " deleted Port : " . $port->title . ", datetime :   " . now();
+
+        Log::create(['text' => $text]);
+        $port->delete();
+
+        return redirect()->back()->with('error', 'Port deleted successfully!');
     }
 
     public function export()

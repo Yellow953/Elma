@@ -85,22 +85,54 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row my-4">
         <div class="col-md-4">
             <div class="card shadow-sm">
-                <img src="{{ asset('assets/images/accounting.png') }}" class="img-fluid rounded">
+                <img src="{{ asset('assets/images/ports.png') }}" class="img-fluid rounded">
             </div>
         </div>
         <div class="col-md-8">
             <div class="card shadow-sm p-4">
                 <h2 class="text-center text-info">Ports</h2>
-                <form action="{{ route('settings.update') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('settings.ports.create') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
-                    <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" class="btn btn-info">Update</button>
+                    <div class="row mb-4">
+                        <div class="col-9 my-auto">
+                            <input type="text" name="port" placeholder="Port Name" value="{{ old('port') }}"
+                                class="form-control">
+                        </div>
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-info btn-sm w-100 my-auto">Create</button>
+                        </div>
                     </div>
                 </form>
+
+                <div class="ports">
+                    <table class="table rounded">
+                        <thead class="bg-light text-info">
+                            <tr>
+                                <th>Port</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($ports as $port)
+                            <tr>
+                                <td>
+                                    {{ $port->title }}
+                                </td>
+                                <td>
+                                    <a href="{{ route('settings.ports.destroy', $port->id) }}"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -115,7 +147,7 @@
             <div class="card shadow-sm p-4">
                 <h2 class="text-center text-info">Backup</h2>
                 <div class="mt-4">
-                    <form action="{{ route('backup.import') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('settings.backup.import') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-9">
@@ -128,7 +160,8 @@
                     </form>
                     <p>
                         Download SQL File?
-                        <a href="{{ route('backup.export') }}" class="text-center btn btn-info mx-2 py-2 px-3 my-auto">
+                        <a href="{{ route('settings.backup.export') }}"
+                            class="text-center btn btn-info mx-2 py-2 px-3 my-auto">
                             Export
                         </a>
                     </p>

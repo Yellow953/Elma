@@ -266,12 +266,21 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Settings
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
-    Route::post('/settings/update', [SettingsController::class, 'update'])->name('settings.update');
+    Route::prefix('settings')->group(function () {
+        // Ports
+        Route::prefix('ports')->group(function () {
+            Route::post('/create', [SettingsController::class, 'port_create'])->name('settings.ports.create');
+            Route::get('/destroy/{id}', [SettingsController::class, 'port_destroy'])->name('settings.ports.destroy');
+        });
 
-    Route::prefix('backup')->group(function () {
-        Route::get('/export', [SettingsController::class, 'export'])->name('backup.export');
-        Route::post('/import', [SettingsController::class, 'import'])->name('backup.import');
+        // Backup
+        Route::prefix('backup')->group(function () {
+            Route::get('/export', [SettingsController::class, 'export'])->name('settings.backup.export');
+            Route::post('/import', [SettingsController::class, 'import'])->name('settings.backup.import');
+        });
+
+        Route::post('/update', [SettingsController::class, 'update'])->name('settings.update');
+        Route::get('/', [SettingsController::class, 'index'])->name('settings');
     });
 
     // Navigation

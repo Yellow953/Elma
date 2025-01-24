@@ -292,14 +292,14 @@ class ShipmentController extends Controller
                 $item->delete();
             }
 
-            if($shipment->sales_order){
+            if ($shipment->sales_order) {
                 foreach ($shipment->sales_order->items as $so_item) {
                     $so_item->delete();
                 }
                 $shipment->sales_order->delete();
             }
 
-            if($shipment->purchase_orders){
+            if ($shipment->purchase_orders) {
                 foreach ($shipment->purchase_orders as $po) {
                     foreach ($po->items as $po_item) {
                         $po_item->delete();
