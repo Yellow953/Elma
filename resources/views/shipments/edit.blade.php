@@ -40,7 +40,7 @@
                     <h2 class="text-center text-info">Edit Shipment</h2>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mt-3">
                                 <label for="shipment_number" class="col-form-label">Shipment Number
                                     *</label>
@@ -56,14 +56,31 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mt-3">
-                                <label for="client_id" class="col-form-label">Client *</label>
+                                <label for="due_from_id" class="col-form-label">Due From *</label>
 
-                                <select name="client_id" id="client_id" required class="form-select select2">
+                                <select name="due_from_id" id="due_from_id" required class="form-select select2">
                                     <option value="">Select Client</option>
                                     @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}" {{ $client->id==$shipment->client_id ? 'selected'
+                                    <option value="{{ $client->id }}" {{ $client->id==$shipment->due_from_id ?
+                                        'selected'
+                                        : ''
+                                        }}>
+                                        {{ $client->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mt-3">
+                                <label for="shipper_id" class="col-form-label">Shipper *</label>
+
+                                <select name="shipper_id" id="shipper_id" required class="form-select select2">
+                                    <option value="">Select Client</option>
+                                    @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" {{ $client->id==$shipment->shipper_id ? 'selected'
                                         : ''
                                         }}>
                                         {{ $client->name }}

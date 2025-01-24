@@ -15,7 +15,8 @@ return new class extends Migration
             $table->string('departure');
             $table->string('arrival');
             $table->string('commodity');
-            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->unsignedBigInteger('due_from_id');
+            $table->unsignedBigInteger('shipper_id');
             $table->date('shipping_date');
             $table->date('loading_date')->nullable();
             $table->string('vessel_name');
@@ -27,6 +28,9 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign('due_from_id')->references('id')->on('clients');
+            $table->foreign('shipper_id')->references('id')->on('clients');
         });
     }
 

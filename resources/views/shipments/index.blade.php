@@ -7,7 +7,7 @@
 <a class="btn btn-sm btn-info mx-1" href="{{ route('shipments.new') }}">New Shipment</a>
 @endcan
 @can('shipments.export')
-<a class=" btn btn-sm btn-info mx-1" href="{{ route('shipments.export') }}">Export Shipments</a>
+<a class="btn btn-sm btn-info mx-1" href="{{ route('shipments.export') }}">Export Shipments</a>
 @endcan
 @endsection
 
@@ -22,7 +22,7 @@
         @csrf
 
         <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
                         <label for="shipment_number">Number</label>
@@ -52,13 +52,30 @@
             <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
-                        <label for="client_id">Client</label>
+                        <label for="due_from_id">Due From</label>
                         <div>
-                            <select name="client_id" id="client_id" class="form-select select2">
+                            <select name="due_from_id" id="due_from_id" class="form-select select2">
                                 <option value=""></option>
                                 @foreach ($clients as $client)
                                 <option value="{{ $client->id }}" {{ $client->id ==
-                                    request()->query('client_id') ?
+                                    request()->query('due_from_id') ?
+                                    'selected' : '' }}>{{ $client->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="shipper_id">Shipper</label>
+                        <div>
+                            <select name="shipper_id" id="shipper_id" class="form-select select2">
+                                <option value=""></option>
+                                @foreach ($clients as $client)
+                                <option value="{{ $client->id }}" {{ $client->id ==
+                                    request()->query('shipper_id') ?
                                     'selected' : '' }}>{{ $client->name }}</option>
                                 @endforeach
                             </select>
@@ -175,7 +192,8 @@
                                         {{ $shipment->mode }}
                                     </td>
                                     <td>
-                                        {{ ucwords($shipment->client->name) }}
+                                        Due From: {{ ucwords($shipment->due_from->name) }} <br>
+                                        Shipper: {{ ucwords($shipment->shipper->name) }}
                                     </td>
                                     <td>
                                         {{ ucwords($shipment->consignee_name) }} <br>

@@ -11,7 +11,12 @@ class Shipment extends Model
 
     protected $guarded = [];
 
-    public function client()
+    public function due_from()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function shipper()
     {
         return $this->belongsTo(Client::class);
     }
@@ -49,9 +54,13 @@ class Shipment extends Model
             $shipment_number = request('shipment_number');
             $q->where('shipment_number', 'LIKE', "%{$shipment_number}%");
         }
-        if (request('client_id')) {
-            $client_id = request('client_id');
-            $q->where('client_id', $client_id);
+        if (request('due_from_id')) {
+            $due_from_id = request('due_from_id');
+            $q->where('due_from_id', $due_from_id);
+        }
+        if (request('shipper_id')) {
+            $shipper_id = request('shipper_id');
+            $q->where('shipper_id', $shipper_id);
         }
         if (request('mode')) {
             $mode = request('mode');
@@ -107,5 +116,18 @@ class Shipment extends Model
         }
 
         return $q;
+    }
+
+    public static function generate_shipment_number()
+    {
+        $searchTerm = "EL-";
+
+        $lastShipment = Shipment::where("shipment_number", "LIKE", "%{$searchTerm}%")->get()->last();
+        if ($lastShipment) {
+            $lastNumber = explode('-', $lastShipment->shipment_number)[1];
+            return 'EL-' . ($lastNumber + 1);
+        } else {
+            return 'EL-1000';
+        }
     }
 }

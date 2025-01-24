@@ -28,7 +28,7 @@ class ShipmentController extends Controller
 
     public function index()
     {
-        $shipments = Shipment::select('id', 'shipment_number', 'mode', 'departure', 'arrival', 'commodity', 'client_id', 'shipping_date', 'loading_date', 'vessel_name', 'vessel_date', 'booking_number', 'carrier_name', 'consignee_name', 'consignee_country')->filter()->orderBy('id', 'desc')->paginate(25);
+        $shipments = Shipment::select('id', 'shipment_number', 'mode', 'departure', 'arrival', 'commodity', 'due_from_id', 'shipper_id', 'shipping_date', 'loading_date', 'vessel_name', 'vessel_date', 'booking_number', 'carrier_name', 'consignee_name', 'consignee_country')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
         $modes = Helper::get_shipping_modes();
         $ports = Helper::get_shipping_ports();
@@ -53,12 +53,12 @@ class ShipmentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'shipment_number' => 'required|string|max:255',
             'mode' => 'required',
             'departure' => 'required',
             'arrival' => 'required',
             'commodity' => 'required',
-            'client_id' => 'required',
+            'due_from_id' => 'required',
+            'shipper_id' => 'required',
             'shipping_date' => 'required|date',
             'loading_date' => 'required|date',
             'vessel_name' => 'required|string|max:255',
@@ -72,12 +72,13 @@ class ShipmentController extends Controller
         ]);
 
         $shipment = Shipment::create([
-            'shipment_number' => $request->shipment_number,
+            'shipment_number' => Shipment::generate_shipment_number(),
             'mode' => $request->mode,
             'departure' => $request->departure,
             'arrival' => $request->arrival,
             'commodity' => $request->commodity,
-            'client_id' => $request->client_id,
+            'due_from_id' => $request->due_from_id,
+            'shipper_id' => $request->shipper_id,
             'shipping_date' => $request->shipping_date,
             'loading_date' => $request->loading_date,
             'vessel_name' => $request->vessel_name,
@@ -125,7 +126,7 @@ class ShipmentController extends Controller
         if (!empty($salesOrderItems)) {
             $salesOrder = SalesOrder::create([
                 'so_number' => SalesOrder::generate_so_number(),
-                'client_id' => $request->client_id,
+                'client_id' => $request->due_from_id,
                 'order_date' => $request->shipping_date,
                 'due_date' => $request->loading_date,
                 'status' => 'new',
@@ -184,7 +185,8 @@ class ShipmentController extends Controller
             'departure' => 'required',
             'arrival' => 'required',
             'commodity' => 'required',
-            'client_id' => 'required',
+            'due_from_id' => 'required',
+            'shipper_id' => 'required',
             'shipping_date' => 'required|date',
             'loading_date' => 'required|date',
             'vessel_name' => 'required|string|max:255',
@@ -205,7 +207,8 @@ class ShipmentController extends Controller
             'departure' => $request->departure,
             'arrival' => $request->arrival,
             'commodity' => $request->commodity,
-            'client_id' => $request->client_id,
+            'due_from_id' => $request->due_from_id,
+            'shipper_id' => $request->shipper_id,
             'shipping_date' => $request->shipping_date,
             'loading_date' => $request->loading_date,
             'vessel_name' => $request->vessel_name,
