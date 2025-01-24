@@ -85,6 +85,26 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="{{ asset('assets/images/accounting.png') }}" class="img-fluid rounded">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h2 class="text-center text-info">Ports</h2>
+                <form action="{{ route('settings.update') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-info">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="row my-4">
         <div class="col-md-4">
             <div class="card shadow-sm">

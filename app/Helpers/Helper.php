@@ -8,6 +8,7 @@ use App\Models\Currency;
 use App\Models\SearchRoute;
 use App\Models\Tax;
 use App\Models\Item;
+use App\Models\Variable;
 use NumberToWords\NumberToWords;
 
 class Helper
@@ -106,7 +107,7 @@ class Helper
 
     public static function get_shipping_ports()
     {
-        return ['Port Beirut', 'Dubai AirPort'];
+        return Variable::where('type', 'ports')->get()->pluck('title');
     }
 
     public static function get_order_statuses()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Account;
 use App\Models\Variable;
 use Illuminate\Http\Request;
@@ -22,8 +23,10 @@ class SettingsController extends Controller
         $payable_account = Variable::where('title', 'payable_account')->first();
         $cash_account = Variable::where('title', 'cash_account')->first();
         $accounts = Account::select('id', 'account_number', 'account_description')->get();
+        $ports = Helper::get_shipping_ports();
+        dd($ports);
 
-        $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account', 'cash_account');
+        $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account', 'cash_account', 'ports');
         return view('settings.index', $data);
     }
 
