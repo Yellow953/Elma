@@ -54,7 +54,7 @@ class ReceiptController extends Controller
             'currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
             'item_id.*' => 'required|exists:items,id',
-            'receipt_number.*' => 'required|string|max:255',
+            'supplier_receipt.*' => 'required|string|max:255',
             'description.*' => 'required|string',
             'quantity.*' => 'required|numeric|min:1',
             'unit_cost.*' => 'required|numeric|min:0',
@@ -91,7 +91,7 @@ class ReceiptController extends Controller
                 'total_cost' => $totalCost,
                 'vat' => $vat,
                 'total_cost_after_vat' => $totalCost + $vat,
-                'receipt_number' => $validatedData['receipt_number'][$key],
+                'supplier_receipt' => $validatedData['supplier_receipt'][$key],
                 'description' => $validatedData['description'][$key],
             ]);
 
@@ -183,7 +183,7 @@ class ReceiptController extends Controller
                     'total_cost' => $totalCost,
                     'vat' => $vat,
                     'total_cost_after_vat' => $totalCost + $vat,
-                    'receipt_number' => $validatedData['receipt_number'][$key],
+                    'supplier_receipt' => $validatedData['supplier_receipt'][$key],
                     'description' => $validatedData['description'][$key],
                 ]);
 

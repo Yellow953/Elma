@@ -22,20 +22,10 @@
     height: 100px;
 }
 
-body {
-    background: #eee;
-    margin-top: 20px;
-}
-
 .receipt-main {
     background: #ffffff none repeat scroll 0 0;
-    border-bottom: 12px solid #333333;
-    border-top: 12px solid blue;
-    margin-top: 50px;
-    margin-bottom: 50px;
     padding: 40px 30px !important;
     position: relative;
-    box-shadow: 0 1px 21px #acacac;
     color: #333333;
     font-family: open sans;
     max-width: 1320px;
@@ -47,28 +37,10 @@ body {
     line-height: 1.42857;
 }
 
-.receipt-main table {
-    border: 2px solid black;
-    border-radius: 15px;
-    overflow: hidden;
-}
-
 .receipt-footer h1 {
     font-size: 15px;
     font-weight: 400 !important;
     margin: 0 !important;
-}
-
-.receipt-main thead {
-    background: #414143 none repeat scroll 0 0;
-}
-
-.receipt-header {
-    margin-bottom: 30px;
-}
-
-.receipt-main thead th {
-    color: #fff;
 }
 
 .receipt-right h5 {
@@ -85,31 +57,6 @@ body {
 .receipt-right p i {
     text-align: center;
     width: 18px;
-}
-
-.receipt-main td {
-    padding: 9px 20px !important;
-}
-
-.receipt-main th {
-    padding: 13px 20px !important;
-}
-
-.receipt-main td {
-    font-size: 13px;
-    font-weight: initial !important;
-}
-
-.receipt-main td p:last-child {
-    margin: 0;
-    padding: 0;
-}
-
-.receipt-main td h2 {
-    font-size: 20px;
-    font-weight: 900;
-    margin: 0;
-    text-transform: uppercase;
 }
 
 .receipt-header-mid .receipt-left h1 {
@@ -142,6 +89,26 @@ body {
 
 .border-custom {
     border: 2px solid rgb(117, 117, 117);
-    border-radius: 15px;
     overflow: hidden;
+}
+
+.border-none {
+    border: none !important;
+}
+
+.border-left {
+    border-left: 2px solid rgb(117, 117, 117) !important;
+}
+.border-right {
+    border-right: 2px solid rgb(117, 117, 117) !important;
+}
+.border-top {
+    border-top: 2px solid rgb(117, 117, 117) !important;
+}
+.border-bottom {
+    border-bottom: 2px solid rgb(117, 117, 117) !important;
+}
+
+.w-custom {
+    width: 150px !important;
 }

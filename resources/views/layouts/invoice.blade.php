@@ -33,8 +33,10 @@
     <link rel="stylesheet" href="{{ asset('assets/css/invoice.css') }}">
 </head>
 
-<body>
+<body class="p-0 m-0">
+    <br><br><br><br><br>
     @yield('content')
+    <br><br><br><br><br>
 </body>
 
 </html>

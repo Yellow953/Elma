@@ -17,7 +17,7 @@ return new class extends Migration
             $table->double('total_cost')->unsigned();
             $table->double('vat')->unsigned();
             $table->double('total_cost_after_vat')->unsigned();
-            $table->string('receipt number')->nullable();
+            $table->string('supplier_receipt')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

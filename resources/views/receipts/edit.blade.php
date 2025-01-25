@@ -71,7 +71,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" name="receipt_number[]" class="form-control border" required>
+                                    <input type="text" name="supplier_receipt[]" class="form-control border" required>
                                 </td>
                                 <td>
                                     <input type="text" name="description[]" class="form-control border" required>

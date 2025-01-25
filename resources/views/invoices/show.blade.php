@@ -5,164 +5,129 @@
 @section('sub-title', 'show')
 
 @section('content')
-<div class="container">
-    <a href="{{ url()->previous() }}" class="btn btn-secondary px-3 py-2">
-        <i class="fa-solid fa-chevron-left"></i> Back </a>
+<div class="receipt-main">
+    <div class="container">
+        <div>
+            <h2 class="text-center">
+                Invoice Number: {{ $invoice->invoice_number }}
+            </h2>
 
-    <div class="receipt-main">
-        @include('layouts._invoice_header')
+            <div class="row my-5 px-3">
+                <div class="col-5 border-custom p-0">
+                    <table class="w-100 m-0">
+                        <tr class="border-none">
+                            <th class="w-custom p-2">Due From</th>
+                            <td colspan="2" class="py-2 px-4 border-left">
+                                {{ $shipment->due_from->name }} <br>
+                                TEL: {{ $shipment->due_from->phone }} <br>
+                                {{ $shipment->due_from->address }}
+                            </td>
+                        </tr>
 
-        <div class="container">
-            <div>
-                <div class="row my-5 px-3">
-                    <div class="col-5 border-custom py-3 px-4">
-                        <div class="row">
-                            <div class="col-3">
-                                Mode
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->mode }}
-                            </div>
-                            <div class="col-3">
-                                Client
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->client->name }}
-                            </div>
-                            <div class="col-3">
-                                Consignee
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->consignee_name }}
-                            </div>
-                            <div class="col-3">
-                            </div>
-                            <div class="col-9">
+                        <tr class="border-none">
+                            <th class="w-custom p-2">Shipper</th>
+                            <td colspan="2" class="py-2 px-4 border-left">
+                                {{ $shipment->due_from->name }} <br>
+                                {{ $shipment->due_from->address }}
+                            </td>
+                        </tr>
+
+                        <tr class="border-none">
+                            <th class="w-custom p-2">Consignee</th>
+                            <td colspan="2" class="py-2 px-4 border-left">
+                                {{ $shipment->consignee_name }} <br>
                                 {{ $shipment->consignee_country }}
-                            </div>
-                            <div class="col-3">
-                                Commodity
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->commodity }}
-                            </div>
-                            <div class="col-3">
-                                Carrier
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->carrier_name }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-2"></div>
-                    <div class="col-5 border-custom py-3 px-4">
-                        <div class="row">
-                            <div class="col-3">
-                                Arrival
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->arrival }}
-                            </div>
-                            <div class="col-3">
-                                Departure
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->departure }}
-                            </div>
-                            <div class="col-3">
-                                Shipping
-                            </div>
-                            <div class="col-9">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-2"></div>
+                <div class="col-5 border-custom p-0">
+                    <table class="w-100 m-0">
+                        <tr class="border-none">
+                            <th class="w-custom p-1">Date</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
                                 {{ $shipment->shipping_date }}
-                            </div>
-                            <div class="col-3">
-                                Loading
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->loading_date }}
-                            </div>
-                            <div class="col-3">
-                                Vessel
-                            </div>
-                            <div class="col-9">
+                            </td>
+                        </tr>
+
+                        <tr class="border-none">
+                            <th class="w-custom p-1">FILE#</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
+                                {{ $shipment->shipment_number }}
+                            </td>
+                        </tr>
+
+                        <tr class="border-none">
+                            <th class="w-custom p-1">Vessel</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
                                 {{ $shipment->vessel_name }}
-                            </div>
-                            <div class="col-3">
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->vessel_date }}
-                            </div>
-                            <div class="col-3">
-                                Booking Number
-                            </div>
-                            <div class="col-9">
-                                {{ $shipment->booking_number }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </td>
+                        </tr>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong>Invoice Number:</strong>{{ $invoice->invoice_number }} <br>
-                    </div>
-                    <div class="col-md-3 offset-md-3">
-                        <strong>Date: </strong>{{ ucwords($invoice->date) }} <br>
-                    </div>
-                </div>
+                        <tr class="border-none">
+                            <th class="w-custom p-1">Loading Date</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
+                                {{ $shipment->loading_date }}
+                            </td>
+                        </tr>
 
-                <div class="mt-4">
-                    <div class="table-responsive overflow-auto">
-                        <table class="table table-striped">
-                            <thead class="text-center">
-                                <tr style="font-size: 0.9rem">
-                                    <th>Description</th>
-                                    <th>Quantity</th>
-                                    <th>Unit Price</th>
-                                    <th>Total Price</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center">
-                                @forelse ($items as $item)
-                                @if ($item->type == 'item')
-                                <tr>
-                                    <td class="col-4">
-                                        {{ $item->description }}
-                                    </td>
-                                    <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
-                                    <td class="col-2">{{ $invoice->currency->symbol }}{{
-                                        number_format($item->unit_price, 2) }}</td>
-                                    <td class="col-2">{{ $invoice->currency->symbol }}{{
-                                        number_format($item->total_price, 2) }}</td>
-                                </tr>
-                                @endif
-                                @empty
-                                <tr>
-                                    <td colspan="4">No Invoice Items Yet</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                            <tfoot class="text-center">
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
-                                    <th>Total</th>
-                                    <th>{{ $invoice->currency->symbol }}{{ number_format($total, 2)
-                                        }}</th>
-                                </tr>
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
-                                    <th>Tax</th>
-                                    <th>{{ $invoice->currency->symbol }}{{ number_format($vat, 2) }}</th>
-                                </tr>
-                                <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
-                                    <th>Total Price After VAT</th>
-                                    <th>{{ $invoice->currency->symbol }}{{
-                                        number_format($total_price_after_vat, 2) }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                        <tr class="border-none">
+                            <th class="w-custom p-1">Commodity</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
+                                {{ $shipment->commodity }}
+                            </td>
+                        </tr>
+
+                        <tr class="border-none">
+                            <th class="w-custom p-1">POL</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
+                                {{ $shipment->departure }}
+                            </td>
+                        </tr>
+
+                        <tr class="border-none">
+                            <th class="w-custom p-1">POD</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
+                                {{ $shipment->arrival }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="border-custom">
+                    <table class="w-100">
+                        <thead class="text-center">
+                            <tr class="border-bottom">
+                                <th class="col-9 p-2">Description</th>
+                                <th class=" col-3 border-left p-2">Amount ({{ $invoice->currency->code }})</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            @forelse ($items as $item)
+                            @if ($item->type == 'item')
+                            <tr>
+                                <td class="p-2">
+                                    {{ $item->description }}
+                                </td>
+                                <td class="border-left p-2">{{ number_format($item->total_price, 2) }}</td>
+                            </tr>
+                            @endif
+                            @empty
+                            <tr>
+                                <td class="p-2" colspan="2">No Invoice Items Yet</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                        <tfoot class="text-center border-top">
+                            <tr>
+                                <th class="p-2">{{ Helper::format_currency_to_words($total_price_after_vat) }}</th>
+                                <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
