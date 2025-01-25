@@ -16,14 +16,12 @@
             <div>
                 <div class="row mb-5">
                     <div class="col-md-6">
-                        <strong>Receipt Number:</strong>
-                        {{ $receipt->receipt_number }} <br>
-                        <strong>Supplier:</strong> {{ $receipt->supplier->name }} <br>
-                        <strong>Supplier Invoice:</strong> {{ucwords($receipt->supplier_invoice)}} <br>
+                        <strong>Receipt Number:</strong> {{ $receipt->receipt_number }} <br>
+                        <strong>Supplier:</strong> {{ $receipt->supplier->name }}
                     </div>
                     <div class="col-md-3 offset-md-3">
                         <strong>Date: </strong>{{ ucwords($receipt->date) }} <br>
-                        <strong>Currency: </strong>{{ucwords($receipt->currency->code) }} <br>
+                        <strong>Currency: </strong>{{ ucwords($receipt->currency->code) }} <br>
                     </div>
                 </div>
 
@@ -33,7 +31,8 @@
                         <table class="table table-striped">
                             <thead class="text-center">
                                 <tr style="font-size: 0.9rem;">
-                                    <th>Item</th>
+                                    <th>Receipt Number</th>
+                                    <th>Description</th>
                                     <th>Quantity</th>
                                     <th>Unit Cost</th>
                                     <th>Total Cost</th>
@@ -42,9 +41,8 @@
                             <tbody class="text-center">
                                 @forelse ($items as $item)
                                 <tr>
-                                    <td class="col-4">{{ $item->item->name }}
-                                        <br>{{ $item->item->description }}
-                                    </td>
+                                    <td class="col-2">{{ $item->receipt_number }}</td>
+                                    <td class="col-2">{{ $item->description }}</td>
                                     <td class="col-2">{{ number_format($item->quantity, 2) }}</td>
                                     <td class="col-2">{{ $receipt->currency->symbol }}{{ number_format($item->unit_cost,
                                         2) }}</td>
@@ -59,18 +57,18 @@
                             </tbody>
                             <tfoot class="text-center">
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
+                                    <th colspan="3"></th>
                                     <th>Total</th>
                                     <th>{{ $receipt->currency->symbol }}{{ number_format($items->sum('total_cost'), 2)
                                         }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
+                                    <th colspan="3"></th>
                                     <th>Tax</th>
                                     <th>{{ $receipt->currency->symbol }}{{ number_format($items->sum('vat'), 2) }}</th>
                                 </tr>
                                 <tr class="bg-dark text-white" style="font-size: 0.8rem">
-                                    <th colspan="2"></th>
+                                    <th colspan="3"></th>
                                     <th>Total After TAX</th>
                                     <th>{{ $receipt->currency->symbol }}{{
                                         number_format($items->sum('total_cost_after_vat'), 2) }}</th>

@@ -21,16 +21,18 @@
     <form action="{{ route('receipts') }}" method="get" enctype="multipart/form-data">
         @csrf
 
-        <div class="input-group input-group-outline my-2">
-            <div class="w-100">
-                <label for="receipt_number">Number</label>
-                <div>
-                    <input type="text" class="form-control border" name="receipt_number" placeholder="Receipt Number"
-                        value="{{request()->query('receipt_number')}}">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group input-group-outline my-2">
+                    <div class="w-100">
+                        <label for="receipt_number">Number</label>
+                        <div>
+                            <input type="text" class="form-control border" name="receipt_number"
+                                placeholder="Receipt Number" value="{{request()->query('receipt_number')}}">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
@@ -44,17 +46,6 @@
                                     'selected' : '' }}>{{ $supplier->name }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="supplier_invoice">Invoice</label>
-                        <div>
-                            <input type="text" class="form-control border" name="supplier_invoice"
-                                placeholder="Supplier Invoice" value="{{request()->query('supplier_invoice')}}">
                         </div>
                     </div>
                 </div>
@@ -137,8 +128,7 @@
                                     </td>
                                     <td>
                                         <p>
-                                            {{ ucwords($receipt->supplier->name) }} <br>
-                                            {{ $receipt->supplier_invoice }}
+                                            {{ ucwords($receipt->supplier->name) }}
                                         </p>
                                     </td>
                                     <td>

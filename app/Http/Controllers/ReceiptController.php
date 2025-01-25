@@ -27,7 +27,7 @@ class ReceiptController extends Controller
 
     public function index()
     {
-        $receipts = Receipt::select('id', 'receipt_number', 'supplier_invoice', 'date', 'supplier_id', 'tax_id', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $receipts = Receipt::select('id', 'receipt_number', 'date', 'supplier_id', 'tax_id', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
         $suppliers = Supplier::select('id', 'name')->get();
         $taxes = Tax::select('id', 'name')->get();
 
@@ -50,11 +50,12 @@ class ReceiptController extends Controller
     {
         $validatedData = $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
-            'supplier_invoice' => 'required|string|max:255|unique:receipts',
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
             'item_id.*' => 'required|exists:items,id',
+            'receipt_number.*' => 'required|string|max:255',
+            'description.*' => 'required|string',
             'quantity.*' => 'required|numeric|min:1',
             'unit_cost.*' => 'required|numeric|min:0',
         ]);
@@ -65,7 +66,6 @@ class ReceiptController extends Controller
         // Create Receipt
         $receipt = Receipt::create([
             'receipt_number' => $number,
-            'supplier_invoice' => $validatedData['supplier_invoice'],
             'supplier_id' => $validatedData['supplier_id'],
             'tax_id' => $validatedData['tax_id'],
             'currency_id' => $validatedData['currency_id'],
@@ -91,6 +91,8 @@ class ReceiptController extends Controller
                 'total_cost' => $totalCost,
                 'vat' => $vat,
                 'total_cost_after_vat' => $totalCost + $vat,
+                'receipt_number' => $validatedData['receipt_number'][$key],
+                'description' => $validatedData['description'][$key],
             ]);
 
             $totalItemCost += $totalCost;
@@ -155,12 +157,10 @@ class ReceiptController extends Controller
     public function update(Receipt $receipt, Request $request)
     {
         $validatedData = $request->validate([
-            'supplier_invoice' => 'required|string|max:255|unique:receipts,supplier_invoice,' . $receipt->id,
             'date' => 'required|date',
         ]);
 
         $receipt->update([
-            'supplier_invoice' => $request->input('supplier_invoice'),
             'date' => $request->input('date'),
         ]);
 
@@ -183,6 +183,8 @@ class ReceiptController extends Controller
                     'total_cost' => $totalCost,
                     'vat' => $vat,
                     'total_cost_after_vat' => $totalCost + $vat,
+                    'receipt_number' => $validatedData['receipt_number'][$key],
+                    'description' => $validatedData['description'][$key],
                 ]);
 
                 $totalItemCost += $totalCost;

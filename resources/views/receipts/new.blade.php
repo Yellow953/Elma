@@ -65,28 +65,6 @@
 
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline row mb-3">
-                                    <label for="supplier_invoice"
-                                        class="col-md-4 col-form-label text-md-end">{{__('Supplier
-                                        Invoice *')
-                                        }}</label>
-
-                                    <div class="col-md-8">
-                                        <input id="supplier_invoice" type="text"
-                                            class=" form-control @error('supplier_invoice') is-invalid @enderror"
-                                            name="supplier_invoice" required autocomplete="supplier_invoice"
-                                            value="{{ old('supplier_invoice') }}">
-
-                                        @error('supplier_invoice')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline row mb-3">
                                     <label for="tax_id" class="col-md-4 col-form-label text-md-end">{{ __('Tax
                                         *') }}</label>
 
@@ -152,6 +130,8 @@
                                         <tr>
                                             <th></th>
                                             <th class="text-sm">Item</th>
+                                            <th class="text-sm">Receipt Number</th>
+                                            <th class="text-sm">Description</th>
                                             <th class="text-sm">Quantity</th>
                                             <th class="text-sm">Unit Cost</th>
                                             <th class="text-sm">Total Cost</th>
@@ -172,6 +152,14 @@
                                                     </option>
                                                     @endforeach
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="receipt_number[]" class="form-control border"
+                                                    required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="description[]" class="form-control border"
+                                                    required>
                                             </td>
                                             <td>
                                                 <input type="number" name="quantity[]" class="form-control border"
@@ -329,12 +317,6 @@
                     updateReceiptItemsTotal();
                     updateTotalCostForRow(row);
                 });
-            });
-        });
-
-        document.querySelectorAll('#landedCostsTable tbody tr').forEach(function(row) {
-            row.querySelectorAll('input').forEach(function(input) {
-                input.addEventListener('input', updateLandedCostTotal);
             });
         });
     });

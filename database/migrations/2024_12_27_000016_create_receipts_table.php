@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('receipts', function (Blueprint $table) {
             $table->id();
             $table->string('receipt_number')->unique();
-            $table->string('supplier_invoice')->unique();
             $table->unsignedBigInteger('supplier_id');
             $table->unsignedBigInteger('tax_id');
             $table->unsignedBigInteger('currency_id');

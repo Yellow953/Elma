@@ -15,24 +15,6 @@
                 @csrf
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="supplier_invoice" class="col-md-5 col-form-label text-md-end">{{__('Supplier Invoice *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <input id="supplier_invoice" type="text"
-                            class=" form-control @error('supplier_invoice') is-invalid @enderror"
-                            name="supplier_invoice" required autocomplete="supplier_invoice"
-                            value="{{ $receipt->supplier_invoice }}">
-
-                        @error('supplier_invoice')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="date" class="col-md-5 col-form-label text-md-end">{{
                         __('Date *') }}</label>
 
@@ -55,6 +37,8 @@
                             <tr>
                                 <th></th>
                                 <th class="text-sm">Item</th>
+                                <th class="text-sm">Receipt Number</th>
+                                <th class="text-sm">Description</th>
                                 <th class="text-sm">Quantity</th>
                                 <th class="text-sm">Unit Cost</th>
                                 <th class="text-sm">Total Cost</th>
@@ -64,6 +48,8 @@
                             <tr>
                                 <td></td>
                                 <td>{{ $item->item->name }}</td>
+                                <td>{{ $item->receipt_number }}</td>
+                                <td>{{ $item->description }}</td>
                                 <td>{{ number_format($item->quantity, 2) }}</td>
                                 <td>{{ number_format($item->unit_cost, 2) }}</td>
                                 <td>{{ number_format($item->total_cost, 2) }}</td>
@@ -83,6 +69,12 @@
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                         @endforeach
                                     </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="receipt_number[]" class="form-control border" required>
+                                </td>
+                                <td>
+                                    <input type="text" name="description[]" class="form-control border" required>
                                 </td>
                                 <td>
                                     <input type="number" name="quantity[]" class="form-control border" min="0" value="0"

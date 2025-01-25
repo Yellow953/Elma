@@ -50,10 +50,6 @@ class Receipt extends Model
             $receipt_number = request('receipt_number');
             $q->where('receipt_number', 'LIKE', "%{$receipt_number}%");
         }
-        if (request('supplier_invoice')) {
-            $supplier_invoice = request('supplier_invoice');
-            $q->where('supplier_invoice', 'LIKE', "%{$supplier_invoice}%");
-        }
         if (request('supplier_id')) {
             $supplier_id = request('supplier_id');
             $q->where('supplier_id', $supplier_id);
