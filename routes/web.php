@@ -120,6 +120,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{client}/update', [ClientController::class, 'update'])->name('clients.update');
         Route::get('/{client}/delete', [ClientController::class, 'destroy'])->name('clients.destroy');
         Route::get('/{client}/statement', [ClientController::class, 'statement'])->name('clients.statement');
+        Route::get('/{client}/profit', [ClientController::class, 'profit'])->name('clients.profit');
         Route::get('/', [ClientController::class, 'index'])->name('clients');
     });
 
@@ -237,6 +238,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Statistics Routes
     Route::prefix('statistics')->group(function () {
+        Route::post('/monthly_report', [StatisticsController::class, 'monthly_report'])->name('statistics.monthly_report');
+        Route::post('/net_profit', [StatisticsController::class, 'net_profit'])->name('statistics.net_profit');
         Route::get('/', [StatisticsController::class, 'index'])->name('statistics');
     });
 

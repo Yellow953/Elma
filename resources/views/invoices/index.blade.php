@@ -115,6 +115,7 @@
                                     <th>Invoice Number</th>
                                     <th>Shipment</th>
                                     <th>Client</th>
+                                    <th>Profit</th>
                                     <th>Currency</th>
                                     <th>Date</th>
                                     <th>Actions</th>
@@ -131,6 +132,9 @@
                                     </td>
                                     <td>
                                         <p>{{ ucwords($invoice->client->name) }}</p>
+                                    </td>
+                                    <td>
+                                        {{ number_format($invoice->stats()[2], 2) }}
                                     </td>
                                     <td>
                                         <p>{{ $invoice->currency->code }}</p>

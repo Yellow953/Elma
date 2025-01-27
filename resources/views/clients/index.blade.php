@@ -171,6 +171,11 @@
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">
                                             @can('clients.read')
+                                            <a href="{{ route('clients.profit', $client->id) }}"
+                                                class="btn btn-success btn-custom" title="Profit">
+                                                <i class="fa-solid fa-dollar"></i>
+                                            </a>
+
                                             <a href="{{ route('clients.statement', $client->id) }}"
                                                 class="btn btn-info btn-custom" title="Statement Of Account">
                                                 <i class="fa-solid fa-receipt"></i>

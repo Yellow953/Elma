@@ -132,4 +132,23 @@ class ClientController extends Controller
         $data = compact('client', 'account', 'transactions');
         return view('clients.statement', $data);
     }
+
+    public function profit(Client $client)
+    {
+        $total_revenue = 0;
+        $total_expenses = 0;
+        $total_profit = 0;
+
+        $invoices = $client->invoices;
+        foreach ($invoices as $invoice) {
+            $stats = $invoice->stats();
+
+            $total_expenses += $stats[0];
+            $total_revenue += $stats[1];
+            $total_profit += $stats[2];
+        }
+
+        $data = compact('client', 'invoices', 'total_revenue', 'total_expenses', 'total_profit');
+        return view('clients.profit', $data);
+    }
 }

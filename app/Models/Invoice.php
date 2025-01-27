@@ -42,6 +42,22 @@ class Invoice extends Model
         return $this->hasMany(InvoiceItem::class);
     }
 
+    public function stats()
+    {
+        $price = 0;
+        $cost = 0;
+
+        foreach ($this->items as $item) {
+            if ($item->type == 'expense') {
+                $cost += $item->total_price;
+            } else {
+                $price += $item->total_price;
+            }
+        }
+
+        return [$cost, $price, $price - $cost];
+    }
+
     // Permissions
     public function can_delete()
     {

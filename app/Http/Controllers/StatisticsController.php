@@ -2,16 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
-use App\Models\User;
-use App\Models\Supplier;
-use App\Models\Client;
+use App\Models\Expense;
 use App\Models\Invoice;
-use App\Models\SalesOrder;
-use App\Models\PurchaseOrder;
-use App\Models\Receipt;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class StatisticsController extends Controller
 {
@@ -22,17 +15,94 @@ class StatisticsController extends Controller
 
     public function index()
     {
-        $total_users = User::count();
-        $total_suppliers = Supplier::count();
-        $total_clients = Client::count();
-        $total_sales_orders = SalesOrder::count();
-        $total_purchase_orders = PurchaseOrder::count();
-        $total_items = Item::count();
-        $total_receipts = Receipt::count();
-        $total_invoices = Invoice::count();
+        return view('statistics.index');
+    }
 
-        $data = compact('total_users', 'total_suppliers', 'total_clients', 'total_sales_orders', 'total_purchase_orders', 'total_items', 'total_receipts', 'total_invoices');
+    public function monthly_report(Request $request)
+    {
+        $request->validate([
+            'month' => 'required',
+            'year' => 'required|numeric|min:2020'
+        ]);
 
-        return view('statistics.index', $data);
+        $total_revenue = 0;
+        $total_expenses = 0;
+        $total_profit = 0;
+
+        $month = date('m', strtotime($request->month));
+        $year = $request->year;
+
+        $invoices = Invoice::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->with('client', 'shipment', 'items')
+            ->get();
+
+        foreach ($invoices as $invoice) {
+            $stats = $invoice->stats();
+
+            $total_expenses += $stats[0];
+            $total_revenue += $stats[1];
+            $total_profit += $stats[2];
+        }
+
+        $data = [
+            'invoices' => $invoices,
+            'month' => $request->month,
+            'year' => $year,
+            'total_revenue' => $total_revenue,
+            'total_expenses' => $total_expenses,
+            'total_profit' => $total_profit,
+        ];
+        return view('statistics.monthly_report', $data);
+    }
+
+    public function net_profit(Request $request)
+    {
+        $request->validate([
+            'month' => 'required',
+            'year' => 'required|numeric|min:2020'
+        ]);
+
+        $total_revenue = 0;
+        $total_expenses = 0;
+        $internal_expenses = 0;
+        $total_profit = 0;
+        $net_profit = 0;
+
+        $month = date('m', strtotime($request->month));
+        $year = $request->year;
+
+        $invoices = Invoice::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->with('client', 'shipment', 'items')
+            ->get();
+
+        foreach ($invoices as $invoice) {
+            $stats = $invoice->stats();
+
+            $total_expenses += $stats[0];
+            $total_revenue += $stats[1];
+            $total_profit += $stats[2];
+        }
+
+        $expenses = Expense::whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->get();
+
+        $internal_expenses = $expenses->sum('amount');
+        $net_profit = $total_profit - $internal_expenses;
+
+        $data = [
+            'invoices' => $invoices,
+            'expenses' => $expenses,
+            'month' => $request->month,
+            'year' => $year,
+            'total_revenue' => $total_revenue,
+            'total_expenses' => $total_expenses,
+            'internal_expenses' => $internal_expenses,
+            'total_profit' => $total_profit,
+            'net_profit' => $net_profit,
+        ];
+        return view('statistics.net_profit', $data);
     }
 }
