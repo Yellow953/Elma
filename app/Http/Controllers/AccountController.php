@@ -102,9 +102,9 @@ class AccountController extends Controller
     {
         if ($account->client) {
             $transactions = $account->client->transactions;
-        }else if ($account->supplier) {
+        } else if ($account->supplier) {
             $transactions = $account->supplier->transactions;
-        }else{
+        } else {
             $transactions = $account->transactions;
         }
 
@@ -119,122 +119,31 @@ class AccountController extends Controller
 
     public function trial_balance(Request $request)
     {
-        $from_date = $request->from_date;
-        $to_date = $request->to_date;
-        $from_account = $request->from_account;
-        $to_account = $request->to_account;
-        $mvt = $request->has('mvt');
-        $bbf = $request->has('bbf');
-        $skip_empty = $request->boolean('skip_empty');
+        $request->validate([
+            'from_date' => 'nullable|date',
+            'to_date' => 'nullable|date|after_or_equal:from_date',
+        ]);
 
-        $accountsQuery = Account::when($from_date && $to_date, function ($query) use ($from_date, $to_date) {
-            $query->with(['transactions' => function ($query) use ($from_date, $to_date) {
-                $query->whereBetween('created_at', [$from_date, $to_date]);
-            }]);
-        })
-            ->when($from_account && $to_account, function ($query) use ($from_account, $to_account) {
-                $query->whereBetween('account_number', [$from_account, $to_account]);
-            })
-            ->when($from_account && !$to_account, function ($query) use ($from_account) {
-                $query->where('account_number', $from_account);
-            });
+        if ($request->from_date || $request->to_date) {
+            $from_date = $request->from_date ?? '1900-01-01';
+            $to_date = $request->to_date ?? now();
 
-        $accounts = $accountsQuery->get();
-
-        $trialBalance = [];
-        $all_credit = 0;
-        $all_debit = 0;
-        $all_balance = 0;
-
-        foreach ($accounts as $account) {
-            $creditTotal = 0;
-            $debitTotal = 0;
-            $balance = 0;
-
-            if ($bbf && $from_date) {
-                $previousTransactions = $account->transactions()
-                    ->where('created_at', '<', $from_date)
-                    ->get();
-
-                foreach ($previousTransactions as $prevTransaction) {
-                    $debitTotal += $prevTransaction->debit;
-                    $creditTotal += $prevTransaction->credit;
-                }
-            }
-
-            if ($mvt) {
-                foreach ($account->transactions as $transaction) {
-                    $debitTotal += $transaction->debit;
-                    $creditTotal += $transaction->credit;
-                }
-            } else {
-                $debitTotal += $account->transactions->sum('debit');
-                $creditTotal += $account->transactions->sum('credit');
-            }
-
-            $balance = $debitTotal - $creditTotal;
-
-            $all_credit += $creditTotal;
-            $all_debit += $debitTotal;
-            $all_balance += $balance;
-
-            if ($skip_empty && $balance == 0) {
-                continue;
-            }
-
-            $trialBalance[] = [
-                'account' => $account,
-                'credit_total' => $creditTotal,
-                'debit_total' => $debitTotal,
-                'balance' => $balance,
-            ];
+            $transactions = Transaction::whereNotNull('client_id')
+                ->whereBetween('created_at', [$from_date, $to_date])
+                ->get();
+        } else {
+            $transactions = Transaction::whereNotNull('client_id')->get();
         }
 
-        $data = compact('trialBalance', 'from_date', 'to_date', 'from_account', 'to_account', 'all_credit', 'all_debit', 'all_balance', 'skip_empty');
-
-        return view('accounts.trial_balance', $data);
-    }
-
-    public function export_trial_balance(Request $request)
-    {
-        $from_date = $request->from_date;
-        $to_date = $request->to_date;
-        $from_account = $request->from_account;
-        $to_account = $request->to_account;
-        $skip_empty = $request->boolean('skip_empty');
-
-        $accounts = Account::when($from_date && $to_date, function ($query) use ($from_date, $to_date) {
-            $query->with(['transactions' => function ($query) use ($from_date, $to_date) {
-                $query->whereBetween('created_at', [$from_date, $to_date]);
-            }]);
-        })
-            ->when($from_account && $to_account, function ($query) use ($from_account, $to_account) {
-                $query->whereBetween('account_number', [$from_account, $to_account]);
-            })
-            ->get();
-
-        $trialBalance = [];
-
-        foreach ($accounts as $account) {
-            $creditTotal = $account->transactions->sum('credit');
-            $debitTotal = $account->transactions->sum('debit');
-            $balance = $debitTotal - $creditTotal;
-
-            if ($skip_empty && $balance == 0) {
-                continue;
-            }
-
-            $trialBalance[] = [
-                'account_number' => $account->account_number,
-                'account_description' => $account->account_description,
-                'credit_total' => $creditTotal,
-                'debit_total' => $debitTotal,
-                'balance' => $balance,
+        $trialBalance = $transactions->groupBy('client_id')->map(function ($clientTransactions) {
+            return [
+                'client' => $clientTransactions->first()->client->name,
+                'total_debit' => $clientTransactions->sum('debit'),
+                'total_credit' => $clientTransactions->sum('credit'),
+                'balance' => $clientTransactions->sum('debit') - $clientTransactions->sum('credit'),
             ];
-        }
+        });
 
-        $data = collect($trialBalance);
-
-        return Excel::download(new TrialBalanceExport($data), 'trial_balance.xlsx');
+        return view('accounts.trial_balance', compact('trialBalance'));
     }
 }

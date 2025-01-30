@@ -46,23 +46,6 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="contact_person" class="col-md-5 col-form-label text-md-end">{{ __('Contact
-                        Person') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="contact_person" type="text"
-                            class="form-control @error('contact_person') is-invalid @enderror" name="contact_person"
-                            autocomplete="contact_person" value="{{ $supplier->contact_person }}">
-
-                        @error('contact_person')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
                     <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email') }}</label>
 
                     <div class="col-md-6">
@@ -74,21 +57,6 @@
                             <strong>{{ $message }}</strong>
                         </span>
                         @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="country" class="col-md-5 col-form-label text-md-end">{{ __('Country *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="country" id="country" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach (Helper::get_countries() as $country)
-                            <option value="{{ $country }}" {{ $supplier->country == $country ? 'selected' : ''
-                                }}>{{ $country }}</option>
-                            @endforeach
-                        </select>
                     </div>
                 </div>
 

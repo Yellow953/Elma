@@ -60,7 +60,9 @@
                             @php
                             $stats = $invoice->stats();
                             @endphp
-                            <tr>
+
+                            <tr onclick="window.location='{{ route('invoices.edit', $invoice->id) }}'"
+                                style="cursor: pointer;">
                                 <td>{{ $invoice->invoice_number }}</td>
                                 <td>{{ $invoice->shipment->shipment_number }}</td>
                                 <td>${{ $stats[0] }}</td>

@@ -30,8 +30,7 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="address" class="col-md-5 col-form-label text-md-end">{{ __('Address *')
-                        }}</label>
+                    <label for="address" class="col-md-5 col-form-label text-md-end">{{ __('Address *') }}</label>
 
                     <div class="col-md-6">
                         <input id="address" type="text" class=" form-control @error('address') is-invalid @enderror"
@@ -46,28 +45,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="contact_person" class="col-md-5 col-form-label text-md-end">{{ __('Contact
-                        Person *') }}</label>
-
-                    <div class="col-md-6">
-                        <input id="contact_person" type="text"
-                            class=" form-control @error('contact_person') is-invalid @enderror" name="contact_person"
-                            required autocomplete="contact_person" value="{{ old('contact_person') }}">
-
-                        @error('contact_person')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email *') }}</label>
+                    <label for="email" class="col-md-5 col-form-label text-md-end">{{ __('Email') }}</label>
 
                     <div class="col-md-6">
                         <input id="email" type="email" class=" form-control @error('email') is-invalid @enderror"
-                            name="email" required autocomplete="email" value="{{ old('email') }}">
+                            name="email" autocomplete="email" value="{{ old('email') }}">
 
                         @error('email')
                         <span class="invalid-feedback" role="alert">
@@ -78,28 +60,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="country" class="col-md-5 col-form-label text-md-end">{{ __('Country *')
-                        }}</label>
-
-                    <div class="col-md-6">
-                        <select name="country" id="country" required class="form-select select2">
-                            <option value=""></option>
-                            @foreach (Helper::get_countries() as $country)
-                            <option value="{{ $country }}" {{ $country==old('country') ? 'selected' : '' }}>{{
-                                $country }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="input-group input-group-outline row my-3">
-                    <label for="phone" class="col-md-5 col-form-label text-md-end">{{ __('Phone Number
-                        *')
-                        }}</label>
+                    <label for="phone" class="col-md-5 col-form-label text-md-end">{{ __('Phone Number') }}</label>
 
                     <div class="col-md-6">
                         <input id="phone" type="tel" class=" form-control @error('phone') is-invalid @enderror"
-                            name="phone" required autocomplete="phone" value="{{ old('phone') }}">
+                            name="phone" autocomplete="phone" value="{{ old('phone') }}">
 
                         @error('phone')
                         <span class="invalid-feedback" role="alert">
@@ -140,13 +105,11 @@
                 </div>
 
                 <div class="input-group input-group-outline row my-3">
-                    <label for="vat_number" class="col-md-5 col-form-label text-md-end">{{ __('Vat Number
-                        *')
-                        }}</label>
+                    <label for="vat_number" class="col-md-5 col-form-label text-md-end">{{ __('Vat Number') }}</label>
 
                     <div class="col-md-6">
                         <input id="vat_number" type="number" min="0"
-                            class=" form-control @error('vat_number') is-invalid @enderror" name="vat_number" required
+                            class=" form-control @error('vat_number') is-invalid @enderror" name="vat_number"
                             autocomplete="vat_number" value="{{ old('vat_number') }}">
 
                         @error('vat_number')

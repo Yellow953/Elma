@@ -16,11 +16,6 @@ class Shipment extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function shipper()
-    {
-        return $this->belongsTo(Client::class);
-    }
-
     public function items()
     {
         return $this->hasMany(ShipmentItem::class);
@@ -58,9 +53,9 @@ class Shipment extends Model
             $due_from_id = request('due_from_id');
             $q->where('due_from_id', $due_from_id);
         }
-        if (request('shipper_id')) {
-            $shipper_id = request('shipper_id');
-            $q->where('shipper_id', $shipper_id);
+        if (request('shipper')) {
+            $shipper = request('shipper');
+            $q->where('shipper', 'LIKE', "%{$shipper}%");
         }
         if (request('mode')) {
             $mode = request('mode');
@@ -82,10 +77,6 @@ class Shipment extends Model
             $notes = request('notes');
             $q->where('notes', 'LIKE', "%{$notes}%");
         }
-        if (request('shipping_date')) {
-            $shipping_date = request('shipping_date');
-            $q->where('shipping_date', $shipping_date);
-        }
         if (request('loading_date')) {
             $loading_date = request('loading_date');
             $q->where('loading_date', $loading_date);
@@ -101,6 +92,10 @@ class Shipment extends Model
         if (request('booking_number')) {
             $booking_number = request('booking_number');
             $q->where('booking_number', 'LIKE', "%{$booking_number}%");
+        }
+        if (request('container_number')) {
+            $container_number = request('container_number');
+            $q->where('container_number', 'LIKE', "%{$container_number}%");
         }
         if (request('carrier_name')) {
             $carrier_name = request('carrier_name');

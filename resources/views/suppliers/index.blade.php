@@ -22,24 +22,13 @@
         @csrf
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
                         <label for="name">Name</label>
                         <div>
                             <input type="text" class="form-control border" name="name" placeholder="Name"
                                 value="{{request()->query('name')}}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="contact_person">Contact</label>
-                        <div>
-                            <input type="text" class="form-control border" name="contact_person"
-                                placeholder="Contact Person" value="{{request()->query('contact_person')}}">
                         </div>
                     </div>
                 </div>
@@ -154,7 +143,6 @@
                                     </td>
                                     <td>
                                         <p>
-                                            {{ ucwords($supplier->contact_person) }} <br>
                                             {{ $supplier->email }} <br>
                                             {{ $supplier->phone }}
                                         </p>

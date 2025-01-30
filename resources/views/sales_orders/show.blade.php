@@ -23,8 +23,7 @@
                         <tr class="border-none">
                             <th class="w-custom p-2">Shipper</th>
                             <td colspan="2" class="py-2 px-4 border-left">
-                                {{ $shipment->due_from->name }} <br>
-                                {{ $shipment->due_from->address }}
+                                {{ $shipment->shipper }}
                             </td>
                         </tr>
 
@@ -51,6 +50,13 @@
                             <th class="w-custom p-1">FILE#</th>
                             <td colspan="2" class="py-1 px-4 border-left">
                                 {{ $shipment->shipment_number }}
+                            </td>
+                        </tr>
+
+                        <tr class="border-none">
+                            <th class="w-custom p-1">Container#</th>
+                            <td colspan="2" class="py-1 px-4 border-left">
+                                {{ $shipment->container_number }}
                             </td>
                         </tr>
 

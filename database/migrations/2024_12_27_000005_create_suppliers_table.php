@@ -12,12 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
 
-            $table->string('contact_person')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('vat_number')->nullable();
-            $table->string('country');
 
             $table->foreignId('tax_id')->constrained('taxes')->onDelete('cascade');
             $table->foreignId('currency_id')->constrained('currencies')->onDelete('cascade');

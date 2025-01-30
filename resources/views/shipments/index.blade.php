@@ -69,16 +69,10 @@
             <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
-                        <label for="shipper_id">Shipper</label>
+                        <label for="shipper">Shipper</label>
                         <div>
-                            <select name="shipper_id" id="shipper_id" class="form-select select2">
-                                <option value=""></option>
-                                @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" {{ $client->id ==
-                                    request()->query('shipper_id') ?
-                                    'selected' : '' }}>{{ $client->name }}</option>
-                                @endforeach
-                            </select>
+                            <input type="text" class="form-control border" name="shipper" placeholder="Shipper"
+                                value="{{request()->query('shipper')}}">
                         </div>
                     </div>
                 </div>
@@ -120,17 +114,6 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="shipping_date">Shipping Date</label>
-                        <div>
-                            <input type="date" class="form-control border" name="shipping_date"
-                                value="{{request()->query('shipping_date')}}">
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
@@ -193,7 +176,7 @@
                                     </td>
                                     <td>
                                         Due From: {{ ucwords($shipment->due_from->name) }} <br>
-                                        Shipper: {{ ucwords($shipment->shipper->name) }}
+                                        Shipper: {{ ucwords($shipment->shipper) }}
                                     </td>
                                     <td>
                                         {{ ucwords($shipment->consignee_name) }} <br>
@@ -206,6 +189,7 @@
                                     </td>
                                     <td>
                                         Booking Number: {{ $shipment->booking_number }} <br>
+                                        Container Number: {{ $shipment->container_number }} <br>
                                         Carrier: {{ ucwords($shipment->carrier_name) }} <br>
                                         Commodity: {{ ucwords($shipment->commodity) }}
                                     </td>
@@ -214,8 +198,7 @@
                                         Arrival: {{ $shipment->arrival }}
                                     </td>
                                     <td>
-                                        Shipping: {{ $shipment->shipping_date }} <br>
-                                        {{ $shipment->loading_date ? ' Loading: ' . $shipment->loading_date : '' }}
+                                        Loading: {{ $shipment->loading_date }}
                                     </td>
                                     <td>
                                         <div class="d-flex flex-row justify-content-center">

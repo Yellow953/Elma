@@ -162,7 +162,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/create', [AccountController::class, 'create'])->name('accounts.create');
         Route::get('/trial_balance', [AccountController::class, 'get_trial_balance'])->name('accounts.get_trial_balance');
         Route::post('/trial_balance', [AccountController::class, 'trial_balance'])->name('accounts.trial_balance');
-        Route::post('/trial_balance/export', [AccountController::class, 'export_trial_balance'])->name('accounts.export_trial_balance');
         Route::get('/{account}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
         Route::post('/{account}/update', [AccountController::class, 'update'])->name('accounts.update');
         Route::get('/{account}/delete', [AccountController::class, 'destroy'])->name('accounts.destroy');

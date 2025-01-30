@@ -4,6 +4,61 @@
 
 @section('content')
 <div class="container px-4 mt-4">
+    <div class="row my-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="{{ asset('assets/images/ports.png') }}" class="img-fluid rounded">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card shadow-sm p-4">
+                <h2 class="text-center text-info">Ports</h2>
+                <form action="{{ route('settings.ports.create') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="row mb-4">
+                        <div class="col-9 my-auto">
+                            <input type="text" name="port" placeholder="Port Name" value="{{ old('port') }}"
+                                class="form-control">
+                        </div>
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-info btn-sm w-100 my-auto">Create</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="ports">
+                    <table class="table rounded">
+                        <thead class="bg-light text-info">
+                            <tr>
+                                <th>Port</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($ports as $port)
+                            <tr>
+                                <td>
+                                    {{ $port->title }}
+                                </td>
+                                <td>
+                                    <a href="{{ route('settings.ports.destroy', $port->id) }}"
+                                        class="btn btn-danger btn-sm">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                            <tr>
+                                <td colspan="2">{{ $ports->links() }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-4">
             <div class="card shadow-sm">
@@ -81,58 +136,6 @@
                         <button type="submit" class="btn btn-info">Update</button>
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="row my-4">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <img src="{{ asset('assets/images/ports.png') }}" class="img-fluid rounded">
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="card shadow-sm p-4">
-                <h2 class="text-center text-info">Ports</h2>
-                <form action="{{ route('settings.ports.create') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="row mb-4">
-                        <div class="col-9 my-auto">
-                            <input type="text" name="port" placeholder="Port Name" value="{{ old('port') }}"
-                                class="form-control">
-                        </div>
-                        <div class="col-3">
-                            <button type="submit" class="btn btn-info btn-sm w-100 my-auto">Create</button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="ports">
-                    <table class="table rounded">
-                        <thead class="bg-light text-info">
-                            <tr>
-                                <th>Port</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($ports as $port)
-                            <tr>
-                                <td>
-                                    {{ $port->title }}
-                                </td>
-                                <td>
-                                    <a href="{{ route('settings.ports.destroy', $port->id) }}"
-                                        class="btn btn-danger btn-sm">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>

@@ -40,23 +40,7 @@
                     <h2 class="text-center text-info">Edit Shipment</h2>
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group mt-3">
-                                <label for="shipment_number" class="col-form-label">Shipment Number
-                                    *</label>
-
-                                <input id="shipment_number" type="text" placeholder="Enter Shipment Number" required
-                                    class="form-control @error('shipment_number') is-invalid @enderror"
-                                    name="shipment_number" value="{{ $shipment->shipment_number }}">
-
-                                @error('shipment_number')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="due_from_id" class="col-form-label">Due From *</label>
 
@@ -65,33 +49,28 @@
                                     @foreach ($clients as $client)
                                     <option value="{{ $client->id }}" {{ $client->id==$shipment->due_from_id ?
                                         'selected'
-                                        : ''
-                                        }}>
+                                        : ''}}>
                                         {{ $client->name }}
                                     </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group mt-3">
-                                <label for="shipper_id" class="col-form-label">Shipper *</label>
+                                <label for="shipper" class="col-form-label">Shipper *</label>
 
-                                <select name="shipper_id" id="shipper_id" required class="form-select select2">
-                                    <option value="">Select Client</option>
-                                    @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}" {{ $client->id==$shipment->shipper_id ? 'selected'
-                                        : ''
-                                        }}>
-                                        {{ $client->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <input id="shipper" type="text" placeholder="Enter Shipper" required
+                                    class="form-control @error('shipper') is-invalid @enderror" name="shipper"
+                                    value="{{ $shipment->shipper }}">
+
+                                @error('shipper')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                                @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="mode" class="col-form-label">Mode *</label>
@@ -121,9 +100,6 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="departure" class="col-form-label">Departure *</label>
@@ -152,19 +128,16 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-3">
-                                <label for="shipping_date" class="col-form-label">Shipping Date
+                                <label for="carrier_name" class="col-form-label">Carrier Name
                                     *</label>
 
-                                <input id="shipping_date" type="date" placeholder="Enter shipping_date" required
-                                    class="form-control @error('shipping_date') is-invalid @enderror"
-                                    name="shipping_date" value="{{ $shipment->shipping_date }}">
+                                <input id="carrier_name" type="text" placeholder="Enter Carrier Name" required
+                                    class="form-control @error('carrier_name') is-invalid @enderror" name="carrier_name"
+                                    value="{{ $shipment->carrier_name }}">
 
-                                @error('shipping_date')
+                                @error('carrier_name')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -186,9 +159,6 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="vessel_name" class="col-form-label">Vessel Name
@@ -220,9 +190,6 @@
                                 @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="booking_number" class="col-form-label">Booking Number
@@ -241,23 +208,19 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mt-3">
-                                <label for="carrier_name" class="col-form-label">Carrier Name
-                                    *</label>
+                                <label for="container_number" class="col-form-label">Container Number *</label>
 
-                                <input id="carrier_name" type="text" placeholder="Enter Carrier Name" required
-                                    class="form-control @error('carrier_name') is-invalid @enderror" name="carrier_name"
-                                    value="{{ $shipment->carrier_name }}">
+                                <input id="container_number" type="text" placeholder="Enter Container Number" required
+                                    class="form-control @error('container_number') is-invalid @enderror"
+                                    name="container_number" value="{{ $shipment->container_number }}">
 
-                                @error('carrier_name')
+                                @error('container_number')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="consignee_name" class="col-form-label">Consignee Name

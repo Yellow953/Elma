@@ -22,7 +22,7 @@ class SupplierController extends Controller
 
     public function index()
     {
-        $suppliers = Supplier::select('id', 'name', 'email', 'phone', 'contact_person', 'address', 'tax_id', 'vat_number', 'currency_id', 'account_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $suppliers = Supplier::select('id', 'name', 'email', 'phone', 'address', 'tax_id', 'vat_number', 'currency_id', 'account_id')->filter()->orderBy('id', 'desc')->paginate(25);
 
         return view('suppliers.index', compact('suppliers'));
     }
@@ -59,9 +59,7 @@ class SupplierController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'address' => $request->address,
-            'contact_person' => $request->contact_person,
             'phone' => $request->phone,
-            'country' => $request->country,
             'vat_number' => $request->vat_number,
             'tax_id' => $request->tax_id,
             'currency_id' => $request->currency_id,

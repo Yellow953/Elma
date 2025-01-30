@@ -28,7 +28,7 @@ class ShipmentController extends Controller
 
     public function index()
     {
-        $shipments = Shipment::select('id', 'shipment_number', 'mode', 'departure', 'arrival', 'commodity', 'due_from_id', 'shipper_id', 'shipping_date', 'loading_date', 'vessel_name', 'vessel_date', 'booking_number', 'carrier_name', 'consignee_name', 'consignee_country')->filter()->orderBy('id', 'desc')->paginate(25);
+        $shipments = Shipment::select('id', 'shipment_number', 'mode', 'departure', 'arrival', 'commodity', 'due_from_id', 'shipper', 'loading_date', 'vessel_name', 'vessel_date', 'booking_number', 'container_number', 'carrier_name', 'consignee_name', 'consignee_country')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
         $modes = Helper::get_shipping_modes();
         $ports = Helper::get_shipping_ports();
@@ -58,12 +58,12 @@ class ShipmentController extends Controller
             'arrival' => 'required',
             'commodity' => 'required',
             'due_from_id' => 'required',
-            'shipper_id' => 'required',
-            'shipping_date' => 'required|date',
+            'shipper' => 'required|string|max:255',
             'loading_date' => 'required|date',
             'vessel_name' => 'required|string|max:255',
             'vessel_date' => 'required|date',
             'booking_number' => 'required|string|max:255',
+            'container_number' => 'required|string|max:255',
             'carrier_name' => 'required|string|max:255',
             'consignee_name' => 'required|string|max:255',
             'consignee_country' => 'required',
@@ -78,12 +78,12 @@ class ShipmentController extends Controller
             'arrival' => $request->arrival,
             'commodity' => $request->commodity,
             'due_from_id' => $request->due_from_id,
-            'shipper_id' => $request->shipper_id,
-            'shipping_date' => $request->shipping_date,
+            'shipper' => $request->shipper,
             'loading_date' => $request->loading_date,
             'vessel_name' => $request->vessel_name,
             'vessel_date' => $request->vessel_date,
             'booking_number' => $request->booking_number,
+            'container_number' => $request->container_number,
             'carrier_name' => $request->carrier_name,
             'consignee_name' => $request->consignee_name,
             'consignee_country' => $request->consignee_country,
@@ -127,7 +127,7 @@ class ShipmentController extends Controller
             $salesOrder = SalesOrder::create([
                 'so_number' => SalesOrder::generate_so_number(),
                 'client_id' => $request->due_from_id,
-                'order_date' => $request->shipping_date,
+                'order_date' => $request->loading_date,
                 'due_date' => $request->loading_date,
                 'status' => 'new',
                 'shipment_id' => $shipment->id,
@@ -144,7 +144,7 @@ class ShipmentController extends Controller
             $purchaseOrder = PurchaseOrder::create([
                 'po_number' => PurchaseOrder::generate_po_number(),
                 'supplier_id' => $supplierId,
-                'order_date' => $request->shipping_date,
+                'order_date' => $request->loading_date,
                 'due_date' => $request->loading_date,
                 'status' => 'new',
                 'shipment_id' => $shipment->id,
@@ -186,12 +186,12 @@ class ShipmentController extends Controller
             'arrival' => 'required',
             'commodity' => 'required',
             'due_from_id' => 'required',
-            'shipper_id' => 'required',
-            'shipping_date' => 'required|date',
+            'shipper' => 'required|string|max:255',
             'loading_date' => 'required|date',
             'vessel_name' => 'required|string|max:255',
             'vessel_date' => 'required|date',
             'booking_number' => 'required|string|max:255',
+            'container_number' => 'required|string|max:255',
             'carrier_name' => 'required|string|max:255',
             'consignee_name' => 'required|string|max:255',
             'consignee_country' => 'required',
@@ -208,12 +208,12 @@ class ShipmentController extends Controller
             'arrival' => $request->arrival,
             'commodity' => $request->commodity,
             'due_from_id' => $request->due_from_id,
-            'shipper_id' => $request->shipper_id,
-            'shipping_date' => $request->shipping_date,
+            'shipper' => $request->shipper,
             'loading_date' => $request->loading_date,
             'vessel_name' => $request->vessel_name,
             'vessel_date' => $request->vessel_date,
             'booking_number' => $request->booking_number,
+            'conta_nuinermber' => $request->conta_number,
             'carrier_name' => $request->carrier_name,
             'consignee_name' => $request->consignee_name,
             'consignee_country' => $request->consignee_country,
@@ -267,7 +267,7 @@ class ShipmentController extends Controller
                 $purchaseOrder = PurchaseOrder::create([
                     'po_number' => PurchaseOrder::generate_po_number(),
                     'supplier_id' => $supplierId,
-                    'order_date' => $request->shipping_date,
+                    'order_date' => $request->loading_date,
                     'due_date' => $request->loading_date,
                     'status' => 'new',
                     'shipment_id' => $shipment->id,

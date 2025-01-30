@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('arrival');
             $table->string('commodity');
             $table->unsignedBigInteger('due_from_id');
-            $table->unsignedBigInteger('shipper_id');
-            $table->date('shipping_date');
+            $table->string('shipper');
             $table->date('loading_date')->nullable();
             $table->string('vessel_name');
             $table->date('vessel_date');
             $table->string('booking_number');
+            $table->string('container_number');
             $table->string('carrier_name');
             $table->string('consignee_name');
             $table->string('consignee_country');
@@ -30,7 +30,6 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('due_from_id')->references('id')->on('clients');
-            $table->foreign('shipper_id')->references('id')->on('clients');
         });
     }
 

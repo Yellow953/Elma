@@ -23,7 +23,7 @@ class SettingsController extends Controller
         $payable_account = Variable::where('title', 'payable_account')->first();
         $cash_account = Variable::where('title', 'cash_account')->first();
         $accounts = Account::select('id', 'account_number', 'account_description')->get();
-        $ports = Variable::select('id', 'title')->where('type', 'ports')->get();
+        $ports = Variable::select('id', 'title')->where('type', 'ports')->paginate(10);
 
         $data = compact('accounts', 'expense_account', 'revenue_account', 'receivable_account', 'payable_account', 'cash_account', 'ports');
         return view('settings.index', $data);

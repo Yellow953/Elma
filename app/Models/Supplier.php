@@ -59,10 +59,6 @@ class Supplier extends Model
             $address = request('address');
             $q->where('address', 'LIKE', "%{$address}%");
         }
-        if (request('contact_person')) {
-            $contact_person = request('contact_person');
-            $q->where('contact_person', 'LIKE', "%{$contact_person}%");
-        }
         if (request('email')) {
             $email = request('email');
             $q->where('email', 'LIKE', "%{$email}%");
@@ -70,10 +66,6 @@ class Supplier extends Model
         if (request('vat_number')) {
             $vat_number = request('vat_number');
             $q->where('vat_number', $vat_number);
-        }
-        if (request('country')) {
-            $country = request('country');
-            $q->where('country', 'LIKE', "%{$country}%");
         }
         if (request('phone')) {
             $phone = request('phone');

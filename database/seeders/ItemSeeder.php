@@ -38,6 +38,7 @@ class ItemSeeder extends Seeder
             ['name' => 'Shipping Fee', 'description' => 'Shipping cost charged by supplier', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
             ['name' => 'Customs Fee', 'description' => 'Customs clearance fee', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
             ['name' => 'Transporter Fee', 'description' => 'Transportation cost by agent', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
+            ['name' => 'COO', 'description' => '', 'unit_price' => 0, 'unit' => 'flat', 'type' => 'expense'],
         ];
 
         foreach ($items as $item) {

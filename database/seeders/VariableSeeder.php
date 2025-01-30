@@ -45,6 +45,11 @@ class VariableSeeder extends Seeder
                 'title' => 'Port Of Dubai',
                 'value' => 'Port Of Dubai',
             ],
+            [
+                'type' => 'ports',
+                'title' => 'PORT SAID EAST',
+                'value' => 'PORT SAID EAST',
+            ],
 
         ];
 
