@@ -63,6 +63,7 @@ class InvoiceController extends Controller
             'quantity.*' => 'required|numeric|min:1',
             'unit_price.*' => 'required|numeric|min:0',
             'supplier_id.*' => 'nullable|exists:suppliers,id',
+            'tax.*' => 'required',
         ]);
 
         $number = Invoice::generate_number();
@@ -91,8 +92,14 @@ class InvoiceController extends Controller
             $supplier_id = $request->supplier_id[$key] ?? null;
 
             $line_total = $quantity * $unit_price;
-            $line_tax = $line_total * $tax_rate;
-            $line_total_after_tax = $line_total + $line_tax;
+
+            if (isset($request->tax[$key])) {
+                $line_tax = $line_total * $tax_rate;
+                $line_total_after_tax = $line_total + $line_tax;
+            } else {
+                $line_tax = 0;
+                $line_total_after_tax = $line_total;
+            }
 
             InvoiceItem::create([
                 'invoice_id' => $invoice->id,

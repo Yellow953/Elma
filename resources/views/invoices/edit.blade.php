@@ -59,23 +59,6 @@
                         </thead>
                     </table>
                 </div>
-                <div class="text-center">
-                    <div class="row">
-                        <div class="col-6">Total</div>
-                        <div class="col-6"><span id="invoice_items_total">{{
-                                number_format($invoice_items->sum('total_price'), 2) }}</span></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">Tax</div>
-                        <div class="col-6"><span id="invoice_items_total_tax">{{
-                                number_format($invoice_items->sum('vat'), 2) }}</span></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">Total After Tax</div>
-                        <div class="col-6"><span id="invoice_items_total_after_tax">{{
-                                number_format($invoice_items->sum('total_price_after_vat'), 2) }}</span></div>
-                    </div>
-                </div>
 
                 <div class="d-flex align-items-center justify-content-around mt-3">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>

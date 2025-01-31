@@ -153,6 +153,7 @@
                                             <th class="text-sm">Quantity</th>
                                             <th class="text-sm">Unit Price</th>
                                             <th class="text-sm">Total Price</th>
+                                            <th class="text-sm">Tax</th>
                                         </tr>
                                     </thead>
                                     <tbody class="dynamic">
@@ -196,23 +197,12 @@
                                                 <input type="number" name="total_price[]" class="form-control border"
                                                     required min="0" value="0" step="any" disabled>
                                             </td>
+                                            <td>
+                                                <input type="checkbox" name="tax[]" checked>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="text-center">
-                                <div class="row">
-                                    <div class="col-6">Total</div>
-                                    <div class="col-6"><span id="invoice_items_total">0</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">Tax</div>
-                                    <div class="col-6"><span id="invoice_items_total_tax">0</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">Total After Tax</div>
-                                    <div class="col-6"><span id="invoice_items_total_after_tax">0</span></div>
-                                </div>
                             </div>
 
                             <div class="d-flex justify-content-between mt-4">
@@ -312,7 +302,6 @@
     function removeRow(button) {
         var row = button.parentNode.parentNode;
         row.parentNode.removeChild(row);
-        updateInvoiceTotal();
     }
 
     function updateInvoiceItemRow(row) {
@@ -322,27 +311,6 @@
         var totalPrice = quantity * unitPrice;
 
         row.querySelector('input[name^="total_price"]').value = totalPrice.toFixed(2);
-
-        updateInvoiceTotal();
-    }
-
-    function updateInvoiceTotal() {
-        var total = 0;
-        var total_tax = 0;
-        var total_after_tax = 0;
-        var tax_rate = document.querySelector('select[name^="tax_id"] option:checked').getAttribute('data-rate') / 100;
-
-        document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
-            var total_price = parseFloat(row.querySelector('input[name^="total_price"]').value) || 0;
-
-            total += total_price;
-            total_tax += total_price * tax_rate;
-            total_after_tax += total_price + (total_price * tax_rate);
-        });
-
-        document.getElementById('invoice_items_total').innerText = total.toFixed(2);
-        document.getElementById('invoice_items_total_tax').innerText = total_tax.toFixed(2);
-        document.getElementById('invoice_items_total_after_tax').innerText = total_after_tax.toFixed(2);
     }
 
     function fillRowWithData(row, data) {
@@ -396,14 +364,11 @@
 
             const taxSelect = $('#tax_id');
             taxSelect.val(client_tax_id).trigger('change');
-
-            updateInvoiceTotal();
         });
 
         $('#tax_id').on('select2:select', function (event) {
             var rate = document.querySelector('select[name^="tax_id"] option:checked').getAttribute('data-rate');
             tax_rate = rate / 100;
-            updateInvoiceTotal();
         });
 
         document.querySelectorAll('#invoiceItemsTable tbody tr').forEach(function(row) {
@@ -455,7 +420,6 @@
 
             newRow.querySelectorAll('input').forEach(function(input) {
                 input.addEventListener('input', function() {
-                    updateInvoiceTotal();
                     updateInvoiceItemRow(newRow);
                 });
             });
