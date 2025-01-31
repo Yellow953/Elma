@@ -23,7 +23,6 @@ class ShipmentController extends Controller
         $this->middleware('permission:shipments.create')->only(['new', 'create']);
         $this->middleware('permission:shipments.update')->only(['edit', 'update']);
         $this->middleware('permission:shipments.delete')->only('destroy');
-        $this->middleware('permission:shipments.export')->only('export');
     }
 
     public function index()

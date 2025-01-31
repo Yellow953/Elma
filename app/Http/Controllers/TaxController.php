@@ -16,7 +16,6 @@ class TaxController extends Controller
         $this->middleware('permission:taxes.create')->only(['new', 'create']);
         $this->middleware('permission:taxes.update')->only(['edit', 'update']);
         $this->middleware('permission:taxes.delete')->only('destroy');
-        $this->middleware('permission:taxes.export')->only('export');
     }
 
     public function index()

@@ -10,9 +10,6 @@ $statuses = Helper::get_order_statuses();
 @can('purchase_orders.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_orders.new') }}">New Purchase Order</a>
 @endcan
-@can('purchase_orders.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('purchase_orders.export') }}">Export Purchase Orders</a>
-@endcan
 @endsection
 
 @section('filter')

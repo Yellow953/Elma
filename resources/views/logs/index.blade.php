@@ -2,12 +2,6 @@
 
 @section('title', 'logs')
 
-@section('actions')
-@can('logs.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('logs.export') }}">Export Logs</a>
-@endcan
-@endsection
-
 @section('filter')
 <button class="btn btn-secondary py-2 px-3 mx-2 text-dark ignore-confirm" type="button" id="filterDropdown"
     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

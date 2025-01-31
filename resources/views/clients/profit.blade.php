@@ -56,7 +56,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($invoices as $invoice)
+                            @forelse ($invoices as $invoice)
                             @php
                             $stats = $invoice->stats();
                             @endphp
@@ -69,7 +69,11 @@
                                 <td>${{ $stats[1] }}</td>
                                 <td>${{ $stats[2] }}</td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr class="text-center">
+                                <td colspan="5">No Invoices Yet...</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

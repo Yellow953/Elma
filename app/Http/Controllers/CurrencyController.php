@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Currency;
 use App\Models\Log;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -16,7 +15,6 @@ class CurrencyController extends Controller
         $this->middleware('permission:currencies.create')->only(['new', 'create']);
         $this->middleware('permission:currencies.update')->only(['edit', 'update']);
         $this->middleware('permission:currencies.delete')->only('destroy');
-        $this->middleware('permission:currencies.export')->only('export');
     }
 
     public function index()

@@ -20,7 +20,6 @@ class DebitNoteController extends Controller
         $this->middleware('permission:debit_notes.create')->only(['new', 'create']);
         $this->middleware('permission:debit_notes.update')->only(['edit', 'update']);
         $this->middleware('permission:debit_notes.delete')->only('destroy');
-        $this->middleware('permission:debit_notes.export')->only('export');
     }
 
     public function index()

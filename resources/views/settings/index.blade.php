@@ -71,53 +71,63 @@
                 <form action="{{ route('settings.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
 
-                    <div class="form-group mt-3">
-                        <label for="expense_account_id">Expense Account</label>
-                        <select name="expense_account_id" class="form-control select2">
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $expense_account->value == $account->id ? 'selected' :
-                                '' }}>{{ $account->account_number }} | {{
-                                $account->account_description }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <label for="revenue_account_id">Revenue Account</label>
-                        <select name="revenue_account_id" class="form-control select2">
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $revenue_account->value == $account->id ? 'selected' :
-                                '' }}>{{ $account->account_number }} | {{
-                                $account->account_description }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <label for="receivable_account_id">Receivable Account</label>
-                        <select name="receivable_account_id" class="form-control select2">
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $receivable_account->value == $account->id ?
-                                'selected' :
-                                '' }}>{{ $account->account_number }} | {{
-                                $account->account_description }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <label for="payable_account_id">Payable Account</label>
-                        <select name="payable_account_id" class="form-control select2">
-                            <option value=""></option>
-                            @foreach ($accounts as $account)
-                            <option value="{{ $account->id }}" {{ $payable_account->value == $account->id ? 'selected' :
-                                '' }}>{{ $account->account_number }} | {{
-                                $account->account_description }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="expense_account_id">Expense Account</label>
+                                <select name="expense_account_id" class="form-control select2">
+                                    <option value=""></option>
+                                    @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}" {{ $expense_account->value == $account->id ?
+                                        'selected' :
+                                        '' }}>{{ $account->account_number }} | {{
+                                        $account->account_description }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="revenue_account_id">Revenue Account</label>
+                                <select name="revenue_account_id" class="form-control select2">
+                                    <option value=""></option>
+                                    @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}" {{ $revenue_account->value == $account->id ?
+                                        'selected' :
+                                        '' }}>{{ $account->account_number }} | {{
+                                        $account->account_description }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="receivable_account_id">Receivable Account</label>
+                                <select name="receivable_account_id" class="form-control select2">
+                                    <option value=""></option>
+                                    @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}" {{ $receivable_account->value == $account->id ?
+                                        'selected' :
+                                        '' }}>{{ $account->account_number }} | {{
+                                        $account->account_description }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mt-3">
+                                <label for="payable_account_id">Payable Account</label>
+                                <select name="payable_account_id" class="form-control select2">
+                                    <option value=""></option>
+                                    @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}" {{ $payable_account->value == $account->id ?
+                                        'selected' :
+                                        '' }}>{{ $account->account_number }} | {{
+                                        $account->account_description }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="form-group mt-3">

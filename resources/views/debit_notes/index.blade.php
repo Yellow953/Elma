@@ -6,9 +6,6 @@
 @can('debit_notes.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('debit_notes.new') }}">New Debit Note</a>
 @endcan
-@can('debit_notes.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('debit_notes.export') }}">Export Dedit Notes</a>
-@endcan
 @endsection
 
 @section('filter')

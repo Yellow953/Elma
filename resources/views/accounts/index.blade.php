@@ -21,10 +21,6 @@
                 <a class="dropdown-item text-dark" href="#" onclick="openModal('trial_balance_modal')">Trial
                     Balance</a>
                 @endcan
-
-                @can('accounts.export')
-                <a class="dropdown-item text-dark" href="{{ route('accounts.export') }}">Export Accounts</a>
-                @endcan
             </div>
         </div>
         <div class="col-6 col-md-2">

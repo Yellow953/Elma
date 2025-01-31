@@ -6,9 +6,6 @@
 @can('shipments.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('shipments.new') }}">New Shipment</a>
 @endcan
-@can('shipments.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('shipments.export') }}">Export Shipments</a>
-@endcan
 @endsection
 
 @section('filter')

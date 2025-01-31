@@ -20,7 +20,6 @@ class CreditNoteController extends Controller
         $this->middleware('permission:credit_notes.create')->only(['new', 'create']);
         $this->middleware('permission:credit_notes.update')->only(['edit', 'update']);
         $this->middleware('permission:credit_notes.delete')->only('destroy');
-        $this->middleware('permission:credit_notes.export')->only('export');
     }
 
     public function index()

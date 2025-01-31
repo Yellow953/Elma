@@ -20,7 +20,6 @@ class PurchaseOrderController extends Controller
         $this->middleware('permission:purchase_orders.create')->only(['new', 'create']);
         $this->middleware('permission:purchase_orders.update')->only(['edit', 'update']);
         $this->middleware('permission:purchase_orders.delete')->only('destroy');
-        $this->middleware('permission:purchase_orders.export')->only('export');
     }
 
     public function index()

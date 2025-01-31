@@ -9,7 +9,6 @@ class LogController extends Controller
     public function __construct()
     {
         $this->middleware('permission:logs.read')->only('index');
-        $this->middleware('permission:logs.export')->only('export');
     }
 
     public function index()

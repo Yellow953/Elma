@@ -24,7 +24,6 @@ class InvoiceController extends Controller
         $this->middleware('permission:invoices.create')->only(['new', 'create']);
         $this->middleware('permission:invoices.update')->only(['edit', 'update']);
         $this->middleware('permission:invoices.delete')->only(['destroy', 'item_destroy']);
-        $this->middleware('permission:invoices.export')->only('export');
     }
 
     public function index()

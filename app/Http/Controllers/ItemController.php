@@ -14,7 +14,6 @@ class ItemController extends Controller
         $this->middleware('permission:items.create')->only(['new', 'create']);
         $this->middleware('permission:items.update')->only(['edit', 'update']);
         $this->middleware('permission:items.delete')->only('destroy');
-        $this->middleware('permission:items.export')->only('export');
     }
 
     public function index()

@@ -21,7 +21,6 @@ class SalesOrderController extends Controller
         $this->middleware('permission:sales_orders.create')->only(['new', 'create']);
         $this->middleware('permission:sales_orders.update')->only(['edit', 'update']);
         $this->middleware('permission:sales_orders.delete')->only('destroy');
-        $this->middleware('permission:sales_orders.export')->only('export');
     }
 
     public function index()
@@ -29,8 +28,9 @@ class SalesOrderController extends Controller
         $sales_orders = SalesOrder::select('id', 'so_number', 'client_id', 'shipment_id', 'order_date', 'due_date', 'status')->filter()->orderBy('id', 'desc')->paginate(25);
         $clients = Client::select('id', 'name')->get();
         $shipments = Shipment::select('id', 'shipment_number')->get();
+        $statuses = Helper::get_order_statuses();
 
-        $data = compact('sales_orders', 'clients', 'shipments');
+        $data = compact('sales_orders', 'clients', 'shipments', 'statuses');
         return view('sales_orders.index', $data);
     }
 

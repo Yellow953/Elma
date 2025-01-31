@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\TrialBalanceExport;
 use App\Models\Account;
 use App\Models\AccountType;
-use App\Models\Currency;
 use App\Models\Transaction;
 use App\Models\Log;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
 
 class AccountController extends Controller
 {
@@ -20,7 +16,6 @@ class AccountController extends Controller
         $this->middleware('permission:accounts.create')->only(['new', 'create']);
         $this->middleware('permission:accounts.update')->only(['edit', 'update']);
         $this->middleware('permission:accounts.delete')->only('destroy');
-        $this->middleware('permission:accounts.export')->only('export');
     }
 
     public function index()

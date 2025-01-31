@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\UserExport;
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
-use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -17,7 +15,6 @@ class UserController extends Controller
         $this->middleware('permission:users.create')->only(['new', 'create']);
         $this->middleware('permission:users.update')->only(['edit', 'update']);
         $this->middleware('permission:users.delete')->only('destroy');
-        $this->middleware('permission:users.export')->only('export');
     }
 
     public function index()
@@ -115,10 +112,5 @@ class UserController extends Controller
         } else {
             return redirect()->back()->with('error', 'Unable to delete...');
         }
-    }
-
-    public function export()
-    {
-        return Excel::download(new UserExport, 'Users.xlsx');
     }
 }

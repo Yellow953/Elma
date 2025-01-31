@@ -42,7 +42,7 @@
                         <tr class="border-none">
                             <th class="w-custom p-1">Date</th>
                             <td colspan="2" class="py-1 px-4 border-left">
-                                {{ $shipment->shipping_date }}
+                                {{ $shipment->created_at->format('d-m-Y') }}
                             </td>
                         </tr>
 

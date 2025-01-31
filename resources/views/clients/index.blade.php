@@ -6,9 +6,6 @@
 @can('clients.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('clients.new') }}">New Client</a>
 @endcan
-@can('clients.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('clients.export') }}">Export Clients</a>
-@endcan
 @endsection
 
 @section('filter')
@@ -36,10 +33,10 @@
             <div class="col-md-6">
                 <div class="input-group input-group-outline my-2">
                     <div class="w-100">
-                        <label for="currency_id">Currency</label>
+                        <label for="vat_number">Vat Number</label>
                         <div>
-                            <input type="text" class="form-control border" name="currency_id" placeholder="Currency"
-                                value="{{request()->query('currency_id')}}">
+                            <input type="text" class="form-control border" name="vat_number" placeholder="Vat Number"
+                                value="{{request()->query('vat_number')}}">
                         </div>
                     </div>
                 </div>
@@ -64,43 +61,6 @@
                         <div>
                             <input type="tel" class="form-control border" name="phone" placeholder="Phone"
                                 value="{{request()->query('phone')}}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="tax_id">Tax</label>
-                        <div>
-                            <input type="text" class="form-control border" name="tax_id" placeholder="Tax"
-                                value="{{request()->query('tax_id')}}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="vat_number">Vat Number</label>
-                        <div>
-                            <input type="text" class="form-control border" name="vat_number" placeholder="Vat Number"
-                                value="{{request()->query('vat_number')}}">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="input-group input-group-outline my-2">
-                    <div class="w-100">
-                        <label for="account_id">Account</label>
-                        <div>
-                            <input type="text" class="form-control border" name="account_id" placeholder="Account"
-                                value="{{request()->query('account_id')}}">
                         </div>
                     </div>
                 </div>

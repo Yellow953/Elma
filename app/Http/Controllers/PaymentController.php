@@ -19,7 +19,6 @@ class PaymentController extends Controller
         $this->middleware('permission:payments.create')->only(['new', 'create']);
         $this->middleware('permission:payments.update')->only(['edit', 'update']);
         $this->middleware('permission:payments.delete')->only('destroy');
-        $this->middleware('permission:payments.export')->only('export');
     }
 
     public function index()

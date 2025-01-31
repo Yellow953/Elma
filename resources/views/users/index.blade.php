@@ -6,9 +6,6 @@
 @can('users.create')
 <a class="btn btn-sm btn-info mx-2" href="{{ route('users.new') }}">New User</a>
 @endcan
-@can('users.export')
-<a class="btn btn-sm btn-info mx-2" href="{{ route('users.export') }}">Export Users</a>
-@endcan
 @endsection
 
 @section('filter')

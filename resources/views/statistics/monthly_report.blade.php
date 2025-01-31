@@ -63,7 +63,7 @@
                                 <td>${{ $stats[2] }}</td>
                             </tr>
                             @empty
-                            <tr>
+                            <tr class="text-center">
                                 <td colspan="6">No Invoices Found...</td>
                             </tr>
                             @endforelse

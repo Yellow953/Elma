@@ -6,9 +6,6 @@
 @can('taxes.create')
 <a class="btn btn-sm btn-info mx-2" href="{{ route('taxes.new') }}">New Tax</a>
 @endcan
-@can('taxes.export')
-<a class="btn btn-sm btn-info mx-2" href="{{ route('taxes.export') }}">Export Taxes</a>
-@endcan
 @endsection
 
 @section('filter')

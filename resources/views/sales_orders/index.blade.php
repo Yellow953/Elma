@@ -2,16 +2,9 @@
 
 @section('title', 'sales_orders')
 
-@php
-$statuses = Helper::get_order_statuses();
-@endphp
-
 @section('actions')
 @can('sales_orders.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('sales_orders.new') }}">New Sales Order</a>
-@endcan
-@can('sales_orders.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('sales_orders.export') }}">Export Sales Orders</a>
 @endcan
 @endsection
 

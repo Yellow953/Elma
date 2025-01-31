@@ -22,7 +22,6 @@ class ReceiptController extends Controller
         $this->middleware('permission:receipts.create')->only(['new', 'create']);
         $this->middleware('permission:receipts.update')->only(['edit', 'update']);
         $this->middleware('permission:receipts.delete')->only('destroy');
-        $this->middleware('permission:receipts.export')->only('export');
     }
 
     public function index()

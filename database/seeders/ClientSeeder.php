@@ -14,7 +14,7 @@ class ClientSeeder extends Seeder
             'phone' => '123456789',
             'address' => 'test address',
             'email' => 'client1@gmail.com',
-            'tax_id' => 2,
+            'tax_id' => 1,
             'account_id' => 391,
             'receivable_account_id' => 148,
             'currency_id' => 1,

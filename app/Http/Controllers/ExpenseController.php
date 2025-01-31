@@ -20,7 +20,6 @@ class ExpenseController extends Controller
         $this->middleware('permission:expenses.create')->only(['new', 'create']);
         $this->middleware('permission:expenses.update')->only(['edit', 'update']);
         $this->middleware('permission:expenses.delete')->only('destroy');
-        $this->middleware('permission:expenses.export')->only('export');
     }
 
     public function index()

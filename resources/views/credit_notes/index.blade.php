@@ -6,9 +6,6 @@
 @can('credit_notes.create')
 <a class="btn btn-sm btn-info mx-1" href="{{ route('credit_notes.new') }}">New Credit Note</a>
 @endcan
-@can('credit_notes.export')
-<a class="btn btn-sm btn-info mx-1" href="{{ route('credit_notes.export') }}">Export Credit Notes</a>
-@endcan
 @endsection
 
 @section('filter')

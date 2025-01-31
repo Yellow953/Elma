@@ -11,11 +11,11 @@ class SupplierSeeder extends Seeder
     {
         $suppliers = [
             [
-                'name' => 'Supplier 1',
+                'name' => 'COO',
                 'phone' => '123456789',
                 'address' => 'test address',
-                'email' => 'supplier1@gmail.com',
-                'tax_id' => 2,
+                'email' => 'coo@gmail.com',
+                'tax_id' => 1,
                 'account_id' => 390,
                 'payable_account_id' => 134,
                 'currency_id' => 1,
