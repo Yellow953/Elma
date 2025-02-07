@@ -9,7 +9,7 @@
     <div class="container">
         <div>
             <div class="row my-5 px-3">
-                <div class="col-5 border-custom p-0">
+                <div class="col-5 mb-auto border-custom p-0">
                     <table class="w-100 m-0">
                         <tr class="border-none">
                             <th class="w-custom p-2">Due From</th>
@@ -37,7 +37,7 @@
                     </table>
                 </div>
                 <div class="col-2"></div>
-                <div class="col-5 border-custom p-0">
+                <div class="col-5 mb-auto border-custom p-0">
                     <table class="w-100 m-0">
                         <tr class="border-none">
                             <th class="w-custom p-1">Date</th>
