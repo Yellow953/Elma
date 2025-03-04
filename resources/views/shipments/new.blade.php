@@ -313,23 +313,15 @@
     const shippingItems = [];
 
     function addShippingItem(id, name, type, price) {
-        if (shippingItems.find(item => item.id === id)) {
-            alert("Item already added to the shipment.");
-            return;
-        }
         shippingItems.push({ id, name, type, price });
 
         updateShippingItemsUI();
     }
 
-    function removeShippingItem(id) {
-        const index = shippingItems.findIndex(item => item.id === id);
+    function removeShippingItem(index) {
+        shippingItems.splice(index, 1);
 
-        if (index !== -1) {
-            shippingItems.splice(index, 1);
-
-            updateShippingItemsUI();
-        }
+        updateShippingItemsUI();
     }
 
     function updateShippingItemsUI() {
@@ -341,7 +333,8 @@
             return;
         }
 
-        shippingItems.forEach(item => {
+        // Loop through the shippingItems array using the index
+        shippingItems.forEach((item, index) => {
             const itemRow = document.createElement('div');
             itemRow.className = 'row mb-2';
 
@@ -350,12 +343,12 @@
             if (item.type == 'item') {
                 additionalFields = `
                     <div class="col-3">
-                        <input type="number" name="items[${item.id}][quantity]" value="1" min="0" step="any" class="form-control" placeholder="Quantity" required>
+                        <input type="number" name="items[${index}][quantity]" value="1" min="0" step="any" class="form-control" placeholder="Quantity" required>
                     </div>`;
             } else if (item.type == 'expense') {
                 additionalFields = `
                     <div class="col-3">
-                        <select name="items[${item.id}][supplier_id]" class="form-select select2" required>
+                        <select name="items[${index}][supplier_id]" class="form-select select2" required>
                             <option value="">Select Supplier</option>
                             @foreach ($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
@@ -365,16 +358,16 @@
             }
 
             itemRow.innerHTML = `
-                <input type="hidden" name="items[${item.id}][item_id]" value="${item.id}">
+                <input type="hidden" name="items[${index}][item_id]" value="${item.id}">
                 <div class="col-3">
                     ${item.name}
                 </div>
                 ${additionalFields}
                 <div class="col-3">
-                    <input type="number" min="0" step="any" name="items[${item.id}][price]" value="${item.price}" class="form-control" required>
+                    <input type="number" min="0" step="any" name="items[${index}][price]" value="${item.price}" class="form-control" required>
                 </div>
                 <div class="col-3 text-end">
-                    <button class="btn btn-sm btn-danger ignore-confirm" onclick="removeShippingItem(${item.id})">
+                    <button class="btn btn-sm btn-danger ignore-confirm" onclick="removeShippingItem(${index})">
                         <i class="fa fa-trash"></i>
                     </button>
                 </div>

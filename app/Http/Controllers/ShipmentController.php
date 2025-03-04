@@ -163,7 +163,6 @@ class ShipmentController extends Controller
         return redirect()->route('shipments')->with('success', 'Shipment created successfully!');
     }
 
-
     public function edit(Shipment $shipment)
     {
         $clients = Client::select('id', 'name')->get();

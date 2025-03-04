@@ -75,6 +75,7 @@ class ReceiptController extends Controller
 
         $totalItemCost = 0;
         $totalTax = 0;
+        $transactionReceiptNumbers = "";
 
         foreach ($validatedData['item_id'] as $key => $itemId) {
             $quantity = $validatedData['quantity'][$key];
@@ -96,6 +97,7 @@ class ReceiptController extends Controller
 
             $totalItemCost += $totalCost;
             $totalTax += $vat;
+            $transactionReceiptNumbers .= $validatedData['supplier_receipt'][$key] . " | ";
         }
 
         $totalCostAfterVAT = $totalItemCost + $totalTax;
@@ -109,7 +111,7 @@ class ReceiptController extends Controller
             $receipt,
             null,
             'Cash Payment for Receipt',
-            "Cash payment for receipt {$receipt->receipt_number}."
+            "Cash payment for supplier receipt(s): {$transactionReceiptNumbers}."
         );
 
         // Tax Credit Transaction
@@ -136,7 +138,7 @@ class ReceiptController extends Controller
             $receipt,
             $supplier->id,
             'Supplier Payment for Receipt',
-            "Payment to supplier {$supplier->name} for receipt {$receipt->receipt_number}."
+            "Payment to supplier {$supplier->name} for receipt(s) {$transactionReceiptNumbers}."
         );
 
         Log::create(['text' => ucwords(auth()->user()->name) . " created new Receipt: " . $receipt->receipt_number . ", datetime: " . now()]);
