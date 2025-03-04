@@ -211,7 +211,7 @@ class ShipmentController extends Controller
             'vessel_name' => $request->vessel_name,
             'vessel_date' => $request->vessel_date,
             'booking_number' => $request->booking_number,
-            'conta_nuinermber' => $request->conta_number,
+            'container_number' => $request->container_number,
             'carrier_name' => $request->carrier_name,
             'consignee_name' => $request->consignee_name,
             'consignee_country' => $request->consignee_country,
