@@ -121,7 +121,14 @@
                                 @forelse ($receipts as $receipt)
                                 <tr class="rounded">
                                     <td>
-                                        <p>{{ $receipt->receipt_number }}</p>
+                                        <p>
+                                            System: {{ $receipt->receipt_number }} <br>
+                                            Input:
+                                            @foreach ($receipt->items as $index => $item)
+                                            {{ $index != 0 ? ',' : '' }}
+                                            {{ $item->supplier_receipt }}
+                                            @endforeach
+                                        </p>
                                     </td>
                                     <td>
                                         <p>

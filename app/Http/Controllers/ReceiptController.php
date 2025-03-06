@@ -26,7 +26,7 @@ class ReceiptController extends Controller
 
     public function index()
     {
-        $receipts = Receipt::select('id', 'receipt_number', 'date', 'supplier_id', 'tax_id', 'currency_id')->filter()->orderBy('id', 'desc')->paginate(25);
+        $receipts = Receipt::select('id', 'receipt_number', 'date', 'supplier_id', 'tax_id', 'currency_id')->with('items')->filter()->orderBy('id', 'desc')->paginate(25);
         $suppliers = Supplier::select('id', 'name')->get();
         $taxes = Tax::select('id', 'name')->get();
 
