@@ -83,6 +83,7 @@ class InvoiceController extends Controller
         $total_price = 0;
         $total_tax = 0;
         $total_after_tax = 0;
+        $transactionsString = '';
 
         $tax_rate = $invoice->tax->rate / 100;
 
@@ -117,7 +118,7 @@ class InvoiceController extends Controller
             if ($supplier_id) {
                 // Supplier Payable Transaction
                 $supplier_account = Supplier::find($supplier_id)->payable_account;
-                Transaction::create([
+                $transaction = Transaction::create([
                     'user_id' => auth()->id(),
                     'account_id' => $supplier_account->id,
                     'supplier_id' => $supplier_id,
@@ -128,10 +129,11 @@ class InvoiceController extends Controller
                     'title' => 'Supplier Payable',
                     'description' => "Payable recorded for supplier on Invoice {$invoice->invoice_number}",
                 ]);
+                $transactionsString .= "{$transaction->id}|";
 
                 // Expense Transaction
                 $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-                Transaction::create([
+                $transaction = Transaction::create([
                     'user_id' => auth()->id(),
                     'account_id' => $expense_account->id,
                     'currency_id' => $invoice->currency_id,
@@ -141,6 +143,7 @@ class InvoiceController extends Controller
                     'title' => 'Expense Recorded',
                     'description' => "Expense recorded for supplier on Invoice {$invoice->invoice_number}",
                 ]);
+                $transactionsString .= "{$transaction->id}|";
             } else {
                 $total_price += $line_total;
                 $total_tax += $line_tax;
@@ -150,7 +153,7 @@ class InvoiceController extends Controller
 
         if ($total_tax != 0) {
             // Tax Payable Transaction
-            Transaction::create([
+            $transaction = Transaction::create([
                 'user_id' => auth()->id(),
                 'account_id' => $invoice->tax->account->id,
                 'currency_id' => $invoice->currency_id,
@@ -160,11 +163,12 @@ class InvoiceController extends Controller
                 'title' => 'Tax Payable',
                 'description' => "Tax payable recorded for Invoice {$invoice->invoice_number}",
             ]);
+            $transactionsString .= "{$transaction->id}|";
         }
 
         // Client Receivable Transaction
         $receivable_account = $invoice->client->receivable_account;
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $receivable_account->id,
             'client_id' => $invoice->client_id,
@@ -175,10 +179,11 @@ class InvoiceController extends Controller
             'title' => 'Client Receivable',
             'description' => "Receivable recorded for client on Invoice {$invoice->invoice_number}",
         ]);
+        $transactionsString .= "{$transaction->id}|";
 
         // Revenue Transaction
         $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $revenue_account->id,
             'currency_id' => $invoice->currency_id,
@@ -187,6 +192,11 @@ class InvoiceController extends Controller
             'balance' => -$total_after_tax + $total_tax,
             'title' => 'Revenue Recorded',
             'description' => "Revenue recorded for Invoice {$invoice->invoice_number}",
+        ]);
+        $transactionsString .= "{$transaction->id}|";
+
+        $invoice->update([
+            'transactions' => $transactionsString,
         ]);
 
         Log::create([
@@ -269,6 +279,14 @@ class InvoiceController extends Controller
 
             foreach ($invoice->items as $item) {
                 $item->delete();
+            }
+
+            if ($invoice->transactions) {
+                foreach (explode('|', $invoice->transactions) as $id) {
+                    if ($id != '') {
+                        Transaction::find($id)->delete();
+                    }
+                }
             }
 
             Log::create(['text' => $text]);

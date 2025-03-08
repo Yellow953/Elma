@@ -76,6 +76,7 @@ class ReceiptController extends Controller
         $totalItemCost = 0;
         $totalTax = 0;
         $transactionReceiptNumbers = "";
+        $transactionsString = "";
 
         foreach ($validatedData['item_id'] as $key => $itemId) {
             $quantity = $validatedData['quantity'][$key];
@@ -104,7 +105,7 @@ class ReceiptController extends Controller
 
         // Cash Credit Transaction
         $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
-        $this->createTransaction(
+        $id = $this->createTransaction(
             $cashAccount->id,
             0,
             $totalCostAfterVAT - $totalTax,
@@ -113,25 +114,27 @@ class ReceiptController extends Controller
             'Cash Payment for Receipt',
             "Cash payment for supplier receipt(s): {$transactionReceiptNumbers}."
         );
+        $transactionsString .= "{$id}|";
 
         // Tax Credit Transaction
         if ($totalTax != 0) {
             $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-            $this->createTransaction(
+            $id = $this->createTransaction(
                 $taxAccount->id,
                 0,
                 $totalTax,
                 $receipt,
                 null,
                 'Tax Payment for Receipt',
-                "Tax payment for receipt {$receipt->receipt_number}."
+                "Tax payment for receipt(s) {$transactionReceiptNumbers}."
             );
+            $transactionsString .= "{$id}|";
         }
 
         // Supplier Debit Transaction
         $supplier = Supplier::findOrFail($validatedData['supplier_id']);
         $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
-        $this->createTransaction(
+        $id = $this->createTransaction(
             $payableAccount->id,
             $totalCostAfterVAT,
             0,
@@ -140,6 +143,11 @@ class ReceiptController extends Controller
             'Supplier Payment for Receipt',
             "Payment to supplier {$supplier->name} for receipt(s) {$transactionReceiptNumbers}."
         );
+        $transactionsString .= "{$id}|";
+
+        $receipt->update([
+            'transactions' => $transactionsString,
+        ]);
 
         Log::create(['text' => ucwords(auth()->user()->name) . " created new Receipt: " . $receipt->receipt_number . ", datetime: " . now()]);
 
@@ -169,6 +177,8 @@ class ReceiptController extends Controller
             $taxRate = $receipt->tax->rate / 100;
             $totalItemCost = 0;
             $totalTax = 0;
+            $transactionReceiptNumbers = '';
+            $transactionsString = $receipt->transactions;
 
             foreach ($validatedData['item_id'] as $key => $itemId) {
                 $quantity = $validatedData['quantity'][$key];
@@ -190,48 +200,56 @@ class ReceiptController extends Controller
 
                 $totalItemCost += $totalCost;
                 $totalTax += $vat;
+                $transactionReceiptNumbers .= $validatedData['supplier_receipt'][$key] . " | ";
             }
 
             $totalCostAfterVAT = $totalItemCost + $totalTax;
 
             // Cash Credit Transaction
             $cashAccount = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
-            $this->createTransaction(
+            $id = $this->createTransaction(
                 $cashAccount->id,
                 0,
                 $totalCostAfterVAT - $totalTax,
                 $receipt,
                 null,
                 'Cash Payment for Receipt',
-                "Cash payment for receipt {$receipt->receipt_number}."
+                "Cash payment for receipt(s) {$transactionReceiptNumbers}."
             );
+            $transactionsString .= "{$id}|";
 
             // Tax Credit Transaction
             if ($totalTax != 0) {
                 $taxAccount = Tax::findOrFail($validatedData['tax_id'])->account;
-                $this->createTransaction(
+                $id = $this->createTransaction(
                     $taxAccount->id,
                     0,
                     $totalTax,
                     $receipt,
                     null,
                     'Tax Payment for Receipt',
-                    "Tax payment for receipt {$receipt->receipt_number}."
+                    "Tax payment for receipt(s) {$transactionReceiptNumbers}."
                 );
+                $transactionsString .= "{$id}|";
             }
 
             // Supplier Debit Transaction
             $supplier = Supplier::findOrFail($validatedData['supplier_id']);
             $payableAccount = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
-            $this->createTransaction(
+            $id = $this->createTransaction(
                 $payableAccount->id,
                 $totalCostAfterVAT,
                 0,
                 $receipt,
                 $supplier->id,
                 'Supplier Payment for Receipt',
-                "Payment to supplier {$supplier->name} for receipt {$receipt->receipt_number}."
+                "Payment to supplier {$supplier->name} for receipt {$transactionReceiptNumbers}."
             );
+            $transactionsString .= "{$id}|";
+
+            $receipt->update([
+                'transactions' => $transactionsString,
+            ]);
         }
 
         $text = ucwords(auth()->user()->name) . ' updated Receipt ' . $receipt->receipt_number . ", datetime :   " . now();
@@ -276,6 +294,14 @@ class ReceiptController extends Controller
                 $item->delete();
             }
 
+            if ($receipt->transactions) {
+                foreach (explode('|', $receipt->transactions) as $id) {
+                    if ($id != '') {
+                        Transaction::find($id)->delete();
+                    }
+                }
+            }
+
             Log::create(['text' => $text]);
             $receipt->delete();
 
@@ -290,7 +316,7 @@ class ReceiptController extends Controller
     // -------------------
     private function createTransaction($accountId, $debit, $credit, $receipt, $supplierId = null,  $title = null, $description = null)
     {
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $accountId,
             'supplier_id' => $supplierId,
@@ -301,5 +327,6 @@ class ReceiptController extends Controller
             'title' => $title,
             'description' => $description,
         ]);
+        return $transaction->id;
     }
 }

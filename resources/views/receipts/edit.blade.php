@@ -48,7 +48,7 @@
                             <tr>
                                 <td></td>
                                 <td>{{ $item->item->name }}</td>
-                                <td>{{ $item->receipt_number }}</td>
+                                <td>{{ $item->supplier_receipt }}</td>
                                 <td>{{ $item->description }}</td>
                                 <td>{{ number_format($item->quantity, 2) }}</td>
                                 <td>{{ number_format($item->unit_cost, 2) }}</td>

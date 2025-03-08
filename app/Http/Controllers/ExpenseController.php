@@ -64,9 +64,11 @@ class ExpenseController extends Controller
             'user_id' => auth()->id(),
         ]);
 
+        $transactionsString = '';
+
         // Expense Account (Debit)
         $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $expense_account->id,
             'currency_id' => $request->currency_id,
@@ -76,10 +78,11 @@ class ExpenseController extends Controller
             'title' => 'Expense Recorded',
             'description' => "Expense recorded for '{$expense->title}' on {$expense->date}",
         ]);
+        $transactionsString .= "{$transaction->id}|";
 
         // Cash Account (Credit)
         $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $cash_account->id,
             'currency_id' => $request->currency_id,
@@ -88,6 +91,11 @@ class ExpenseController extends Controller
             'balance' => -$request->amount,
             'title' => 'Cash Outflow for Expense',
             'description' => "Cash outflow for expense '{$expense->title}' on {$expense->date}",
+        ]);
+        $transactionsString .= "{$transaction->id}|";
+
+        $expense->update([
+            'transactions' => $transactionsString,
         ]);
 
         // Log the creation
@@ -129,6 +137,14 @@ class ExpenseController extends Controller
     {
         if ($expense->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted Expense : " . $expense->name . ", datetime :   " . now();
+
+            if ($expense->transactions) {
+                foreach (explode('|', $expense->transactions) as $id) {
+                    if ($id != '') {
+                        Transaction::find($id)->delete();
+                    }
+                }
+            }
 
             Log::create(['text' => $text]);
             $expense->delete();

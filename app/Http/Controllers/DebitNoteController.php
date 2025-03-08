@@ -59,6 +59,7 @@ class DebitNoteController extends Controller
         $amount = $request->amount;
         $total_tax = $amount * ($tax->rate / 100);
         $total = $amount + $total_tax;
+        $transactionsString = '';
 
         // Create Debit Note
         $cdnote = CDNote::create([
@@ -76,7 +77,7 @@ class DebitNoteController extends Controller
 
         // Supplier Payable Account (Credit)
         $payable_account = Account::findOrFail(Variable::where('title', 'payable_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->user()->id,
             'account_id' => $payable_account->id,
             'supplier_id' => $supplier->id,
@@ -87,10 +88,11 @@ class DebitNoteController extends Controller
             'title' => 'Supplier Payable Adjustment',
             'description' => "Credit supplier payable for debit note #{$cdnote->cdnote_number}",
         ]);
+        $transactionsString .= "{$transaction->id}|";
 
         // Expense Account (Debit)
         $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->user()->id,
             'account_id' => $expense_account->id,
             'currency_id' => $cdnote->currency_id,
@@ -100,10 +102,11 @@ class DebitNoteController extends Controller
             'title' => 'Expense Adjustment',
             'description' => "Debit expense for debit note #{$cdnote->cdnote_number}",
         ]);
+        $transactionsString .= "{$transaction->id}|";
 
         if ($total_tax != 0) {
             // Tax Account (Debit)
-            Transaction::create([
+            $transaction = Transaction::create([
                 'user_id' => auth()->user()->id,
                 'account_id' => $tax->account_id,
                 'currency_id' => $cdnote->currency_id,
@@ -113,7 +116,12 @@ class DebitNoteController extends Controller
                 'title' => 'Tax Adjustment',
                 'description' => "Debit tax for debit note #{$cdnote->cdnote_number}",
             ]);
+            $transactionsString .= "{$transaction->id}|";
         }
+
+        $cdnote->update([
+            'transactions' => $transactionsString,
+        ]);
 
         // Log the creation of the Debit Note
         $text = ucwords(auth()->user()->name) . " created new Debit Note: " . $cdnote->cdnote_number . ", datetime: " . now();
@@ -156,6 +164,14 @@ class DebitNoteController extends Controller
     {
         if ($cdnote->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted Debit Note : " . $cdnote->cdnote_number . ", datetime :   " . now();
+
+            if ($cdnote->transactions) {
+                foreach (explode('|', $cdnote->transactions) as $id) {
+                    if ($id != '') {
+                        Transaction::find($id)->delete();
+                    }
+                }
+            }
 
             Log::create(['text' => $text]);
             $cdnote->delete();

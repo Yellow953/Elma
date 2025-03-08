@@ -73,10 +73,11 @@ class CreditNoteController extends Controller
         $amount = $request->amount;
         $total_tax = $amount * $tax_rate;
         $total = $amount;
+        $transactionsString = '';
 
         // Revenue Debit Transaction
         $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->user()->id,
             'account_id' => $revenue_account->id,
             'currency_id' => $cdnote->currency_id,
@@ -86,10 +87,11 @@ class CreditNoteController extends Controller
             'title' => 'Credit Note Revenue Adjustment',
             'description' => "Debit revenue for credit note #{$cdnote->cdnote_number}",
         ]);
+        $transactionsString .= "{$transaction->id}|";
 
         if ($total_tax != 0) {
             // Tax Debit Transaction
-            Transaction::create([
+            $transaction = Transaction::create([
                 'user_id' => auth()->user()->id,
                 'account_id' => $tax->account_id,
                 'currency_id' => $cdnote->currency_id,
@@ -99,12 +101,13 @@ class CreditNoteController extends Controller
                 'title' => 'Credit Note Tax Adjustment',
                 'description' => "Debit tax for credit note #{$cdnote->cdnote_number}",
             ]);
+            $transactionsString .= "{$transaction->id}|";
         }
 
         // Client Credit Transaction
         $client = Client::findOrFail($request->client_id);
         $receivable_account = Account::findOrFail(Variable::where('title', 'receivable_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->user()->id,
             'account_id' => $receivable_account->id,
             'client_id' => $client->id,
@@ -114,6 +117,11 @@ class CreditNoteController extends Controller
             'balance' => 0 - ($amount + $total_tax),
             'title' => 'Client Receivable Adjustment',
             'description' => "Credit client receivable for credit note #{$cdnote->cdnote_number}",
+        ]);
+        $transactionsString .= "{$transaction->id}|";
+
+        $cdnote->update([
+            'transactions' => $transactionsString,
         ]);
 
         // Log creation
@@ -158,6 +166,14 @@ class CreditNoteController extends Controller
     {
         if ($cdnote->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted Credit Note : " . $cdnote->cdnote_number . ", datetime :   " . now();
+
+            if ($cdnote->transactions) {
+                foreach (explode('|', $cdnote->transactions) as $id) {
+                    if ($id != '') {
+                        Transaction::find($id)->delete();
+                    }
+                }
+            }
 
             Log::create(['text' => $text]);
             $cdnote->delete();

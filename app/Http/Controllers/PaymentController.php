@@ -63,9 +63,11 @@ class PaymentController extends Controller
             'amount' => $request->amount,
         ]);
 
+        $transactionsString = '';
+
         // Receivable Account Transaction
         $receivable_account = Account::findOrFail(Variable::where('title', 'receivable_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $receivable_account->id,
             'client_id' => $client->id,
@@ -76,10 +78,11 @@ class PaymentController extends Controller
             'title' => 'Client Receivable Payment',
             'description' => "Payment received from client {$client->name}, Payment No: {$payment->payment_number}",
         ]);
+        $transactionsString .= "{$transaction->id}|";
 
         // Cash Account Transaction
         $cash_account = Account::findOrFail(Variable::where('title', 'cash_account')->first()->value);
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => auth()->id(),
             'account_id' => $cash_account->id,
             'currency_id' => $request->currency_id,
@@ -88,6 +91,11 @@ class PaymentController extends Controller
             'balance' => $request->amount,
             'title' => 'Cash Payment Received',
             'description' => "Payment of {$request->amount} received in cash for Payment No: {$payment->payment_number}",
+        ]);
+        $transactionsString .= "{$transaction->id}|";
+
+        $payment->update([
+            'transactions' => $transactionsString,
         ]);
 
         // Log the payment creation
@@ -131,6 +139,14 @@ class PaymentController extends Controller
     {
         if ($payment->can_delete()) {
             $text = ucwords(auth()->user()->name) . " deleted payment : " . $payment->payment_number . ", datetime :   " . now();
+
+            if ($payment->transactions) {
+                foreach (explode('|', $payment->transactions) as $id) {
+                    if ($id != '') {
+                        Transaction::find($id)->delete();
+                    }
+                }
+            }
 
             Log::create(['text' => $text]);
             $payment->delete();
