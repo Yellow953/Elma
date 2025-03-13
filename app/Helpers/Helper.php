@@ -97,7 +97,7 @@ class Helper
 
         $words = $numberTransformer->toWords($dollars);
 
-        return ucfirst($words) . ' Dollar' . ($dollars > 1 ? 's' : '');
+        return 'Only ' . ucfirst($words) . ' US Dollar' . ($dollars > 1 ? 's' : '');
     }
 
     public static function get_shipping_modes()

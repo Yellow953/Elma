@@ -220,11 +220,138 @@ class InvoiceController extends Controller
     {
         $request->validate([
             'date' => 'required|date',
+            'item_id.*' => 'nullable|exists:items,id',
+            'description.*' => 'nullable',
+            'quantity.*' => 'nullable|numeric|min:1',
+            'unit_price.*' => 'nullable|numeric|min:0',
+            'supplier_id.*' => 'nullable|exists:suppliers,id',
+            'tax.*' => 'nullable',
         ]);
 
         $invoice->update([
             'date' => $request->date,
         ]);
+
+        if ($request->item_id[0] != null) {
+            $total_price = 0;
+            $total_tax = 0;
+            $total_after_tax = 0;
+            $transactionsString = $invoice->transactions;
+
+            $tax_rate = $invoice->tax->rate / 100;
+
+            foreach ($request->item_id as $key => $itemId) {
+                $quantity = $request->quantity[$key];
+                $unit_price = $request->unit_price[$key];
+                $supplier_id = $request->supplier_id[$key] ?? null;
+
+                $line_total = $quantity * $unit_price;
+
+                if (isset($request->tax[$key])) {
+                    $line_tax = $line_total * $tax_rate;
+                    $line_total_after_tax = $line_total + $line_tax;
+                } else {
+                    $line_tax = 0;
+                    $line_total_after_tax = $line_total;
+                }
+
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'item_id' => $itemId,
+                    'supplier_id' => $supplier_id,
+                    'description' => $request->description[$key],
+                    'type' => $supplier_id ? 'expense' : 'item',
+                    'quantity' => $quantity,
+                    'unit_price' => $unit_price,
+                    'total_price' => $line_total,
+                    'vat' => $line_tax,
+                    'total_price_after_vat' => $line_total_after_tax,
+                ]);
+
+                if ($supplier_id) {
+                    // Supplier Payable Transaction
+                    $supplier_account = Supplier::find($supplier_id)->payable_account;
+                    $transaction = Transaction::create([
+                        'user_id' => auth()->id(),
+                        'account_id' => $supplier_account->id,
+                        'supplier_id' => $supplier_id,
+                        'currency_id' => $invoice->currency_id,
+                        'debit' => 0,
+                        'credit' => $line_total_after_tax,
+                        'balance' => -$line_total_after_tax,
+                        'title' => 'Supplier Payable',
+                        'description' => "Payable recorded for supplier on Invoice {$invoice->invoice_number}",
+                    ]);
+                    $transactionsString .= "{$transaction->id}|";
+
+                    // Expense Transaction
+                    $expense_account = Account::findOrFail(Variable::where('title', 'expense_account')->first()->value);
+                    $transaction = Transaction::create([
+                        'user_id' => auth()->id(),
+                        'account_id' => $expense_account->id,
+                        'currency_id' => $invoice->currency_id,
+                        'debit' => $line_total_after_tax,
+                        'credit' => 0,
+                        'balance' => $line_total_after_tax,
+                        'title' => 'Expense Recorded',
+                        'description' => "Expense recorded for supplier on Invoice {$invoice->invoice_number}",
+                    ]);
+                    $transactionsString .= "{$transaction->id}|";
+                } else {
+                    $total_price += $line_total;
+                    $total_tax += $line_tax;
+                    $total_after_tax += $line_total_after_tax;
+                }
+            }
+
+            if ($total_tax != 0) {
+                // Tax Payable Transaction
+                $transaction = Transaction::create([
+                    'user_id' => auth()->id(),
+                    'account_id' => $invoice->tax->account->id,
+                    'currency_id' => $invoice->currency_id,
+                    'debit' => 0,
+                    'credit' => $total_tax,
+                    'balance' => -$total_tax,
+                    'title' => 'Tax Payable',
+                    'description' => "Tax payable recorded for Invoice {$invoice->invoice_number}",
+                ]);
+                $transactionsString .= "{$transaction->id}|";
+            }
+
+            // Client Receivable Transaction
+            $receivable_account = $invoice->client->receivable_account;
+            $transaction = Transaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $receivable_account->id,
+                'client_id' => $invoice->client_id,
+                'currency_id' => $invoice->currency_id,
+                'debit' => $total_after_tax,
+                'credit' => 0,
+                'balance' => $total_after_tax,
+                'title' => 'Client Receivable',
+                'description' => "Receivable recorded for client on Invoice {$invoice->invoice_number}",
+            ]);
+            $transactionsString .= "{$transaction->id}|";
+
+            // Revenue Transaction
+            $revenue_account = Account::findOrFail(Variable::where('title', 'revenue_account')->first()->value);
+            $transaction = Transaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $revenue_account->id,
+                'currency_id' => $invoice->currency_id,
+                'debit' => 0,
+                'credit' => $total_after_tax + $total_tax,
+                'balance' => -$total_after_tax + $total_tax,
+                'title' => 'Revenue Recorded',
+                'description' => "Revenue recorded for Invoice {$invoice->invoice_number}",
+            ]);
+            $transactionsString .= "{$transaction->id}|";
+
+            $invoice->update([
+                'transactions' => $transactionsString,
+            ]);
+        }
 
         $text = ucwords(auth()->user()->name) . ' updated Invoice ' . $invoice->invoice_number . ", datetime :   " . now();
         Log::create(['text' => $text]);

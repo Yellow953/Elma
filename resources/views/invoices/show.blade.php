@@ -11,6 +11,8 @@
             Invoice Number: {{ $invoice->invoice_number }}
         </h2>
 
+        <br><br><br>
+
         <div class="row my-5 px-3">
             <div class="col-5 mb-auto border-custom p-0">
                 <table class="w-100 m-0">
@@ -100,6 +102,8 @@
                 </table>
             </div>
         </div>
+
+        <br><br><br>
 
         <div class="mt-4">
             <div class="border-custom">
