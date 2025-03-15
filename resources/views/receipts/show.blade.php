@@ -7,13 +7,16 @@
 @section('content')
 <div class="receipt-main">
     <div class="container">
+        <h5 class="mb-5">REG#3802724</h5>
+
         <div>
-            <div class="row mb-5">
-                <div class="col-md-6">
+            <div class="row mb-5 d-flex align-items-stretch">
+                <div class="col-md-6 border-custom p-3 d-flex flex-column">
                     <strong>Receipt Number:</strong> {{ $receipt->receipt_number }} <br>
                     <strong>Supplier:</strong> {{ $receipt->supplier->name }}
                 </div>
-                <div class="col-md-3 offset-md-3">
+
+                <div class="col-md-3 offset-md-3 border-custom p-3 d-flex flex-column">
                     <strong>Date: </strong>{{ ucwords($receipt->date) }} <br>
                     <strong>Currency: </strong>{{ ucwords($receipt->currency->code) }} <br>
                 </div>

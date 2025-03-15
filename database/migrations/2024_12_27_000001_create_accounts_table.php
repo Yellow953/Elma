@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string("sub1")->nullable();
             $table->string("sub2")->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

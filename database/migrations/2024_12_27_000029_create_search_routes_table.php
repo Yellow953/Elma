@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('link');
             $table->string('icon')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

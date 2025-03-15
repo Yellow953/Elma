@@ -15,7 +15,6 @@ return new class extends Migration
             $table->foreign('parent_id')->references('id')->on('account_types');
             $table->unsignedInteger('level')->default(1);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

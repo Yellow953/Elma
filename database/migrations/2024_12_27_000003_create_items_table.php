@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('unit')->nullable();
             $table->string('type')->default('item');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

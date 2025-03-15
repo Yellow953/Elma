@@ -23,7 +23,6 @@ return new class extends Migration
             $table->foreignId('payable_account_id')->constrained('accounts')->onDelete('cascade');
 
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('type')->default('receipt');
             $table->unsignedBigInteger('purchase_order_id')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->foreign('tax_id')->references('id')->on('taxes');

@@ -7,9 +7,11 @@
 @section('content')
 <div class="receipt-main">
     <div class="container">
-        <div class="row my-5 px-3">
-            <div class="col-5 mb-auto border-custom p-0">
-                <table class="w-100 m-0">
+        <h5 class="mb-5">REG#3802724</h5>
+
+        <div class="row my-5 px-3 d-flex">
+            <div class="col-5 border-custom p-0 d-flex flex-column">
+                <table class="w-100 m-0 flex-grow-1">
                     <tr class="border-none">
                         <th class="w-custom p-2">Account</th>
                         <td colspan="2" class="py-2 px-4 border-left">
@@ -30,9 +32,11 @@
                     </tr>
                 </table>
             </div>
+
             <div class="col-2"></div>
-            <div class="col-5 mb-auto border-custom p-0">
-                <table class="w-100 m-0">
+
+            <div class="col-5 border-custom p-0 d-flex flex-column">
+                <table class="w-100 m-0 flex-grow-1">
                     <tr class="border-none">
                         <th class="w-custom p-2">Supplier Name</th>
                         <td colspan="2" class="py-1 px-4 border-left">
@@ -60,6 +64,8 @@
                 </table>
             </div>
         </div>
+
+        <br><br><br>
 
         <div class="border-custom">
             <table class="w-100">

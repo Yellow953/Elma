@@ -18,7 +18,6 @@ return new class extends Migration
             $table->double('total_price')->default(1);
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

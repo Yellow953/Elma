@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('supplier_receipt')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('receipt_id')->references('id')->on('receipts')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('items');

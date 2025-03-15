@@ -21,7 +21,6 @@ return new class extends Migration
             $table->double('total_price_after_vat')->unsigned();
             $table->text('description')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');

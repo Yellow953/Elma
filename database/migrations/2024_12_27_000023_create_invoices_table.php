@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('type')->default('invoice');
             $table->unsignedBigInteger('sales_order_id')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('shipment_id')->references('id')->on('shipments');

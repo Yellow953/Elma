@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('type');
             $table->double('amount')->unsigned()->default(0);
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('supplier_id')->references('id')->on('suppliers');
             $table->foreign('client_id')->references('id')->on('clients');

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->double('unit_price')->default(1);
             $table->double('total_price')->default(1);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

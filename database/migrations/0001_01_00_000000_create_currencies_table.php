@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('symbol')->nullable();
             $table->double('rate')->default(0);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

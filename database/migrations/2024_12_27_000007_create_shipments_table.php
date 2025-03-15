@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('consignee_country');
             $table->text('notes')->nullable();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('due_from_id')->references('id')->on('clients');
         });

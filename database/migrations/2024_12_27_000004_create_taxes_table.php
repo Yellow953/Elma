@@ -14,7 +14,6 @@ return new class extends Migration
             $table->double('rate')->default(0);
             $table->foreignId('account_id')->constrained('accounts')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
