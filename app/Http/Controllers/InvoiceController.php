@@ -427,7 +427,41 @@ class InvoiceController extends Controller
 
     public function item_destroy(InvoiceItem $invoice_item)
     {
+        $invoice = $invoice_item->invoice;
+
+        if ($invoice_item->supplier) {
+            $transaction = Transaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $invoice_item->supplier->payable_account_id,
+                'supplier_id' => $invoice_item->supplier_id,
+                'currency_id' => $invoice->currency_id,
+                'debit' => $invoice_item->total_price_after_vat,
+                'credit' => 0,
+                'balance' => $invoice_item->total_price_after_vat,
+                'title' => 'Supplier Payable Correction',
+                'description' => "Correction for Payable recorded for supplier on Invoice {$invoice->invoice_number}",
+            ]);
+        } else {
+            $transaction = Transaction::create([
+                'user_id' => auth()->id(),
+                'account_id' => $invoice->client->receivable_account_id,
+                'client_id' => $invoice->client_id,
+                'currency_id' => $invoice->currency_id,
+                'debit' => 0,
+                'credit' => $invoice_item->total_price_after_vat,
+                'balance' => -$invoice_item->total_price_after_vat,
+                'title' => 'Client Receivable Correction',
+                'description' => "Correction for Receivable recorded for client on Invoice {$invoice->invoice_number}",
+            ]);
+        }
+
+        $text = ucwords(auth()->user()->name) . " corrected Invoice : " . $invoice->invoice_number . ", datetime :   " . now();
+
         $invoice_item->delete();
+        $invoice->update([
+            'transactions' => $invoice->transactions . $transaction->id . '|',
+        ]);
+        Log::create(['text' => $text]);
 
         return redirect()->back()->with('success', 'Invoice Item deleted successfully!');
     }

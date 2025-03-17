@@ -11,6 +11,11 @@ class InvoiceItem extends Model
 
     protected $guarded = [];
 
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
     public function item()
     {
         return $this->belongsTo(Item::class);

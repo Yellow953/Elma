@@ -45,10 +45,10 @@
                             @foreach ($invoice_items as $item)
                             <tr>
                                 <td>
-                                    {{-- <a href="{{ route('invoices.items.destroy', $item->id) }}"
-                                        class="btn btn-danger btn-sm my-auto show_confirm">
+                                    <a href="{{ route('invoices.items.destroy', $item->id) }}"
+                                        class="btn btn-danger btn-sm my-auto">
                                         <i class="fa fa-trash"></i>
-                                    </a> --}}
+                                    </a>
                                 </td>
                                 <td colspan="3">{{ $item->description }}</td>
                                 <td>{{ $item->quantity }}</td>
