@@ -136,6 +136,16 @@
             </li>
             @endcan
 
+            @can('payment_vouchers.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('payment_vouchers*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('payment_vouchers') }}">
+                    <span><i class="fa-solid fa-file-invoice"></i></span>
+                    Payment Vouchers
+                </a>
+            </li>
+            @endcan
+
             @can('expenses.read')
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('expenses*') ? 'active bg-gradient-info' : '' }}"

@@ -41,10 +41,15 @@ class Supplier extends Model
         return $this->belongsTo(Account::class, 'payable_account_id');
     }
 
+    public function payment_vouchers()
+    {
+        return $this->hasMany(PaymentVoucher::class);
+    }
+
     // Permissions
     public function can_delete()
     {
-        return $this->transactions->count() == 0 && $this->purchase_orders->count() == 0;
+        return $this->transactions->count() == 0 && $this->purchase_orders->count() == 0 && $this->payment_vouchers->count() == 0;
     }
 
     // Filter

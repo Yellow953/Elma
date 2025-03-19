@@ -93,8 +93,6 @@
                 </div>
             </div>
 
-            <br><br><br>
-
             <div class="row mb-5">
                 <div class="col-md-6">
                     <strong>SO Number:</strong> {{ $sales_order->so_number }} <br>
@@ -108,8 +106,6 @@
                     @endif
                 </div>
             </div>
-
-            <br><br><br>
 
             <div class="">
                 <div class="border-custom">

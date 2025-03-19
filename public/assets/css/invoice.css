@@ -1,5 +1,11 @@
+@font-face {
+    font-family: "Calibri";
+    src: local("Calibri"),
+        url("https://fonts.cdnfonts.com/s/16193/Calibri.woff") format("woff");
+}
+
 * {
-    font-family: "Source Code Pro", monospace;
+    font-family: "Calibri", sans-serif !important;
 }
 
 .text-blue {

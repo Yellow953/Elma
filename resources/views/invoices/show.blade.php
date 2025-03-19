@@ -7,16 +7,14 @@
 @section('content')
 <div class="receipt-main">
     <div class="container">
-        <h5 class="mb-5">REG#3802724</h5>
+        <h5 class="mb-4">REG#3802724</h5>
 
         <h2 class="text-center">
             Invoice Number: {{ $invoice->invoice_number }}
         </h2>
 
-        <br><br><br>
-
         <div class="row my-5 px-3 d-flex">
-            <div class="col-5 border-custom p-0 d-flex flex-column">
+            <div class="col border-custom p-0 d-flex flex-column">
                 <table class="w-100 m-0 flex-grow-1">
                     <tr class="border-none">
                         <th class="w-custom p-2">Due From</th>
@@ -42,9 +40,9 @@
                 </table>
             </div>
 
-            <div class="col-2"></div>
+            <div class="col-1"></div>
 
-            <div class="col-5 border-custom p-0 d-flex flex-column">
+            <div class="col border-custom p-0 d-flex flex-column">
                 <table class="w-100 m-0 flex-grow-1">
                     <tr class="border-none">
                         <th class="w-custom p-1">Date</th>
@@ -98,15 +96,13 @@
             </div>
         </div>
 
-        <br><br><br>
-
         <div class="mt-4">
             <div class="border-custom">
                 <table class="w-100">
                     <thead class="text-center">
                         <tr class="border-bottom">
                             <th class="col-9 p-2">Description</th>
-                            <th class=" col-3 border-left p-2">Amount ({{ $invoice->currency->code }})</th>
+                            <th class="col-3 border-left p-2">Amount ({{ $invoice->currency->code }})</th>
                         </tr>
                     </thead>
                     <tbody class="text-center">
@@ -127,7 +123,16 @@
                     </tbody>
                     <tfoot class="text-center border-top">
                         <tr>
-                            <th class="p-2">{{ Helper::format_currency_to_words($total_price_after_vat) }}</th>
+                            <th class="p-2">Sub Total</th>
+                            <th class="border-left p-2">{{ $total }}</th>
+                        </tr>
+                        <tr class="border-top">
+                            <th class="p-2">Vat</th>
+                            <th class="border-left p-2">{{ $vat }}</th>
+                        </tr>
+                        <tr class="border-top">
+                            <th class="p-2 text-uppercase">{{ Helper::format_currency_to_words($total_price_after_vat)
+                                }}</th>
                             <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
                         </tr>
                     </tfoot>

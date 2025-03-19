@@ -24,8 +24,6 @@
             </div>
         </div>
 
-        <br><br><br>
-
         <div class="">
             <div class="border-custom">
                 <table class="w-100">

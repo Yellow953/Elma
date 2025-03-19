@@ -21,6 +21,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CreditNoteController;
 use App\Http\Controllers\DebitNoteController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\PaymentVoucherController;
 use App\Http\Controllers\ShipmentController;
 use Illuminate\Support\Facades\Route;
 
@@ -169,6 +170,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{receipt}/show', [ReceiptController::class, 'show'])->name('receipts.show');
         Route::get('/{receipt}/items', [ReceiptController::class, 'items'])->name('receipts.items');
         Route::get('/', [ReceiptController::class, 'index'])->name('receipts');
+    });
+
+    // Payment Vouchers Routes
+    Route::prefix('payment_vouchers')->group(function () {
+        Route::get('/new', [PaymentVoucherController::class, 'new'])->name('payment_vouchers.new');
+        Route::post('/create', [PaymentVoucherController::class, 'create'])->name('payment_vouchers.create');
+        Route::get('/items/{payment_voucher_item}/delete', [PaymentVoucherController::class, 'item_destroy'])->name('payment_vouchers.items.destroy');
+        Route::get('/{payment_voucher}/edit', [PaymentVoucherController::class, 'edit'])->name('payment_vouchers.edit');
+        Route::post('/{payment_voucher}/update', [PaymentVoucherController::class, 'update'])->name('payment_vouchers.update');
+        Route::get('/{payment_voucher}/delete', [PaymentVoucherController::class, 'destroy'])->name('payment_vouchers.destroy');
+        Route::get('/{payment_voucher}/show', [PaymentVoucherController::class, 'show'])->name('payment_vouchers.show');
+        Route::get('/', [PaymentVoucherController::class, 'index'])->name('payment_vouchers');
     });
 
     // Payment Routes

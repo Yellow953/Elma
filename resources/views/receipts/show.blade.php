@@ -22,8 +22,6 @@
                 </div>
             </div>
 
-            <br><br><br>
-
             <div class="border-custom">
                 <table class="w-100">
                     <thead class="border-bottom text-center">
@@ -48,7 +46,15 @@
                     </tbody>
                     <tfoot class="border-top text-center">
                         <tr>
-                            <th class="p-2" colspan="2">{{
+                            <th class="p-2">Sub Total</th>
+                            <th class="border-left p-2">{{ $items->sum('total_cost') }}</th>
+                        </tr>
+                        <tr class="border-top">
+                            <th class="p-2">Vat</th>
+                            <th class="border-left p-2">{{ $items->sum('total_cost') }}</th>
+                        </tr>
+                        <tr class="border-top">
+                            <th class="p-2 text-uppercase" colspan="2">{{
                                 Helper::format_currency_to_words($items->sum('total_cost_after_vat')) }}</th>
                             <th class="p-2 border-left">{{ number_format($items->sum('total_cost_after_vat'), 2) }}
                             </th>

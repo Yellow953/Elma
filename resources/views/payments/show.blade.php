@@ -107,7 +107,7 @@
                                     <div class="card-header bg-secondary text-white">
                                         Amount In Words
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body text-uppercase">
                                         {{ Helper::format_currency_to_words($payment->currency->symbol .
                                         number_format($payment->amount,
                                         2)) }}

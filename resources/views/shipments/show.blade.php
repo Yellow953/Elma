@@ -14,10 +14,8 @@
                 Shipment Number: {{ $shipment->shipment_number }}
             </h2>
 
-            <br><br><br>
-
             <div class="row my-5 px-3 d-flex align-items-stretch">
-                <div class="col-5 border-custom p-0 d-flex flex-column">
+                <div class="col border-custom p-0 d-flex flex-column">
                     <table class="w-100 m-0 flex-grow-1">
                         <tr class="border-none">
                             <th class="w-custom p-2">Due From</th>
@@ -43,9 +41,9 @@
                     </table>
                 </div>
 
-                <div class="col-2"></div>
+                <div class="col-1"></div>
 
-                <div class="col-5 border-custom p-0 d-flex flex-column">
+                <div class="col border-custom p-0 d-flex flex-column">
                     <table class="w-100 m-0 flex-grow-1">
                         <tr class="border-none">
                             <th class="w-custom p-1">Date</th>
@@ -99,8 +97,6 @@
                 </div>
             </div>
 
-            <br><br><br>
-
             <div class="my-5">
                 <div class="border-custom">
                     <table class="w-100 m-0">
@@ -126,7 +122,7 @@
                         </tbody>
                         <tfoot class="border-top">
                             <tr>
-                                <th class="p-2">
+                                <th class="p-2 text-uppercase">
                                     {{ Helper::format_currency_to_words($item->sum('total_price')) }}
                                 </th>
                                 <th class="border-left p-2">

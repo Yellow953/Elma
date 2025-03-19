@@ -36,10 +36,15 @@ class Receipt extends Model
         return $this->hasMany(ReceiptItem::class);
     }
 
+    public function payment_vouchers()
+    {
+        return $this->hasMany(PaymentVoucher::class);
+    }
+
     // Permissions
     public function can_delete()
     {
-        return true;
+        return $this->payment_vouchers->count() == 0;
     }
 
     // Filter

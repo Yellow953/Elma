@@ -46,7 +46,7 @@
                             <tr>
                                 <td>
                                     <a href="{{ route('invoices.items.destroy', $item->id) }}"
-                                        class="btn btn-danger btn-sm my-auto">
+                                        class="btn btn-danger btn-sm my-auto show_confirm">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>

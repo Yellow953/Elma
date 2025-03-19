@@ -110,7 +110,7 @@
                                     <div class="card-header bg-secondary text-white">
                                         Amount In Words
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body text-uppercase">
                                         {{ Helper::format_currency_to_words($cdnote->currency->symbol .
                                         number_format($cdnote->amount,
                                         2)) }}
