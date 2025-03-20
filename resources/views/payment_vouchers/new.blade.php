@@ -18,6 +18,26 @@
                         @csrf
 
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group input-group-outline row mb-3">
+                                    <label for="number" class="col-md-2 col-form-label text-md-end">{{
+                                        __('Number *') }}</label>
+
+                                    <div class="col-md-10">
+                                        <input id="number" type="text"
+                                            class="form-control @error('number') is-invalid @enderror" name="number"
+                                            required autocomplete="number" placeholder="Enter Number"
+                                            value="{{ old('number') }}">
+
+                                        @error('number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline row mb-3">
                                     <label for="supplier_id" class="col-md-4 col-form-label text-md-end">{{ __('Supplier

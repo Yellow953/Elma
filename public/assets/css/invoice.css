@@ -1,11 +1,5 @@
-@font-face {
-    font-family: "Calibri";
-    src: local("Calibri"),
-        url("https://fonts.cdnfonts.com/s/16193/Calibri.woff") format("woff");
-}
-
 * {
-    font-family: "Calibri", sans-serif !important;
+    font-family: "Times New Roman", Times, serif !important;
 }
 
 .text-blue {

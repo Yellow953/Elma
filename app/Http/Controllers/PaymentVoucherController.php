@@ -44,6 +44,7 @@ class PaymentVoucherController extends Controller
     public function create(Request $request)
     {
         $request->validate([
+            'number' => 'required|unique:payment_vouchers,number',
             'supplier_id' => 'required|exists:suppliers,id',
             'receipt_id' => 'nullable|exists:receipts,id',
             'currency_id' => 'required|exists:currencies,id',
@@ -52,11 +53,11 @@ class PaymentVoucherController extends Controller
             'amount.*' => 'required|numeric',
         ]);
 
-        $number = PaymentVoucher::generate_number();
+        // $number = PaymentVoucher::generate_number();
         $total = 0;
 
         $payment_voucher = PaymentVoucher::create([
-            'number' => $number,
+            'number' => $request->number,
             'supplier_id' => $request->supplier_id,
             'receipt_id' => $request->receipt_id ?? null,
             'currency_id' => $request->currency_id,

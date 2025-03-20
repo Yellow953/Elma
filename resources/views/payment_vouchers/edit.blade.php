@@ -45,7 +45,7 @@
                             <tr>
                                 <td>
                                     <a href="{{ route('payment_vouchers.items.destroy', $item->id) }}"
-                                        class="btn btn-danger btn-sm my-auto show_confirm">
+                                        class="btn btn-danger btn-sm my-auto">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>

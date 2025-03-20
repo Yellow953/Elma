@@ -96,7 +96,8 @@
             </div>
         </div>
 
-        <div class="mt-4">
+        <br>
+        <div>
             <div class="border-custom">
                 <table class="w-100">
                     <thead class="text-center">
@@ -124,11 +125,15 @@
                     <tfoot class="text-center border-top">
                         <tr>
                             <th class="p-2">Sub Total</th>
-                            <th class="border-left p-2">{{ $total }}</th>
+                            <th class="border-left p-2">{{ number_format($total, 2) }}</th>
                         </tr>
                         <tr class="border-top">
-                            <th class="p-2">Vat</th>
-                            <th class="border-left p-2">{{ $vat }}</th>
+                            <th class="p-2">Vat ({{ $invoice->tax->rate }}%)</th>
+                            <th class="border-left p-2">{{ number_format($vat, 2) }}</th>
+                        </tr>
+                        <tr class="border-top">
+                            <th class="p-2">Total</th>
+                            <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
                         </tr>
                         <tr class="border-top">
                             <th class="p-2 text-uppercase">{{ Helper::format_currency_to_words($total_price_after_vat)
