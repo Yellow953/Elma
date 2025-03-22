@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="col-md-3 offset-md-3 border-custom p-3 d-flex flex-column">
-                    <strong>Date: </strong>{{ ucwords($receipt->date) }} <br>
+                    <strong>Date: </strong>{{ \Carbon\Carbon::parse($receipt->date)->format('d-m-Y') }} <br>
                     <strong>Currency: </strong>{{ ucwords($receipt->currency->code) }} <br>
                 </div>
             </div>

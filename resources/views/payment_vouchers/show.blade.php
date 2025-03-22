@@ -12,7 +12,7 @@
 
         <h5 class="text-center my-4">PAYMENT VOUCHER #{{ $payment_voucher->number }}</h5>
 
-        <h5 class="text-right my-4">DATE {{ $payment_voucher->date }}</h5>
+        <h5 class="text-right my-4">DATE {{ \Carbon\Carbon::parse($payment_voucher->date)->format('d-m-Y') }}</h5>
         <br>
         <div class="border-custom my-4">
             <table class="w-100">

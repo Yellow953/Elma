@@ -52,7 +52,6 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'invoice_number' => 'required|string|max:255|unique:invoices,invoice_number',
             'client_id' => 'required|exists:clients,id',
             'shipment_id' => 'required|exists:shipments,id',
             'tax_id' => 'required|exists:taxes,id',
@@ -66,11 +65,9 @@ class InvoiceController extends Controller
             'tax.*' => 'required',
         ]);
 
-        // $number = Invoice::generate_number();
-
         // Create Invoice
         $invoice = Invoice::create([
-            'invoice_number' => $request->invoice_number,
+            'invoice_number' => Invoice::generate_number(),
             'client_id' => $request->client_id,
             'shipment_id' => $request->shipment_id,
             'tax_id' => $request->tax_id,

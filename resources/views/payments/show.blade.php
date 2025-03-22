@@ -64,7 +64,7 @@
                             </div>
                             <div class="col-6 text-end">
                                 <strong>Receipt No: </strong> {{ $payment->payment_number }} <br>
-                                <strong>Date:</strong> {{ $payment->date }}
+                                <strong>Date:</strong> {{ \Carbon\Carbon::parse($payment->date)->format('d-m-Y') }}
                             </div>
                         </div>
                         <div class="row my-3">

@@ -10,16 +10,19 @@
         <h5 class="mb-5">REG#3802724</h5>
 
         <div class="row mb-5 d-flex align-items-stretch">
-            <div class="col-md-6 border-custom p-3 d-flex flex-column">
+            <div class="col border-custom p-3 d-flex flex-column">
                 <strong>SO Number:</strong> {{ $purchase_order->po_number }} <br>
                 <strong>Supplier: </strong>{{ ucwords($purchase_order->supplier->name) }} <br>
                 <strong>Status: </strong>{{ ucwords($purchase_order->status) }} <br>
             </div>
 
-            <div class="col-md-6 text-right border-custom p-3 d-flex flex-column">
-                <strong>Order Date: </strong>{{ $purchase_order->order_date }} <br>
+            <div class="col-md-1"></div>
+
+            <div class="col text-right border-custom p-3 d-flex flex-column">
+                <strong>Order Date: </strong>{{ \Carbon\Carbon::parse($purchase_order->order_date)->format('d-m-Y')
+                }}<br>
                 @if ($purchase_order->due_date)
-                <strong>Due Date: </strong>{{ $purchase_order->due_date }} <br>
+                <strong>Due Date: </strong>{{ \Carbon\Carbon::parse($purchase_order->due_date)->format('d-m-Y') }}<br>
                 @endif
             </div>
         </div>

@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-4 my-auto text-end">
                                 <strong>No: </strong> {{ $cdnote->cdnote_number }} <br>
-                                <strong>Date:</strong> {{ $cdnote->date }}
+                                <strong>Date:</strong> {{ \Carbon\Carbon::parse($cdnote->date)->format('d-m-Y') }}
                             </div>
                         </div>
                         <div class="row my-3">

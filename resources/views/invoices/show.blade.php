@@ -17,22 +17,22 @@
             <div class="col border-custom p-0 d-flex flex-column">
                 <table class="w-100 m-0 flex-grow-1">
                     <tr class="border-none">
-                        <th class="w-custom p-2">Due From</th>
-                        <td colspan="2" class="py-2 px-4 border-left">
+                        <th class="w-custom p-2 align-content-start">Due From</th>
+                        <td colspan="2" class="py-2 px-4 border-left align-content-start">
                             {{ $shipment->due_from->name }} <br>
                             TEL: {{ $shipment->due_from->phone }} <br>
                             {{ $shipment->due_from->address }}
                         </td>
                     </tr>
                     <tr class="border-none">
-                        <th class="w-custom p-2">Shipper</th>
-                        <td colspan="2" class="py-2 px-4 border-left">
+                        <th class="w-custom p-2 align-content-start">Shipper</th>
+                        <td colspan="2" class="py-2 px-4 border-left align-content-start">
                             {{ $shipment->shipper }}
                         </td>
                     </tr>
                     <tr class="border-none">
-                        <th class="w-custom p-2">Consignee</th>
-                        <td colspan="2" class="py-2 px-4 border-left">
+                        <th class="w-custom p-2 align-content-start">Consignee</th>
+                        <td colspan="2" class="py-2 px-4 border-left align-content-start">
                             {{ $shipment->consignee_name }} <br>
                             {{ $shipment->consignee_country }}
                         </td>
@@ -71,7 +71,7 @@
                     <tr class="border-none">
                         <th class="w-custom p-1">Loading Date</th>
                         <td colspan="2" class="py-1 px-4 border-left">
-                            {{ $shipment->loading_date }}
+                            {{ \Carbon\Carbon::parse($shipment->loading_date)->format('d-m-Y') }}
                         </td>
                     </tr>
                     <tr class="border-none">
@@ -135,13 +135,12 @@
                             <th class="p-2">Total</th>
                             <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
                         </tr>
-                        <tr class="border-top">
-                            <th class="p-2 text-uppercase">{{ Helper::format_currency_to_words($total_price_after_vat)
-                                }}</th>
-                            <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
-                        </tr>
                     </tfoot>
                 </table>
+            </div>
+
+            <div class="mt-5">
+                <h5>{{ Helper::format_currency_to_words($total_price_after_vat) }}</h5>
             </div>
         </div>
     </div>

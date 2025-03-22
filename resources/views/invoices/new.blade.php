@@ -42,26 +42,6 @@
                         <input type="hidden" name="sales_order_id" value="{{ $sales_order->id ?? '' }}">
 
                         <div class="row setup-content" id="step-1">
-                            <div class="col-md-12">
-                                <div class="input-group input-group-outline row mb-3">
-                                    <label for="invoice_number" class="col-md-2 col-form-label text-md-end">{{
-                                        __('Invoice Number *') }}</label>
-
-                                    <div class="col-md-10">
-                                        <input id="invoice_number" type="text"
-                                            class="form-control @error('invoice_number') is-invalid @enderror"
-                                            name="invoice_number" required autocomplete="invoice_number"
-                                            placeholder="Enter Invoice Number" value="{{ old('invoice_number') }}">
-
-                                        @error('invoice_number')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline row mb-3">
                                     <label for="client_id" class="col-md-4 col-form-label text-md-end">{{ __('Client

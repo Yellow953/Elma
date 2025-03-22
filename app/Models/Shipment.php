@@ -112,14 +112,17 @@ class Shipment extends Model
 
     public static function generate_shipment_number()
     {
-        $searchTerm = "EL-";
+        $yearCode = substr(date('Y'), -3);
+        $lastShipment = Shipment::orderBy("id", "desc")->first();
 
-        $lastShipment = Shipment::where("shipment_number", "LIKE", "%{$searchTerm}%")->get()->last();
         if ($lastShipment) {
-            $lastNumber = explode('-', $lastShipment->shipment_number)[1];
-            return 'EL-' . ($lastNumber + 1);
+            preg_match('/(\d+)$/', $lastShipment->shipment_number, $matches);
+            $lastNumber = isset($matches[1]) ? (int) $matches[1] : 1000;
+            $newNumber = $lastNumber + 1;
         } else {
-            return 'EL-1000';
+            $newNumber = 1000;
         }
+
+        return "ELM {$yearCode}-{$newNumber}";
     }
 }

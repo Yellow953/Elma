@@ -104,23 +104,9 @@ class Invoice extends Model
         $lastInvoice = Invoice::whereYear('created_at', $year)->where('type', 'invoice')->latest()->first();
 
         if ($lastInvoice) {
-            $lastNumber = explode('-', $lastInvoice->invoice_number)[2];
-            return 'INV-' . $year . '-' . ($lastNumber + 1);
+            return ($lastInvoice->invoice_number + 1);
         } else {
-            return 'INV-' . $year . '-1';
-        }
-    }
-
-    public static function generate_return_number()
-    {
-        $year = date('Y');
-        $lastInvoice = Invoice::whereYear('created_at', $year)->where('type', 'return')->latest()->first();
-
-        if ($lastInvoice) {
-            $lastNumber = explode('-', $lastInvoice->invoice_number)[3];
-            return 'RT-INV-' . $year . '-' . ($lastNumber + 1);
-        } else {
-            return 'RT-INV-' . $year . '-1';
+            return '1';
         }
     }
 }

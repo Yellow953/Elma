@@ -40,21 +40,6 @@
                     <h2 class="text-center text-info">New Shipment</h2>
 
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group mt-3">
-                                <label for="shipment_number" class="col-form-label">Shipment Number *</label>
-
-                                <input id="shipment_number" type="text" placeholder="Enter Shipment Number" required
-                                    class="form-control @error('shipment_number') is-invalid @enderror"
-                                    name="shipment_number" value="{{ old('shipment_number') }}">
-
-                                @error('shipment_number')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div>
                         <div class="col-md-6">
                             <div class="form-group mt-3">
                                 <label for="due_from_id" class="col-form-label">Due From *</label>

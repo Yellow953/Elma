@@ -52,7 +52,6 @@ class ShipmentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'shipment_number' => 'required|string|max:255|unique:shipments,shipment_number',
             'mode' => 'required',
             'departure' => 'required',
             'arrival' => 'required',
@@ -72,7 +71,7 @@ class ShipmentController extends Controller
         ]);
 
         $shipment = Shipment::create([
-            'shipment_number' => $request->shipment_number,
+            'shipment_number' => Shipment::generate_shipment_number(),
             'mode' => $request->mode,
             'departure' => $request->departure,
             'arrival' => $request->arrival,
