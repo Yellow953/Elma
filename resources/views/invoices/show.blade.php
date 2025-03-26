@@ -123,14 +123,14 @@
                         @endforelse
                     </tbody>
                     <tfoot class="text-center border-top">
-                        <tr>
+                        {{-- <tr>
                             <th class="p-2">Sub Total</th>
                             <th class="border-left p-2">{{ number_format($total, 2) }}</th>
                         </tr>
                         <tr class="border-top">
                             <th class="p-2">Vat ({{ $invoice->tax->rate }}%)</th>
                             <th class="border-left p-2">{{ number_format($vat, 2) }}</th>
-                        </tr>
+                        </tr> --}}
                         <tr class="border-top">
                             <th class="p-2">Total</th>
                             <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
