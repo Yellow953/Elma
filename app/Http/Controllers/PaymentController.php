@@ -43,6 +43,7 @@ class PaymentController extends Controller
     public function create(Request $request)
     {
         $request->validate([
+            'payment_number' => 'required|string|max:255|unique:payments',
             'client_id' => 'required|exists:clients,id',
             'currency_id' => 'required|exists:currencies,id',
             'description' => 'required|string',
@@ -50,11 +51,11 @@ class PaymentController extends Controller
             'amount' => 'required|numeric',
         ]);
 
-        $number = Payment::generate_number();
+        // $number = Payment::generate_number();
         $client = Client::find($request->client_id);
 
         $payment = Payment::create([
-            'payment_number' => $number,
+            'payment_number' => $request->payment_number,
             'client_id' => $request->client_id,
             'currency_id' => $request->currency_id,
             'type' => 'payment',
@@ -114,11 +115,13 @@ class PaymentController extends Controller
     public function update(Payment $payment, Request $request)
     {
         $request->validate([
+            'payment_number' => 'required|string|max:255',
             'description' => 'required|string',
             'date' => 'required|date',
         ]);
 
         $payment->update([
+            'payment_number' => $request->payment_number,
             'description' => $request->description,
             'date' => $request->date,
         ]);

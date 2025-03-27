@@ -15,6 +15,23 @@
                 @csrf
 
                 <div class="input-group input-group-outline row my-3">
+                    <label for="payment_number" class="col-md-5 col-form-label text-md-end">{{ __('Payment Number *')
+                        }}</label>
+
+                    <div class="col-md-6">
+                        <input id="payment_number" type="text"
+                            class="form-control @error('payment_number') is-invalid @enderror" name="payment_number"
+                            required value="{{ old('payment_number') }}">
+
+                        @error('payment_number')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="input-group input-group-outline row my-3">
                     <label for="client_id" class="col-md-5 col-form-label text-md-end">{{ __('Client *')
                         }}</label>
 
@@ -65,8 +82,9 @@
                         }}</label>
 
                     <div class="col-md-6">
-                        <input id="amount" type="number" min="0" step="any" class="form-control @error('amount') is-invalid @enderror"
-                            name="amount" required value="{{ old('amount') }}">
+                        <input id="amount" type="number" min="0" step="any"
+                            class="form-control @error('amount') is-invalid @enderror" name="amount" required
+                            value="{{ old('amount') }}">
 
                         @error('amount')
                         <span class="invalid-feedback" role="alert">
@@ -81,8 +99,9 @@
                         }}</label>
 
                     <div class="col-md-6">
-                        <input id="description" type="text" class="form-control @error('description') is-invalid @enderror"
-                            name="description" required value="{{ old('description') }}">
+                        <input id="description" type="text"
+                            class="form-control @error('description') is-invalid @enderror" name="description" required
+                            value="{{ old('description') }}">
 
                         @error('description')
                         <span class="invalid-feedback" role="alert">
@@ -91,7 +110,7 @@
                         @enderror
                     </div>
                 </div>
-                
+
                 <div class="d-flex align-items-center justify-content-around mt-3">
                     <a href="{{ url()->previous() }}" class="btn btn-secondary">Back</a>
                     <button type="submit" class="btn btn-info">Submit</button>
