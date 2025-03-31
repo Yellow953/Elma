@@ -99,44 +99,38 @@
         <br>
         <div>
             <div class="border-custom">
-                <table class="w-100">
-                    <thead class="text-center">
-                        <tr class="border-bottom">
-                            <th class="col-9 p-2">Description</th>
-                            <th class="col-3 border-left p-2">Amount ({{ $invoice->currency->code }})</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-                        @forelse ($items as $item)
-                        @if ($item->type == 'item')
-                        <tr>
-                            <td class="p-2">
-                                {{ $item->description }}
-                            </td>
-                            <td class="border-left p-2">{{ number_format($item->total_price, 2) }}</td>
-                        </tr>
-                        @endif
-                        @empty
-                        <tr>
-                            <td class="p-2" colspan="2">No Invoice Items Yet</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                    <tfoot class="text-center border-top">
-                        {{-- <tr>
-                            <th class="p-2">Sub Total</th>
-                            <th class="border-left p-2">{{ number_format($total, 2) }}</th>
-                        </tr>
-                        <tr class="border-top">
-                            <th class="p-2">Vat ({{ $invoice->tax->rate }}%)</th>
-                            <th class="border-left p-2">{{ number_format($vat, 2) }}</th>
-                        </tr> --}}
-                        <tr class="border-top">
-                            <th class="p-2">Total</th>
-                            <th class="border-left p-2">{{ number_format($total_price_after_vat, 2) }}</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                <div class="d-flex border-bottom">
+                    <div class="col-9 p-2 fw-bold">Description</div>
+                    <div class="col-3 border-left p-2 fw-bold">Amount ({{ $invoice->currency->code }})</div>
+                </div>
+
+                <div class="w-100 min-h">
+                    @foreach ($items as $item)
+                    @if ($item->type == 'item')
+                    <div class="row-flex w-100" style="max-height: 50px;">
+                        <div class="col-9 p-2">{{ $item->description }}</div>
+                        <div class="col-3 p-2 border-left">{{ number_format($item->total_price, 2) }}</div>
+                    </div>
+                    @endif
+                    @endforeach
+                    <div class="row-flex">
+                        <div class="col-9 p-2 fw-bold">&nbsp;</div>
+                        <div class="col-3 p-2 border-left fw-bold">&nbsp;</div>
+                    </div>
+                </div>
+
+                {{-- <div class="d-flex border-top">
+                    <div class="col-9 p-2">Sub Total</div>
+                    <div class="col-3 p-2 border-left">{{ number_format($total, 2) }}</div>
+                </div>
+                <div class="d-flex border-top">
+                    <div class="col-9 p-2">VAT</div>
+                    <div class="col-3 p-2 border-left">{{ number_format($vat, 2) }}</div>
+                </div> --}}
+                <div class="d-flex border-top">
+                    <div class="col-9 p-2">Total</div>
+                    <div class="col-3 p-2 border-left">{{ number_format($total_price_after_vat, 2) }}</div>
+                </div>
             </div>
 
             <div class="mt-5">

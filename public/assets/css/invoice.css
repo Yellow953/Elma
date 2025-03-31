@@ -147,3 +147,18 @@
     margin-bottom: 0;
     font-size: 1.1rem;
 }
+
+.min-h {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.row-flex {
+    flex-grow: 1;
+    display: flex;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
