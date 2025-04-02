@@ -108,7 +108,7 @@
                     @foreach ($items as $item)
                     @if ($item->type == 'item')
                     <div class="row-flex w-100" style="max-height: 50px;">
-                        <div class="col-9 p-2">{{ $item->description }}</div>
+                        <div class="col-9 p-2 text-center" style="font-size: 20px;">{{ $item->description }}</div>
                         <div class="col-3 p-2 border-left">{{ number_format($item->total_price, 2) }}</div>
                     </div>
                     @endif
