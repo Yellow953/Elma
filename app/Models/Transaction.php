@@ -36,6 +36,12 @@ class Transaction extends Model
         return $this->belongsTo(Supplier::class);
     }
 
+    // Permissions
+    public function can_delete()
+    {
+        return true;
+    }
+
     // Filter
     public function scopeFilter($q)
     {
@@ -62,6 +68,14 @@ class Transaction extends Model
         if (request('balance')) {
             $balance = request('balance');
             $q->where('balance', $balance);
+        }
+        if (request('title')) {
+            $title = request('title');
+            $q->where('title', 'LIKE', "%{$title}%");
+        }
+        if (request('description')) {
+            $description = request('description');
+            $q->where('description', 'LIKE', "%{$description}%");
         }
 
         return $q;

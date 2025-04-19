@@ -68,6 +68,16 @@
             </li>
             @endcan
 
+            @can('transactions.read')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('transactions*') ? 'active bg-gradient-info' : '' }}"
+                    href="{{ route('transactions') }}">
+                    <span><i class="fa-solid fa-right-left"></i></span>
+                    Transactions
+                </a>
+            </li>
+            @endcan
+
             <li class="nav-item mt-3">
                 <h6 class="title-sub-nav">Sales</h6>
             </li>

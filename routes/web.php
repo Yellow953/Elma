@@ -23,6 +23,7 @@ use App\Http\Controllers\DebitNoteController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PaymentVoucherController;
 use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Auth::routes(['register' => false]);
@@ -158,6 +159,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{account}/delete', [AccountController::class, 'destroy'])->name('accounts.destroy');
         Route::get('/{account}/statement', [AccountController::class, 'statement'])->name('accounts.statement');
         Route::get('/', [AccountController::class, 'index'])->name('accounts');
+    });
+
+    // Transactions Routes
+    Route::prefix('transactions')->group(function () {
+        Route::get('/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
+        Route::post('/{transaction}/update', [TransactionController::class, 'update'])->name('transactions.update');
+        Route::get('/{transaction}/delete', [TransactionController::class, 'destroy'])->name('transactions.destroy');
+        Route::get('/', [TransactionController::class, 'index'])->name('transactions');
     });
 
     // Receipts Routes

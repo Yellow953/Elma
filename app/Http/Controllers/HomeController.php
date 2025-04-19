@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-
 class HomeController extends Controller
 {
     public function index()
@@ -56,85 +55,5 @@ class HomeController extends Controller
         }
     }
 
-    // public function fix()
-    // {
-    //     $invoices = Invoice::all();
-    //     foreach ($invoices as $invoice) {
-    //         $datetime = new Carbon($invoice->date);
-
-    //         $invoice->update([
-    //             'created_at' => $datetime,
-    //             'updated_at' => $datetime,
-    //         ]);
-
-    //         foreach ($invoice->items as $item) {
-    //             $item->update([
-    //                 'created_at' => $datetime,
-    //                 'updated_at' => $datetime,
-    //             ]);
-    //         }
-
-    //         if ($invoice->transactions) {
-    //             foreach (explode('|', $invoice->transactions) as $id) {
-    //                 if ($id != '') {
-    //                     Transaction::find($id)->update([
-    //                         'created_at' => $datetime,
-    //                         'updated_at' => $datetime,
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     $receipts = Receipt::all();
-    //     foreach ($receipts as $receipt) {
-    //         $datetime = new Carbon($receipt->date);
-
-    //         $receipt->update([
-    //             'created_at' => $datetime,
-    //             'updated_at' => $datetime,
-    //         ]);
-
-    //         foreach ($receipt->items as $item) {
-    //             $item->update([
-    //                 'created_at' => $datetime,
-    //                 'updated_at' => $datetime,
-    //             ]);
-    //         }
-
-    //         if ($receipt->transactions) {
-    //             foreach (explode('|', $receipt->transactions) as $id) {
-    //                 if ($id != '') {
-    //                     Transaction::find($id)->update([
-    //                         'created_at' => $datetime,
-    //                         'updated_at' => $datetime,
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     $payments = Payment::all();
-    //     foreach ($payments as $payment) {
-    //         $datetime = new Carbon($payment->date);
-
-    //         $payment->update([
-    //             'created_at' => $datetime,
-    //             'updated_at' => $datetime,
-    //         ]);
-
-    //         if ($payment->transactions) {
-    //             foreach (explode('|', $payment->transactions) as $id) {
-    //                 if ($id != '') {
-    //                     Transaction::find($id)->update([
-    //                         'created_at' => $datetime,
-    //                         'updated_at' => $datetime,
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return 'success';
-    // }
+    public function fix() {}
 }
