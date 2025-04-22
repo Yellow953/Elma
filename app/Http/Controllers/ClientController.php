@@ -126,7 +126,7 @@ class ClientController extends Controller
     public function statement(Client $client)
     {
         $account = $client->account;
-        $transactions = $client->transactions;
+        $transactions = $client->transactions()->orderBy('created_at', 'ASC')->get();
 
         $data = compact('client', 'account', 'transactions');
         return view('clients.statement', $data);

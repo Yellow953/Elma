@@ -80,7 +80,7 @@
                     <label for="balance" class="col-md-5 col-form-label text-md-end">{{ __('Balance *') }}</label>
 
                     <div class="col-md-6">
-                        <input id="balance" type="number" min="0" step="any"
+                        <input id="balance" type="number" step="any"
                             class="form-control @error('balance') is-invalid @enderror" name="balance" required
                             value="{{ $transaction->balance }}">
 

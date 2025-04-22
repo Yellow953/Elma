@@ -124,7 +124,7 @@ class SupplierController extends Controller
     public function statement(Supplier $supplier)
     {
         $account = $supplier->account;
-        $transactions = $supplier->transactions;
+        $transactions = $supplier->transactions()->orderBy('created_at', 'ASC')->get();
 
         $data = compact('supplier', 'account', 'transactions');
         return view('suppliers.statement', $data);

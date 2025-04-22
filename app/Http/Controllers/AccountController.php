@@ -96,11 +96,11 @@ class AccountController extends Controller
     public function statement(Account $account)
     {
         if ($account->client) {
-            $transactions = $account->client->transactions;
+            $transactions = $account->client->transactions()->orderBy('created_at', 'ASC')->get();
         } else if ($account->supplier) {
-            $transactions = $account->supplier->transactions;
+            $transactions = $account->supplier->transactions()->orderBy('created_at', 'ASC')->get();
         } else {
-            $transactions = $account->transactions;
+            $transactions = $account->transactions()->orderBy('created_at', 'ASC')->get();
         }
 
         $data = compact('account', 'transactions');
