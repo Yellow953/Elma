@@ -14,6 +14,7 @@ use App\Models\SearchRoute;
 use App\Models\Shipment;
 use App\Models\Payment;
 use App\Models\Expense;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -55,5 +56,8 @@ class HomeController extends Controller
         }
     }
 
-    public function fix() {}
+    public function fix()
+    {
+        return 'fixed...';
+    }
 }
