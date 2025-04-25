@@ -294,7 +294,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/navigate', [HomeController::class, 'navigate'])->name('navigate');
 
     // App
-    Route::get('/fix', [HomeController::class, 'fix'])->name('fix');
     Route::get('/logout', [HomeController::class, 'custom_logout'])->name('custom_logout');
     Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 });
