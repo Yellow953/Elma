@@ -20,8 +20,11 @@
                         <th class="w-custom p-2 align-content-start">Due From</th>
                         <td colspan="2" class="py-2 px-4 border-left align-content-start">
                             {{ $shipment->due_from->name }} <br>
+                            @if ($shipment->due_from->phone)
                             TEL: {{ $shipment->due_from->phone }} <br>
-                            {{ $shipment->due_from->address }}
+                            @endif
+                            {{ $shipment->due_from->address }} <br>
+                            {{ $shipment->due_from->vat_number }}
                         </td>
                     </tr>
                     <tr class="border-none">
