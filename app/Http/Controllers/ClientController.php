@@ -127,8 +127,9 @@ class ClientController extends Controller
     {
         $account = $client->account;
         $transactions = $client->transactions()->orderBy('created_at', 'ASC')->get();
+        $total = 0;
 
-        $data = compact('client', 'account', 'transactions');
+        $data = compact('client', 'account', 'transactions', 'total');
         return view('clients.statement', $data);
     }
 

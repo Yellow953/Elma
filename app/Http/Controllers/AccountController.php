@@ -102,8 +102,9 @@ class AccountController extends Controller
         } else {
             $transactions = $account->transactions()->orderBy('created_at', 'ASC')->get();
         }
+        $total = 0;
 
-        $data = compact('account', 'transactions');
+        $data = compact('account', 'transactions', 'total');
         return view('accounts.statement', $data);
     }
 

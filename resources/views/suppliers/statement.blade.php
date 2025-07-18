@@ -88,8 +88,8 @@
                         <td class="p-2">{{ $transaction->currency->code }}</td>
                         <td class="p-2">{{ number_format($transaction->debit, 2) }}</td>
                         <td class="p-2">{{ number_format($transaction->credit, 2) }}</td>
-                        <td class="p-2 {{ $transaction->balance < 0 ? 'text-danger' : '' }}">{{
-                            number_format($transaction->balance, 2) }}</td>
+                        <td class="p-2 {{ $total + $transaction->balance < 0 ? 'text-danger' : '' }}">{{
+                            number_format($total += $transaction->balance, 2) }}</td>
                     </tr>
                     @empty
                     <tr>

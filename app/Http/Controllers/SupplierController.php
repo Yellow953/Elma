@@ -125,8 +125,9 @@ class SupplierController extends Controller
     {
         $account = $supplier->account;
         $transactions = $supplier->transactions()->orderBy('created_at', 'ASC')->get();
+        $total = 0;
 
-        $data = compact('supplier', 'account', 'transactions');
+        $data = compact('supplier', 'account', 'transactions', 'total');
         return view('suppliers.statement', $data);
     }
 }
