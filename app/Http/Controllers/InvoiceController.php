@@ -207,7 +207,7 @@ class InvoiceController extends Controller
     {
         $items = Item::select('id', 'name', 'unit_price', 'type')->get();
         $suppliers = Supplier::select('id', 'name')->get();
-        $invoice_items = $invoice->items;
+        $invoice_items = $invoice->items()->orderBy('created_at', 'desc')->get();
 
         $data = compact('invoice', 'items', 'suppliers', 'invoice_items');
         return view('invoices.edit', $data);
@@ -358,7 +358,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $items = $invoice->items;
+        $items = $invoice->items()->orderBy('created_at', 'desc')->get();
         $shipment = $invoice->shipment;
 
         $total = 0;
