@@ -100,8 +100,7 @@ class Invoice extends Model
 
     public static function generate_number()
     {
-        $year = date('Y');
-        $lastInvoice = Invoice::whereYear('created_at', $year)->where('type', 'invoice')->latest()->first();
+        $lastInvoice = Invoice::where('type', 'invoice')->orderBy('invoice_number', 'DESC')->latest()->first();
 
         if ($lastInvoice) {
             return ($lastInvoice->invoice_number + 1);

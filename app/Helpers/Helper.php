@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Models\Account;
 use App\Models\Client;
 use App\Models\Currency;
+use App\Models\Invoice;
 use App\Models\SearchRoute;
 use App\Models\Tax;
 use App\Models\Item;
@@ -118,5 +119,10 @@ class Helper
     public static function get_expense_types()
     {
         return ['Salary', 'Rent', 'Utility', 'Other Expenses'];
+    }
+
+    public static function generate_invoice_number()
+    {
+        return Invoice::generate_number();
     }
 }

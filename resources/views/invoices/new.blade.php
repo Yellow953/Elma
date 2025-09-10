@@ -137,6 +137,26 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-6">
+                                <div class="input-group input-group-outline row mb-3">
+                                    <label for="invoice_number" class="col-md-4 col-form-label text-md-end">{{
+                                        __('Invoice Number *') }}</label>
+
+                                    <div class="col-md-8">
+                                        <input id="invoice_number" type="text"
+                                            class="form-control @error('invoice_number') is-invalid @enderror"
+                                            name="invoice_number" required autocomplete="invoice_number"
+                                            value="{{ old('invoice_number') ?? Helper::generate_invoice_number() }}">
+
+                                        @error('invoice_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-end mt-4">
                                 <button class="btn btn-info nextBtn ignore-confirm" type="button">Next</button>
                             </div>

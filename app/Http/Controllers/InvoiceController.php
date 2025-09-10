@@ -57,6 +57,7 @@ class InvoiceController extends Controller
             'tax_id' => 'required|exists:taxes,id',
             'currency_id' => 'required|exists:currencies,id',
             'date' => 'required|date',
+            'invoice_number' => 'required|numeric|min:0|unique:invoices,invoice_number',
             'item_id.*' => 'required|exists:items,id',
             'description.*' => 'required',
             'quantity.*' => 'required|numeric|min:1',
@@ -67,7 +68,7 @@ class InvoiceController extends Controller
 
         // Create Invoice
         $invoice = Invoice::create([
-            'invoice_number' => Invoice::generate_number(),
+            'invoice_number' => $request->invoice_number,
             'client_id' => $request->client_id,
             'shipment_id' => $request->shipment_id,
             'tax_id' => $request->tax_id,
