@@ -110,13 +110,13 @@
                 <div class="w-100 min-h">
                     @foreach ($items as $item)
                     @if ($item->type == 'item')
-                    <div class="row-flex w-100" style="max-height: 50px;">
+                    <div class="row-flex w-100">
                         <div class="col-9 p-2 text-center fs-20">{{ $item->description }}</div>
                         <div class="col-3 p-2 border-left fs-20">{{ number_format($item->total_price, 2) }}</div>
                     </div>
                     @endif
                     @endforeach
-                    <div class="row-flex">
+                    <div class="row-flex row-flex-fill">
                         <div class="col-9 p-2 fw-bold fs-20">&nbsp;</div>
                         <div class="col-3 p-2 border-left fw-bold fs-20">&nbsp;</div>
                     </div>

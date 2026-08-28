@@ -124,6 +124,15 @@
     overflow-y: auto;
 }
 
+/* these reports print via layouts.invoice; without this the scroll box
+   keeps its 400px height on paper and silently drops the remaining rows */
+@media print {
+    .table-wrapper {
+        max-height: none;
+        overflow: visible;
+    }
+}
+
 .chart-placeholder {
     background: #f8f9fa;
     height: 300px;
@@ -155,8 +164,27 @@
 }
 
 .row-flex {
-    flex-grow: 1;
     display: flex;
+    flex: 0 0 auto;
+    align-items: stretch;
+}
+
+/* spacer row that soaks up the leftover height of .min-h */
+.row-flex-fill {
+    flex: 1 1 auto;
+}
+
+.row-flex > * {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+/* long unbroken descriptions must wrap, or auto table layout widens the
+   table past .border-custom and its overflow:hidden clips the amount column */
+.border-custom table th,
+.border-custom table td {
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .fw-bold {
