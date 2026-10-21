@@ -20,8 +20,8 @@ class Log extends Model
             $q->where('text', 'LIKE', "%{$text}%");
         }
         if (request('startDate') || request('endDate')) {
-            $startDate = request()->query('startDate') ?? Carbon::today();
-            $endDate = request()->query('endDate') ?? Carbon::today()->addYears(100);
+            $startDate = request()->query('startDate') ? Carbon::parse(request()->query('startDate'))->startOfDay() : Carbon::today();
+            $endDate = request()->query('endDate') ? Carbon::parse(request()->query('endDate'))->endOfDay() : Carbon::today()->addYears(100);
             $q->whereBetween('created_at', [$startDate, $endDate]);
         }
 

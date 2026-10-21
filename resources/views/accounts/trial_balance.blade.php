@@ -13,7 +13,15 @@ $grandTotalBalance = 0;
 @section('content')
 <div class="receipt-main">
     <div class="container mt-4">
-        <h2 class="text-center mb-4">Trial Balance</h2>
+        <h2 class="text-center mb-1">Trial Balance</h2>
+        <p class="text-center mb-4">
+            @if ($from_date || $to_date)
+            From {{ $from_date ? $from_date->format('Y/m/d') : 'the beginning' }}
+            to {{ $to_date ? $to_date->format('Y/m/d') : 'today' }}
+            @else
+            All dates
+            @endif
+        </p>
 
         <div class="border-custom">
             <table class="text-center w-100">

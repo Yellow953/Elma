@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\AccountType;
 use App\Models\Transaction;
 use App\Models\Log;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -120,12 +121,12 @@ class AccountController extends Controller
             'to_date' => 'nullable|date|after_or_equal:from_date',
         ]);
 
-        if ($request->from_date || $request->to_date) {
-            $from_date = $request->from_date ?? '1900-01-01';
-            $to_date = $request->to_date ?? now();
+        $from_date = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $to_date = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 
+        if ($from_date || $to_date) {
             $transactions = Transaction::whereNotNull('client_id')
-                ->whereBetween('created_at', [$from_date, $to_date])
+                ->whereBetween('created_at', [$from_date ?? Carbon::parse('1900-01-01'), $to_date ?? now()])
                 ->get();
         } else {
             $transactions = Transaction::whereNotNull('client_id')->get();
@@ -133,13 +134,13 @@ class AccountController extends Controller
 
         $trialBalance = $transactions->groupBy('client_id')->map(function ($clientTransactions) {
             return [
-                'client' => $clientTransactions->first()->client->name,
+                'client' => $clientTransactions->first()->client?->name ?? 'Deleted Client',
                 'total_debit' => $clientTransactions->sum('debit'),
                 'total_credit' => $clientTransactions->sum('credit'),
                 'balance' => $clientTransactions->sum('debit') - $clientTransactions->sum('credit'),
             ];
         });
 
-        return view('accounts.trial_balance', compact('trialBalance'));
+        return view('accounts.trial_balance', compact('trialBalance', 'from_date', 'to_date'));
     }
 }
