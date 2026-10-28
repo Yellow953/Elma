@@ -167,13 +167,18 @@ class ReceiptController extends Controller
     {
         $validatedData = $request->validate([
             'date' => 'required|date',
+            'item_id.*' => 'nullable|exists:items,id',
+            'supplier_receipt.*' => 'nullable|string|max:255',
+            'description.*' => 'nullable|string',
+            'quantity.*' => 'nullable|numeric|min:1',
+            'unit_cost.*' => 'nullable|numeric|min:0',
         ]);
 
         $receipt->update([
             'date' => $request->input('date'),
         ]);
 
-        if ($request->item_id) {
+        if (!empty($validatedData['item_id'])) {
             $taxRate = $receipt->tax->rate / 100;
             $totalItemCost = 0;
             $totalTax = 0;
@@ -297,7 +302,7 @@ class ReceiptController extends Controller
             if ($receipt->transactions) {
                 foreach (explode('|', $receipt->transactions) as $id) {
                     if ($id != '') {
-                        Transaction::find($id)->delete();
+                        Transaction::find($id)?->delete();
                     }
                 }
             }

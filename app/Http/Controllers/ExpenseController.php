@@ -141,7 +141,7 @@ class ExpenseController extends Controller
             if ($expense->transactions) {
                 foreach (explode('|', $expense->transactions) as $id) {
                     if ($id != '') {
-                        Transaction::find($id)->delete();
+                        Transaction::find($id)?->delete();
                     }
                 }
             }

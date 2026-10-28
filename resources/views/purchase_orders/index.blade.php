@@ -44,7 +44,7 @@ $statuses = Helper::get_order_statuses();
                                 @foreach ($shipments as $shipment)
                                 <option value="{{ $shipment->id }}" {{ $shipment->id ==
                                     request()->query('shipment_id') ?
-                                    'selected' : '' }}>{{ $shipment->name }}</option>
+                                    'selected' : '' }}>{{ $shipment->shipment_number }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -169,7 +169,7 @@ $statuses = Helper::get_order_statuses();
                                         <span class="text-dark">{{ $purchase_order->status }}</span>
                                     </td>
                                     <td>
-                                        {{ $purchase_order->shipment->shipment_number }}
+                                        {{ $purchase_order->shipment?->shipment_number }}
                                     </td>
                                     <td>
                                         {{ $purchase_order->supplier->name }}

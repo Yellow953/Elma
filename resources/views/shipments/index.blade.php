@@ -172,7 +172,7 @@
                                         {{ $shipment->mode }}
                                     </td>
                                     <td>
-                                        Due From: {{ ucwords($shipment->due_from->name) }} <br>
+                                        Due From: {{ ucwords($shipment->due_from?->name) }} <br>
                                         Shipper: {{ ucwords($shipment->shipper) }}
                                     </td>
                                     <td>

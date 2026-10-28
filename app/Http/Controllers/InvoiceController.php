@@ -239,6 +239,10 @@ class InvoiceController extends Controller
             $tax_rate = $invoice->tax->rate / 100;
 
             foreach ($request->item_id as $key => $itemId) {
+                if (!$itemId) {
+                    continue;
+                }
+
                 $quantity = $request->quantity[$key];
                 $unit_price = $request->unit_price[$key];
                 $supplier_id = $request->supplier_id[$key] ?? null;
@@ -409,7 +413,7 @@ class InvoiceController extends Controller
             if ($invoice->transactions) {
                 foreach (explode('|', $invoice->transactions) as $id) {
                     if ($id != '') {
-                        Transaction::find($id)->delete();
+                        Transaction::find($id)?->delete();
                     }
                 }
             }

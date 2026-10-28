@@ -168,7 +168,7 @@ class DebitNoteController extends Controller
             if ($cdnote->transactions) {
                 foreach (explode('|', $cdnote->transactions) as $id) {
                     if ($id != '') {
-                        Transaction::find($id)->delete();
+                        Transaction::find($id)?->delete();
                     }
                 }
             }

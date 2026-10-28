@@ -146,7 +146,7 @@ class PaymentController extends Controller
             if ($payment->transactions) {
                 foreach (explode('|', $payment->transactions) as $id) {
                     if ($id != '') {
-                        Transaction::find($id)->delete();
+                        Transaction::find($id)?->delete();
                     }
                 }
             }

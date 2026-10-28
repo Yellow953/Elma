@@ -40,7 +40,7 @@
                                 @foreach ($shipments as $shipment)
                                 <option value="{{ $shipment->id }}" {{ $shipment->id ==
                                     request()->query('shipment_id') ?
-                                    'selected' : '' }}>{{ $shipment->name }}</option>
+                                    'selected' : '' }}>{{ $shipment->shipment_number }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -165,10 +165,10 @@
                                         <span class="text-dark">{{ $sales_order->status }}</span>
                                     </td>
                                     <td>
-                                        {{ $sales_order->shipment->shipment_number }}
+                                        {{ $sales_order->shipment?->shipment_number }}
                                     </td>
                                     <td>
-                                        {{ $sales_order->client->name }}
+                                        {{ $sales_order->client?->name }}
                                     </td>
                                     <td>
                                         <p>
