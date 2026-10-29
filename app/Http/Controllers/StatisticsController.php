@@ -29,7 +29,7 @@
             $total_expenses = 0;
             $total_profit = 0;
 
-            $month = date('m', strtotime($request->month));
+            $month = date('m', strtotime("1 " . $request->month));
             $year = $request->year;
 
             $invoices = Invoice::whereYear('date', $year)
@@ -69,7 +69,7 @@
             $total_profit = 0;
             $net_profit = 0;
 
-            $month = date('m', strtotime($request->month));
+            $month = date('m', strtotime("1 " . $request->month));
             $year = $request->year;
 
             $invoices = Invoice::whereYear('date', $year)
